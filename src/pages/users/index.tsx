@@ -107,6 +107,22 @@ export default function Users() {
         }
     }
 
+    async function deleteMahasiswa(id: number) {
+        try {
+            const res = await fetch(
+                `http://localhost:5000/api/users/mahasiswa/delete/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async function getAccountById(id: number) {
         try {
             const res = await fetch(
@@ -163,6 +179,18 @@ export default function Users() {
     const handleDelete = async (id: number) => {
         try {
             const data = await deleteUsers(id);
+
+            if (data.status === true) {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleDeleteMahasiswa = async (id: number) => {
+        try {
+            const data = await deleteMahasiswa(id);
 
             if (data.status === true) {
                 window.location.reload();
@@ -538,7 +566,10 @@ export default function Users() {
                                             )}
                                             <div className="px-6 py-4  flex items-center justify-center w-[100px]">
                                                 {user.status_mahasiswa ? (
-                                                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full">
+                                                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleDeleteMahasiswa(user.id_mahasiswa)
+                                                    }>
                                                         Delete
                                                     </button>
                                                 ) : (
