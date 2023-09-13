@@ -340,12 +340,12 @@ export default function Fasilitas() {
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap w-[150px] text-center">
                                                     {data.status_kamar ? (
-                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                            Tersedia
-                                                        </span>
-                                                    ) : (
                                                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                                             Tidak Tersedia
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100  text-green-800">
+                                                            Tersedia
                                                         </span>
                                                     )}
                                                 </div>

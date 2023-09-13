@@ -230,9 +230,9 @@ export default function Users() {
                 <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
                     <a href="#" onClick={() => toggleTab("umum")}>
                         <h2
-                            className={`text-[18] font-bold mb-3 mr-14 ${
+                            className={`text-[18] font-regular mb-3 mr-14 ${
                                 activeTab === "umum"
-                                    ? "border-b-2 border-[#FFA101]"
+                                    ? "border-b-2 border-[#FFA101] font-bold"
                                     : ""
                             }`}
                         >
@@ -241,9 +241,9 @@ export default function Users() {
                     </a>
                     <a href="#" onClick={() => toggleTab("dosen")}>
                         <h2
-                            className={`text-[18] font-bold mb-3 mr-14 ${
+                            className={`text-[18] font-regular mb-3 mr-14 ${
                                 activeTab === "dosen"
-                                    ? "border-b-2 border-[#FFA101]"
+                                    ? "border-b-2 border-[#FFA101] font-bold"
                                     : ""
                             }`}
                         >
@@ -254,7 +254,7 @@ export default function Users() {
                         <h2
                             className={`text-[18] font-regular mb-3 mr-14 ${
                                 activeTab === "mahasiswa"
-                                    ? "border-b-2 border-[#FFA101]"
+                                    ? "border-b-2 border-[#FFA101] font-bold"
                                     : ""
                             }`}
                         >
@@ -528,11 +528,11 @@ export default function Users() {
                                                 />
                                             </div>
                                             {user.status_mahasiswa ? (
-                                                <div className="px-6 py-4 text-[15px] text-green-800 w-[100px]">
+                                                <div className="px-6 py-4 text-[15px] text-green-800 font-semibold w-[100px]">
                                                     Aktif
                                                 </div>
                                             ) : (
-                                                <div className="px-6 py-4 text-[15px] text-red-500 w-[100px]">
+                                                <div className="px-6 py-4 text-[15px] text-red-500 font-semibold w-[100px]">
                                                     Tidak Aktif
                                                 </div>
                                             )}
@@ -543,7 +543,7 @@ export default function Users() {
                                                     </button>
                                                 ) : (
                                                     <button
-                                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[12px] rounded-full"
+                                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
                                                         onClick={() =>
                                                             handleUpdateStatus(
                                                                 user.id_mahasiswa

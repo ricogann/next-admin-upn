@@ -19,7 +19,7 @@ export default function Create() {
 
     const [noKamar, setNoKamar] = useState(0);
     const [lantai, setLantai] = useState(0);
-    const [statusKamar, setStatusKamar] = useState(true);
+    const [statusKamar, setStatusKamar] = useState(false);
 
     const [activeTab, setActiveTab] = useState("fasilitas");
 
