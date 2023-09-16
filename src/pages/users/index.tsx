@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import SideBar from "@/components/sidebar";
 import Image from "next/image";
 
-interface User {
+interface Umum {
     id: number;
     NIK?: string;
     NIP?: string;
@@ -56,9 +56,9 @@ export default function Users() {
         setActiveTab(tab);
     };
 
-    async function getUsers() {
+    async function getUmum() {
         try {
-            const res = await fetch("http://localhost:5000/api/users/account");
+            const res = await fetch("http://localhost:5000/api/users/umum");
             const data = await res.json();
 
             return data;
