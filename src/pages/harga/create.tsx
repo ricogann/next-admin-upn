@@ -107,6 +107,18 @@ export default function Create() {
                             <div className="flex flex-col p-4">
                                 <h1 className="px-4">Data Fasilitas</h1>
                                 <div className="flex flex-row p-4 gap-5">
+                                <select
+  name="id_fasilitas"
+  className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
+>
+  <option value="" disabled selected>
+    Type Fasilitas
+  </option>
+  <option value="option1">Option 1</option>
+  <option value="option2">Option 2</option>
+  <option value="option3">Option 3</option>
+</select>
+
                                     <Input
                                         name="nama"
                                         type="text"
