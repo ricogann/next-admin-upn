@@ -1,12 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SideBar from "@/components/sidebar";
 
 export default function Dashboard() {
     const [activeTab, setActiveTab] = useState("bookings");
+    const [totalSum, setTotalSum] = useState(0); // Initialize with 0 as an integer
+
+
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+
+    async function getUsers() {
+        try {
+            const res = await fetch("http://localhost:5000/api/users/account");
+            const data = await res.json();
+            return data.data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const dataUsers = await getUsers();
+                setTotalSum(dataUsers.length);
+
+            } catch (error) {
+                console.error("error fetching data fasilitas ", error);
+            }
+        }
+
+        fetchData();
+    }, []);
+    
 
     const isTabActive = (tab: string) => activeTab === tab;
 
@@ -179,7 +208,7 @@ export default function Dashboard() {
                                 <h1 className="font-regular mb-3">
                                     Total Users
                                 </h1>
-                                <h1 className="text-[28px] font-bold ">89</h1>
+                                <h1 className="text-[28px] font-bold ">{totalSum}</h1>
                             </div>
                             <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
                                 <h1 className="font-regular mb-3">
