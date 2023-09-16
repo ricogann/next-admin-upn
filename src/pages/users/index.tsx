@@ -3,32 +3,37 @@ import SideBar from "@/components/sidebar";
 import Image from "next/image";
 
 interface Umum {
-    id: number;
-    NIK?: string;
-    NIP?: string;
+    id_account: number;
+    NIK: string;
     nama: string;
     email: string;
     no_telp: string;
-    status_account: boolean;
-    bukti_regis: string;
-    Role: Role;
+    status: boolean;
+    bukti_identitas: string;
 }
 
-interface Role {
-    id_role: number;
-    nama_role: string;
-}
 
 interface Mahasiswa {
-    id_mahasiswa: number;
-    npm_mahasiswa: string;
-    nama_mahasiswa: string;
-    tahun_ajaran_mahasiswa: TahunAjaran;
-    no_telp_mahasiswa: string;
-    bukti_regis_mahasiswa: string;
-    status_mahasiswa: boolean;
-    Fakultas: Fakultas;
-    Prodi: Prodi;
+    id_account: number;
+    npm: string;
+    nama: string;
+    email: string;
+    bukti_identitas: string;
+    no_telp: number;
+    status: boolean;
+    id_fakultas: Fakultas;
+    id_prodi: Prodi;
+    id_tahun_ajaran : TahunAjaran;
+}
+
+interface Dosen {
+    id_account: number;
+    NIP: string;
+    nama: string;
+    no_telp: string;
+    bukti_identitas: string;
+    status: boolean;
+    email: string;
 }
 
 interface Prodi {
@@ -48,9 +53,9 @@ interface TahunAjaran {
 
 export default function Users() {
     const [activeTab, setActiveTab] = useState("umum");
-    const [users, setUsers] = useState<User[]>([]);
+    const [umum, setUmum] = useState<Umum[]>([]);
     const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
-    const [dosen, setDosen] = useState<User[]>([]);
+    const [dosen, setDosen] = useState<Dosen[]>([]);
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
@@ -142,7 +147,7 @@ export default function Users() {
                 `http://localhost:5000/api/users/account/updateStatus/${id}`,
                 {
                     method: "PUT",
-                    body: JSON.stringify({ status_account: status }),
+                    body: JSON.stringify({ status: status }),
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -223,11 +228,11 @@ export default function Users() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const data = await getUsers();
+                const dataUmum = await getUmum();
                 const dataMahasiswa = await getMahasiswa();
                 const dataDosen = await getDosen();
 
-                setUsers(data.data);
+                setUmum(dataUmum.data);
                 setMahasiswa(dataMahasiswa.data);
                 setDosen(dataDosen.data);
             } catch (error) {
@@ -319,7 +324,7 @@ export default function Users() {
                                     No Telepon
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
-                                    Bukti Registrasi
+                                    Bukti Identitas
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[130px]">
                                     Status
@@ -329,32 +334,32 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {users.map((user, index) => (
+                                {umum.map((umum, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {index + 1}
                                         </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
-                                            {user.NIK}
+                                            {umum.NIK}
                                         </div>
                                         <div className="px-6 py-4 w-[150px] text-center ">
-                                            {user.nama}
+                                            {umum.nama}
                                         </div>
                                         <div className="px-6 py-4  break-all w-[150px] text-center">
-                                            {user.email}
+                                            {umum.email}
                                         </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
-                                            {user.no_telp}
+                                            {umum.no_telp}
                                         </div>
                                         <div className="px-6 py-4  w-[200px]">
                                             <Image
-                                                src={`http://localhost:5000/assets/${user.bukti_regis}`}
+                                                src={`http://localhost:5000/assets/${umum.bukti_identitas}`}
                                                 width={100}
                                                 height={100}
-                                                alt="bukti registrasi"
+                                                alt="bukti identitas"
                                             />
                                         </div>
-                                        {user.status_account ? (
+                                        {umum.status ? (
                                             <div className="px-6 py-4  w-[130px] text-center text-green-800">
                                                 Aktif
                                             </div>
@@ -364,11 +369,11 @@ export default function Users() {
                                             </div>
                                         )}
                                         <div className="px-6 py-4  flex items-center justify-center w-[150px]">
-                                            {user.status_account ? (
+                                            {umum.status ? (
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(user.id)
+                                                        handleDelete(umum.id_account)
                                                     }
                                                 >
                                                     Delete
@@ -378,7 +383,7 @@ export default function Users() {
                                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
                                                     onClick={() =>
                                                         handleUpdateStatus(
-                                                            user.id
+                                                            umum.id_account
                                                         )
                                                     }
                                                 >
@@ -421,32 +426,32 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {dosen.map((user, index) => (
+                                {dosen.map((dosen, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {index + 1}
                                         </div>
                                         <div className="px-6 py-4  w-[120px] text-center">
-                                            {user.NIP}
+                                            {dosen.NIP}
                                         </div>
                                         <div className="px-6 py-4 w-[150px] text-center ">
-                                            {user.nama}
+                                            {dosen.nama}
                                         </div>
                                         <div className="px-6 py-4  break-all w-[150px] text-center">
-                                            {user.email}
+                                            {dosen.email}
                                         </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
-                                            {user.no_telp}
+                                            {dosen.no_telp}
                                         </div>
                                         <div className="px-6 py-4  w-[200px] flex items-center justify-center">
                                             <Image
-                                                src={`http://localhost:5000/assets/${user.bukti_regis}`}
+                                                src={`http://localhost:5000/assets/${dosen.bukti_identitas}`}
                                                 width={100}
                                                 height={100}
                                                 alt="bukti registrasi"
                                             />
                                         </div>
-                                        {user.status_account ? (
+                                        {dosen.status ? (
                                             <div className="px-6 py-4  w-[130px] text-center text-green-800">
                                                 Aktif
                                             </div>
@@ -456,11 +461,11 @@ export default function Users() {
                                             </div>
                                         )}
                                         <div className="px-6 py-4  flex items-center justify-center w-[150px]">
-                                            {user.status_account ? (
+                                            {dosen.status ? (
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(user.id)
+                                                        handleDelete(dosen.id_account)
                                                     }
                                                 >
                                                     Delete
@@ -470,7 +475,7 @@ export default function Users() {
                                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
                                                     onClick={() =>
                                                         handleUpdateStatus(
-                                                            user.id
+                                                            dosen.id_account
                                                         )
                                                     }
                                                 >
@@ -509,7 +514,7 @@ export default function Users() {
                                     No Telepon
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[140px]">
-                                    Bukti Registrasi
+                                    Bukti Identitas
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[100px]">
                                     Status
@@ -521,41 +526,40 @@ export default function Users() {
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
                                 {
                                     // @ts-ignore
-                                    mahasiswa.map((user, index) => (
+                                    mahasiswa.map((mahasiswa, index) => (
                                         <div className="flex" key={index}>
                                             <div className="px-6 py-4 w-[50px]">
                                                 {index + 1}
                                             </div>
                                             <div className="px-6 py-4 w-[120px] text-center text-[15px]">
-                                                {user.nama_mahasiswa}
+                                                {mahasiswa.nama}
                                             </div>
                                             <div className="px-6 py-4 w-[100px] text-[15px]">
-                                                {user.npm_mahasiswa}
+                                                {mahasiswa.npm}
                                             </div>
                                             <div className="px-6 py-4 w-[100px] text-[15px]">
                                                 {
-                                                    user.tahun_ajaran_mahasiswa
-                                                        .tahun_ajaran
+                                                    mahasiswa.id_tahun_ajaran.tahun_ajaran
                                                 }
                                             </div>
                                             <div className="px-6 py-4 w-[150px] text-[15px]">
-                                                {user.Fakultas.nama_fakultas}
+                                                {mahasiswa.id_fakultas.nama_fakultas}
                                             </div>
                                             <div className="px-6 py-4 w-[150px] text-[15px]">
-                                                {user.Prodi.nama_prodi}
+                                                {mahasiswa.id_prodi.nama_prodi}
                                             </div>
                                             <div className="px-6 py-4 text-[15px] w-[150px]">
-                                                {user.no_telp_mahasiswa}
+                                                {mahasiswa.no_telp}
                                             </div>
                                             <div className="px-6 py-4 text-[15px] w-[140px]">
                                                 <Image
-                                                    src={`http://localhost:5000/assets/${user.bukti_regis_mahasiswa}`}
+                                                    src={`http://localhost:5000/assets/${mahasiswa.bukti_identitas}`}
                                                     width={100}
                                                     height={100}
                                                     alt="bukti registrasi"
                                                 />
                                             </div>
-                                            {user.status_mahasiswa ? (
+                                            {mahasiswa.status ? (
                                                 <div className="px-6 py-4 text-[15px] text-green-800 font-semibold w-[100px]">
                                                     Aktif
                                                 </div>
@@ -565,10 +569,10 @@ export default function Users() {
                                                 </div>
                                             )}
                                             <div className="px-6 py-4  flex items-center justify-center w-[100px]">
-                                                {user.status_mahasiswa ? (
+                                                {mahasiswa.status ? (
                                                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
                                                     onClick={() =>
-                                                        handleDeleteMahasiswa(user.id_mahasiswa)
+                                                        handleDeleteMahasiswa(mahasiswa.id_account)
                                                     }>
                                                         Delete
                                                     </button>
@@ -577,7 +581,7 @@ export default function Users() {
                                                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
                                                         onClick={() =>
                                                             handleUpdateStatus(
-                                                                user.id_mahasiswa
+                                                                mahasiswa.id_account
                                                             )
                                                         }
                                                     >
