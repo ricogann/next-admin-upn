@@ -22,7 +22,7 @@ export default function Login() {
         try {
             const data = { username_admin: username, password_admin: password };
             const res = await fetch(
-                "http://localhost:5000/api/auth/login/admin",
+                "https://api.ricogann.com/api/auth/login/admin",
                 {
                     method: "POST",
                     headers: {

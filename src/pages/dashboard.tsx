@@ -1,20 +1,74 @@
 import { useState, useEffect } from "react";
 import SideBar from "@/components/sidebar";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
+interface Mahasiswa {
+    id: number;
+    nama: string;
+    bukti_identitas: string;
+}
+
+interface Dosen {
+    id: number;
+    nama: string;
+    bukti_identitas: string;
+}
+
+interface Umum {
+    id: number;
+    nama: string;
+    bukti_identitas: string;
+}
+
+interface Fasilitas {
+    nama: string;
+}
+
+interface Role {
+    nama: string;
+}
+
+interface Account {
+    Dosen: Dosen[];
+    Mahasiswa: Mahasiswa[];
+    Umum: Umum[];
+    Role: Role;
+
+    id_account: number;
+    status_account: boolean;
+}
+
+interface Pemesanan {
+    Account: Account;
+    Fasilitas: Fasilitas;
+    id_pemesanan: number;
+    jam_checkin: string;
+    jam_checkout: string;
+    total_harga: number;
+    tanggal_pemesanan: string;
+    bukti_identitas: string;
+    status: string;
+    createdAt: string;
+}
 
 export default function Dashboard() {
-    const [activeTab, setActiveTab] = useState("bookings");
+    const router = useRouter();
+    const [activeTab, setActiveTab] = useState("mahasiswa");
     const [totalSum, setTotalSum] = useState(0); // Initialize with 0 as an integer
-
-
+    const [dataPemesanan, setDataPemesanan] = useState<Pemesanan[]>([]);
+    const [dataUsers, setDataUsers] = useState<Account[]>([]);
+    const [buktiIdentitas, setBuktiIdentitas] = useState<string[]>([]);
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
 
-
     async function getUsers() {
         try {
-            const res = await fetch("http://localhost:5000/api/users/account");
+            const res = await fetch(
+                "https://api.ricogann.com/api/users/account"
+            );
             const data = await res.json();
             return data.data;
         } catch (error) {
@@ -22,12 +76,103 @@ export default function Dashboard() {
         }
     }
 
+    async function getPemesanan() {
+        try {
+            const res = await fetch("https://api.ricogann.com/api/booking");
+            const data = await res.json();
+
+            return data.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function updateStatus(id: number, status: string) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/booking/verifikasi/${id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        status: status,
+                    }),
+                }
+            );
+
+            const data = await res.json();
+            router.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function updateStatusAcoount(
+        id: number,
+        id_account: number,
+        status: boolean
+    ) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/users/account/verifikasi/${id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: id_account,
+                        status_account: status,
+                    }),
+                }
+            );
+
+            const data = await res.json();
+            router.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         async function fetchData() {
             try {
                 const dataUsers = await getUsers();
-                setTotalSum(dataUsers.length);
+                const dataBooking = await getPemesanan();
 
+                const filter = dataBooking.filter(
+                    (item: Pemesanan) => item.status === "Menunggu Konfirmasi"
+                );
+
+                const dataUsersFilter = dataUsers.filter(
+                    (item: Account) => item.status_account === false
+                );
+
+                const accountBukti: string[] = [];
+                const buktiPembayaranFilter = dataUsers.filter(
+                    (item: Account) => {
+                        if (item.Mahasiswa.length > 0) {
+                            item.Mahasiswa.map((item: Mahasiswa) => {
+                                accountBukti.push(item.bukti_identitas);
+                            });
+                        } else if (item.Dosen.length > 0) {
+                            item.Dosen.map((item: Dosen) => {
+                                accountBukti.push(item.bukti_identitas);
+                            });
+                        } else if (item.Umum.length > 0) {
+                            item.Umum.map((item: Umum) => {
+                                accountBukti.push(item.bukti_identitas);
+                            });
+                        }
+                    }
+                );
+
+                setBuktiIdentitas(accountBukti);
+                setDataUsers(dataUsersFilter);
+                setDataPemesanan(filter);
+                setTotalSum(dataUsers.length);
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
@@ -35,140 +180,187 @@ export default function Dashboard() {
 
         fetchData();
     }, []);
-    
+
+    console.log(dataUsers);
 
     const isTabActive = (tab: string) => activeTab === tab;
+
+    const handleStatus = (id: number, status: string) => {
+        updateStatus(id, status);
+    };
+
+    const handleStatusAccount = (
+        id: number,
+        id_account: number,
+        status: boolean
+    ) => {
+        updateStatusAcoount(id, id_account, status);
+    };
 
     const renderContent = () => {
         switch (activeTab) {
             case "bookings":
                 return (
-                    <div className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5">
-                        {/* Booking content */}
-                        <p className="text-[14] font-bold mb-1">Asrama</p>
-                        <p className="text-[12] font-regular text-[#7F8FA4]">
-                            Nama Penyewa
-                        </p>
-                        <p className="text-[14] font-regular mb-5 ">
-                            Alfian Dorif Murtadlo
-                        </p>
-                        <div className="flex flex-row ">
-                            <div className="flex-col">
-                                <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
-                                    Bukti Pembayaran
+                    <div className="grid grid-cols-3">
+                        {dataPemesanan.map((item: Pemesanan, index: number) => (
+                            <div
+                                className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
+                                key={index}
+                            >
+                                {/* Booking content */}
+                                <p className="text-[14] font-bold mb-1">{}</p>
+                                <p className="text-[12] font-regular text-[#7F8FA4]">
+                                    Nama Penyewa
                                 </p>
+                                <p className="text-[14] font-regular mb-5 ">
+                                    {item.Account.Mahasiswa[0].nama.length > 0
+                                        ? item.Account.Mahasiswa[0].nama
+                                        : item.Account.Dosen[0].nama.length > 0
+                                        ? item.Account.Dosen[0].nama
+                                        : item.Account.Umum[0].nama}
+                                </p>
+                                <p className="text-[12] font-regular text-[#7F8FA4]">
+                                    Fasilitas
+                                </p>
+                                <p className="text-[14] font-regular mb-5 ">
+                                    {item.Fasilitas.nama}
+                                </p>
+                                <div className="flex flex-row ">
+                                    <div className="flex-col">
+                                        <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
+                                            Bukti Pembayaran
+                                        </p>
+                                        <Image
+                                            src={`https://api.ricogann.com/assets/${item.bukti_identitas}`}
+                                            alt="bukti-pembayaran"
+                                            width={100}
+                                            height={100}
+                                            className="m-2 rounded-lg"
+                                        />
+                                    </div>
+                                    <div className="flex-col">
+                                        <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
+                                            Biaya
+                                        </p>
+                                        <p className="text-[14] font-regular mr-10 ">
+                                            Rp
+                                            {item.total_harga
+                                                .toString()
+                                                .replace(
+                                                    /\B(?=(\d{3})+(?!\d))/g,
+                                                    "."
+                                                )}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row border-t mt-2">
+                                    <button
+                                        onClick={() =>
+                                            handleStatus(
+                                                item.id_pemesanan,
+                                                "Dikonfirmasi"
+                                            )
+                                        }
+                                    >
+                                        <p className="text-[14] font-Bold mr-14 text-[#69519E]">
+                                            Accept Booking
+                                        </p>
+                                    </button>
+                                    {/* <a href="https://">
+                                            <p className="text-[14] font-Bold mr-10 text-[#69519E]">
+                                                Decline
+                                            </p>
+                                        </a> */}
+                                </div>
                             </div>
-                            <div className="flex-col">
-                                <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
-                                    Biaya
-                                </p>
-                                <p className="text-[14] font-regular mr-10 ">
-                                    Rp3.000.000,00
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex flex-row border-t mt-2">
-                            <a href="http://">
-                                <p className="text-[14] font-Bold mr-14 text-[#69519E]">
-                                    Accept Booking
-                                </p>
-                            </a>
-                            <a href="http://">
-                                <p className="text-[14] font-Bold mr-10 text-[#69519E]">
-                                    Decline
-                                </p>
-                            </a>
-                        </div>
+                        ))}
                     </div>
                 );
             case "mahasiswa":
                 return (
-                    <div className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5">
-                        {/* Mahasiswa content */}
-                        <p className="text-[14] font-bold mb-1">
-                            Alfian Dorif Murtadlo
-                        </p>
-                        <p className="text-[12] font-regular text-[#7F8FA4]">
-                            NPM
-                        </p>
-                        <p className="text-[14] font-regular mb-5 ">
-                            20081010251
-                        </p>
-                        <div className="flex flex-row ">
-                            <div className="flex-col">
-                                <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
-                                    Bukti Registrasi
-                                </p>
+                    <div className="grid grid-cols-3">
+                        {dataUsers.map((item: Account, index: number) => (
+                            <div
+                                className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
+                                key={index}
+                            >
+                                {/* Mahasiswa content */}
+                                <div className="text-[14] font-bold mb-1">
+                                    {item.Mahasiswa.length > 0
+                                        ? item.Mahasiswa.map(
+                                              (
+                                                  item: Mahasiswa,
+                                                  index: number
+                                              ) => (
+                                                  <p key={index}>{item.nama}</p>
+                                              )
+                                          )
+                                        : item.Dosen.length > 0
+                                        ? item.Dosen.map(
+                                              (item: Dosen, index: number) => (
+                                                  <p key={index}>{item.nama}</p>
+                                              )
+                                          )
+                                        : item.Umum.map(
+                                              (item: Umum, index: number) => (
+                                                  <p key={index}>{item.nama}</p>
+                                              )
+                                          )}
+                                </div>
+                                <div className="flex flex-row ">
+                                    <div className="flex-col">
+                                        <div className="text-[14] font-regular mr-10 text-[#7F8FA4]">
+                                            Bukti Registrasi
+                                        </div>
+                                        <Image
+                                            src={`https://api.ricogann.com/assets/${buktiIdentitas[index]}`}
+                                            alt="bukti-pembayaran"
+                                            width={100}
+                                            height={100}
+                                            className="m-2 rounded-lg"
+                                        />
+                                    </div>
+                                    <div className="flex-col">
+                                        <div className="text-[14] font-regular mr-10 text-[#7F8FA4]">
+                                            Tahun Ajaran
+                                        </div>
+                                        <p className="text-[14] font-regular mr-10 ">
+                                            2022/2023
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-row border-t mt-2">
+                                    <button
+                                        onClick={() =>
+                                            handleStatusAccount(
+                                                item.id_account,
+                                                item.Mahasiswa.length > 0
+                                                    ? item.Mahasiswa[0].id
+                                                    : item.Dosen.length > 0
+                                                    ? item.Dosen[0].id
+                                                    : item.Umum[0].id,
+                                                true
+                                            )
+                                        }
+                                    >
+                                        <p className="text-[14] font-Bold mr-14 text-[#69519E]">
+                                            Approve
+                                        </p>
+                                    </button>
+                                    <a href="https://">
+                                        <p className="text-[14] font-Bold ml-8 text-[#69519E]">
+                                            Decline
+                                        </p>
+                                    </a>
+                                </div>
                             </div>
-                            <div className="flex-col">
-                                <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
-                                    Tahun Ajaran
-                                </p>
-                                <p className="text-[14] font-regular mr-10 ">
-                                    2022/2023
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex flex-row border-t mt-2">
-                            <a href="http://">
-                                <p className="text-[14] font-Bold mr-14 text-[#69519E]">
-                                    Approve
-                                </p>
-                            </a>
-                            <a href="http://">
-                                <p className="text-[14] font-Bold ml-8 text-[#69519E]">
-                                    Decline
-                                </p>
-                            </a>
-                        </div>
-                    </div>
-                );
-            case "gedung":
-                return (
-                    <div className="bg-white rounded-lg shadow-lg w-[300px] p-5 mr-5 mb-5">
-                        {/* Gedung content */}
-                        <p className="text-[14] font-bold mb-1">Asrama</p>
-                        <p className="text-[12] font-regular text-[#7F8FA4]">
-                            Alamat
-                        </p>
-                        <p className="text-[14] font-regular mb-5 ">
-                            Jl. Rungkut Madya No.1, Gn. Anyar, Kec. Gn. Anyar,
-                            Surabaya, Jawa Timur 60294
-                        </p>
-                        <div className="flex flex-row ">
-                            <div className="flex-col">
-                                <p className="text-[14] font-regular mr-14 text-[#7F8FA4]">
-                                    Foto
-                                </p>
-                            </div>
-                            <div className="flex-col">
-                                <p className="text-[14] font-regular mr-10 text-[#7F8FA4]">
-                                    Biaya
-                                </p>
-                                <p className="text-[14] font-regular mr-10 ">
-                                    Rp3.000.000,00
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex flex-row border-t mt-2">
-                            <a href="http://">
-                                <p className="text-[14] font-Bold mr-14 text-[#69519E]">
-                                    Edit
-                                </p>
-                            </a>
-                            <a href="http://">
-                                <p className="text-[14] font-Bold ml-2 text-[#69519E]">
-                                    Delete
-                                </p>
-                            </a>
-                        </div>
+                        ))}
                     </div>
                 );
             default:
                 return null;
         }
     };
-
     return (
         <div className="flex">
             <div className="">
@@ -208,7 +400,9 @@ export default function Dashboard() {
                                 <h1 className="font-regular mb-3">
                                     Total Users
                                 </h1>
-                                <h1 className="text-[28px] font-bold ">{totalSum}</h1>
+                                <h1 className="text-[28px] font-bold ">
+                                    {totalSum}
+                                </h1>
                             </div>
                             <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
                                 <h1 className="font-regular mb-3">
@@ -230,7 +424,7 @@ export default function Dashboard() {
                                         : "font-regular mb-3 mr-14"
                                 }`}
                             >
-                                Bookings
+                                Bookings Fasilitas
                             </a>
                             <a
                                 href="#"
@@ -241,18 +435,7 @@ export default function Dashboard() {
                                         : "font-regular mb-3 mr-14"
                                 }`}
                             >
-                                Mahasiswa
-                            </a>
-                            <a
-                                href="#"
-                                onClick={() => toggleTab("gedung")}
-                                className={`text-[18] ${
-                                    isTabActive("gedung")
-                                        ? "font-bold mb-3 mr-14 border-b-2 border-[#FFA101]"
-                                        : "font-regular mb-3 mr-14"
-                                }`}
-                            >
-                                Gedung
+                                Request Account
                             </a>
                         </div>
                         <div className="flex flex-wrap items-start mb-5">

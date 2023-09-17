@@ -10,8 +10,7 @@ interface harga {
     harga: number;
 }
 
-
-export default function harga() {
+export default function Harga() {
     const router = useRouter();
 
     const [dataharga, setDataharga] = useState<harga[]>([]);
@@ -22,7 +21,7 @@ export default function harga() {
 
     async function getDataharga() {
         try {
-            const res = await fetch("http://localhost:5000/api/harga");
+            const res = await fetch("https://api.ricogann.com/api/harga");
             const data = await res.json();
 
             return data;
@@ -48,7 +47,7 @@ export default function harga() {
     const handleDelete = async (id: number) => {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/harga/delete/${Number(id)}`,
+                `https://api.ricogann.com/api/harga/delete/${Number(id)}`,
                 {
                     method: "DELETE",
                 }
@@ -137,7 +136,7 @@ export default function harga() {
                                                 {data.id}
                                             </div>
                                             <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
-                                            {data.id_fasilitas}
+                                                {data.id_fasilitas}
                                             </div>
                                             <div className="px-6 py-4 break-all w-[200px]">
                                                 {data.nama}
@@ -152,9 +151,7 @@ export default function harga() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
                                                     onClick={() =>
-                                                        handleDelete(
-                                                            data.id
-                                                        )
+                                                        handleDelete(data.id)
                                                     }
                                                 >
                                                     Delete

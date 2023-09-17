@@ -12,7 +12,6 @@ interface Umum {
     bukti_identitas: string;
 }
 
-
 interface Mahasiswa {
     id_account: number;
     npm: string;
@@ -23,7 +22,7 @@ interface Mahasiswa {
     status: boolean;
     id_fakultas: Fakultas;
     id_prodi: Prodi;
-    id_tahun_ajaran : TahunAjaran;
+    id_tahun_ajaran: TahunAjaran;
 }
 
 interface Dosen {
@@ -63,7 +62,7 @@ export default function Users() {
 
     async function getUmum() {
         try {
-            const res = await fetch("http://localhost:5000/api/users/umum");
+            const res = await fetch("https://api.ricogann.com/api/users/umum");
             const data = await res.json();
 
             return data;
@@ -75,7 +74,7 @@ export default function Users() {
     async function getMahasiswa() {
         try {
             const res = await fetch(
-                "http://localhost:5000/api/users/mahasiswa"
+                "https://api.ricogann.com/api/users/mahasiswa"
             );
             const data = await res.json();
 
@@ -87,7 +86,7 @@ export default function Users() {
 
     async function getDosen() {
         try {
-            const res = await fetch("http://localhost:5000/api/users/dosen");
+            const res = await fetch("https://api.ricogann.com/api/users/dosen");
             const data = await res.json();
 
             return data;
@@ -99,7 +98,7 @@ export default function Users() {
     async function deleteUsers(id: number) {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/users/account/delete/${id}`,
+                `https://api.ricogann.com/api/users/account/delete/${id}`,
                 {
                     method: "DELETE",
                 }
@@ -115,7 +114,7 @@ export default function Users() {
     async function deleteMahasiswa(id: number) {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/users/mahasiswa/delete/${id}`,
+                `https://api.ricogann.com/api/users/mahasiswa/delete/${id}`,
                 {
                     method: "DELETE",
                 }
@@ -131,7 +130,7 @@ export default function Users() {
     async function getAccountById(id: number) {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/users/account/${id}`
+                `https://api.ricogann.com/api/users/account/${id}`
             );
             const data = await res.json();
 
@@ -144,7 +143,7 @@ export default function Users() {
     async function updateStatus(id: number, status: boolean) {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/users/account/updateStatus/${id}`,
+                `https://api.ricogann.com/api/users/account/updateStatus/${id}`,
                 {
                     method: "PUT",
                     body: JSON.stringify({ status: status }),
@@ -164,7 +163,7 @@ export default function Users() {
     async function updateStatusMahasiswa(id: number, status: boolean) {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/users/mahasiswa/updateStatus/${id}`,
+                `https://api.ricogann.com/api/users/mahasiswa/updateStatus/${id}`,
                 {
                     method: "PUT",
                     body: JSON.stringify({ status_mahasiswa: status }),
@@ -353,7 +352,7 @@ export default function Users() {
                                         </div>
                                         <div className="px-6 py-4  w-[200px]">
                                             <Image
-                                                src={`http://localhost:5000/assets/${umum.bukti_identitas}`}
+                                                src={`https://api.ricogann.com/assets/${umum.bukti_identitas}`}
                                                 width={100}
                                                 height={100}
                                                 alt="bukti identitas"
@@ -373,7 +372,9 @@ export default function Users() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(umum.id_account)
+                                                        handleDelete(
+                                                            umum.id_account
+                                                        )
                                                     }
                                                 >
                                                     Delete
@@ -445,7 +446,7 @@ export default function Users() {
                                         </div>
                                         <div className="px-6 py-4  w-[200px] flex items-center justify-center">
                                             <Image
-                                                src={`http://localhost:5000/assets/${dosen.bukti_identitas}`}
+                                                src={`https://api.ricogann.com/assets/${dosen.bukti_identitas}`}
                                                 width={100}
                                                 height={100}
                                                 alt="bukti registrasi"
@@ -465,7 +466,9 @@ export default function Users() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(dosen.id_account)
+                                                        handleDelete(
+                                                            dosen.id_account
+                                                        )
                                                     }
                                                 >
                                                     Delete
@@ -539,11 +542,15 @@ export default function Users() {
                                             </div>
                                             <div className="px-6 py-4 w-[100px] text-[15px]">
                                                 {
-                                                    mahasiswa.id_tahun_ajaran.tahun_ajaran
+                                                    mahasiswa.id_tahun_ajaran
+                                                        .tahun_ajaran
                                                 }
                                             </div>
                                             <div className="px-6 py-4 w-[150px] text-[15px]">
-                                                {mahasiswa.id_fakultas.nama_fakultas}
+                                                {
+                                                    mahasiswa.id_fakultas
+                                                        .nama_fakultas
+                                                }
                                             </div>
                                             <div className="px-6 py-4 w-[150px] text-[15px]">
                                                 {mahasiswa.id_prodi.nama_prodi}
@@ -553,7 +560,7 @@ export default function Users() {
                                             </div>
                                             <div className="px-6 py-4 text-[15px] w-[140px]">
                                                 <Image
-                                                    src={`http://localhost:5000/assets/${mahasiswa.bukti_identitas}`}
+                                                    src={`https://api.ricogann.com/assets/${mahasiswa.bukti_identitas}`}
                                                     width={100}
                                                     height={100}
                                                     alt="bukti registrasi"
@@ -570,10 +577,14 @@ export default function Users() {
                                             )}
                                             <div className="px-6 py-4  flex items-center justify-center w-[100px]">
                                                 {mahasiswa.status ? (
-                                                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
-                                                    onClick={() =>
-                                                        handleDeleteMahasiswa(mahasiswa.id_account)
-                                                    }>
+                                                    <button
+                                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                        onClick={() =>
+                                                            handleDeleteMahasiswa(
+                                                                mahasiswa.id_account
+                                                            )
+                                                        }
+                                                    >
                                                         Delete
                                                     </button>
                                                 ) : (
