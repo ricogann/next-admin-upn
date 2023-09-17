@@ -59,6 +59,7 @@ export default function Dashboard() {
     const [dataPemesanan, setDataPemesanan] = useState<Pemesanan[]>([]);
     const [dataUsers, setDataUsers] = useState<Account[]>([]);
     const [buktiIdentitas, setBuktiIdentitas] = useState<string[]>([]);
+    const [allData, setAllData] = useState<Pemesanan[]>([]);
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
@@ -169,6 +170,8 @@ export default function Dashboard() {
                     }
                 );
 
+                console.log(dataBooking);
+                setAllData(dataBooking);
                 setBuktiIdentitas(accountBukti);
                 setDataUsers(dataUsersFilter);
                 setDataPemesanan(filter);
@@ -367,7 +370,7 @@ export default function Dashboard() {
                 <SideBar />
             </div>
             <div className="w-full">
-                <div className="flex-1 h-screen bg-[#F7F8FA]">
+                <div className="flex-1 bg-[#F7F8FA]">
                     <div className="p-10">
                         <div className="flex flex-col items-start justify-center">
                             <h1 className="text-[45px] font-bold">Dashboard</h1>
@@ -385,7 +388,7 @@ export default function Dashboard() {
                                     Total Bookings
                                 </h1>
                                 <h1 className="text-[28px] font-bold ">
-                                    28,345
+                                    {allData.length}
                                 </h1>
                             </div>
                             <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
@@ -393,7 +396,7 @@ export default function Dashboard() {
                                     Pending Booking
                                 </h1>
                                 <h1 className="text-[28px] font-bold text-red-500">
-                                    120
+                                    {dataPemesanan.length}
                                 </h1>
                             </div>
                             <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
@@ -409,7 +412,7 @@ export default function Dashboard() {
                                     Pending Mahasiswa
                                 </h1>
                                 <h1 className="text-[28px] font-bold text-red-500">
-                                    40
+                                    {dataUsers.length}
                                 </h1>
                             </div>
                         </div>

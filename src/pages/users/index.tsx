@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import SideBar from "@/components/sidebar";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 interface Umum {
+    id: number;
     id_account: number;
     NIK: string;
     nama: string;
@@ -13,6 +15,7 @@ interface Umum {
 }
 
 interface Mahasiswa {
+    id: number;
     id_account: number;
     npm: string;
     nama: string;
@@ -26,6 +29,7 @@ interface Mahasiswa {
 }
 
 interface Dosen {
+    id: number;
     id_account: number;
     NIP: string;
     nama: string;
@@ -51,6 +55,8 @@ interface TahunAjaran {
 }
 
 export default function Users() {
+    const router = useRouter();
+
     const [activeTab, setActiveTab] = useState("umum");
     const [umum, setUmum] = useState<Umum[]>([]);
     const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
@@ -98,7 +104,23 @@ export default function Users() {
     async function deleteUsers(id: number) {
         try {
             const res = await fetch(
-                `https://api.ricogann.com/api/users/account/delete/${id}`,
+                `https://api.ricogann.com/api/users/umum/delete/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function deleteDosen(id: number) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/users/dosen/delete/${id}`,
                 {
                     method: "DELETE",
                 }
@@ -140,43 +162,38 @@ export default function Users() {
         }
     }
 
-    async function updateStatus(id: number, status: boolean) {
+    const handleStatusAccount = (
+        id: number,
+        id_account: number,
+        status: boolean
+    ) => {
+        updateStatusAcoount(id, id_account, status);
+    };
+
+    async function updateStatusAcoount(
+        id: number,
+        id_account: number,
+        status: boolean
+    ) {
         try {
             const res = await fetch(
-                `https://api.ricogann.com/api/users/account/updateStatus/${id}`,
+                `https://api.ricogann.com/api/users/account/verifikasi/${id}`,
                 {
                     method: "PUT",
-                    body: JSON.stringify({ status: status }),
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    body: JSON.stringify({
+                        id: id_account,
+                        status_account: status,
+                    }),
                 }
             );
+
             const data = await res.json();
-
-            return data;
+            router.reload();
         } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function updateStatusMahasiswa(id: number, status: boolean) {
-        try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/users/mahasiswa/updateStatus/${id}`,
-                {
-                    method: "PUT",
-                    body: JSON.stringify({ status_mahasiswa: status }),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
+            console.log(error);
         }
     }
 
@@ -192,9 +209,9 @@ export default function Users() {
         }
     };
 
-    const handleDeleteMahasiswa = async (id: number) => {
+    const handleDeleteDosen = async (id: number) => {
         try {
-            const data = await deleteMahasiswa(id);
+            const data = await deleteDosen(id);
 
             if (data.status === true) {
                 window.location.reload();
@@ -204,20 +221,12 @@ export default function Users() {
         }
     };
 
-    const handleUpdateStatus = async (id: number) => {
+    const handleDeleteMahasiswa = async (id: number) => {
         try {
-            if (activeTab === "mahasiswa") {
-                const data = await updateStatusMahasiswa(id, true);
+            const data = await deleteMahasiswa(id);
 
-                if (data.status === true) {
-                    window.location.reload();
-                }
-            } else {
-                const data = await updateStatus(id, true);
-
-                if (data.status === true) {
-                    window.location.reload();
-                }
+            if (data.status === true) {
+                window.location.reload();
             }
         } catch (error) {
             console.error(error);
@@ -242,10 +251,8 @@ export default function Users() {
         fetchData();
     }, []);
 
-    console.log(mahasiswa);
-
     return (
-        <div className="h-screen flex bg-[#F7F8FA]">
+        <div className=" flex bg-[#F7F8FA]">
             <div className="">
                 <SideBar />
             </div>
@@ -372,9 +379,7 @@ export default function Users() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(
-                                                            umum.id_account
-                                                        )
+                                                        handleDelete(umum.id)
                                                     }
                                                 >
                                                     Delete
@@ -383,8 +388,10 @@ export default function Users() {
                                                 <button
                                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
                                                     onClick={() =>
-                                                        handleUpdateStatus(
-                                                            umum.id_account
+                                                        handleStatusAccount(
+                                                            umum.id_account,
+                                                            umum.id,
+                                                            true
                                                         )
                                                     }
                                                 >
@@ -466,8 +473,8 @@ export default function Users() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(
-                                                            dosen.id_account
+                                                        handleDeleteDosen(
+                                                            dosen.id
                                                         )
                                                     }
                                                 >
@@ -477,8 +484,10 @@ export default function Users() {
                                                 <button
                                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl"
                                                     onClick={() =>
-                                                        handleUpdateStatus(
-                                                            dosen.id_account
+                                                        handleStatusAccount(
+                                                            dosen.id_account,
+                                                            dosen.id,
+                                                            true
                                                         )
                                                     }
                                                 >
@@ -581,7 +590,7 @@ export default function Users() {
                                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
                                                         onClick={() =>
                                                             handleDeleteMahasiswa(
-                                                                mahasiswa.id_account
+                                                                mahasiswa.id
                                                             )
                                                         }
                                                     >
@@ -591,8 +600,10 @@ export default function Users() {
                                                     <button
                                                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
                                                         onClick={() =>
-                                                            handleUpdateStatus(
-                                                                mahasiswa.id_account
+                                                            handleStatusAccount(
+                                                                mahasiswa.id_account,
+                                                                mahasiswa.id,
+                                                                true
                                                             )
                                                         }
                                                     >

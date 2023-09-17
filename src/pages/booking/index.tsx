@@ -156,7 +156,7 @@ export default function Booking() {
     };
 
     return (
-        <div className="flex overflow-x-hidden">
+        <div className="flex">
             <div className="">
                 <SideBar />
             </div>
