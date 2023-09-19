@@ -17,6 +17,7 @@ export default function Create() {
     const [jamTutup, setJamTutup] = useState("");
     const [durasi, setDurasi] = useState(0);
     const [bukaHari, setBukaHari] = useState("");
+    const [noVa, setNoVa] = useState("");
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama_fasilitas") {
@@ -33,6 +34,8 @@ export default function Create() {
             setJamTutup(event.target.value);
         } else if (event.target.name === "durasi") {
             setDurasi(Number(event.target.value));
+        } else if (event.target.name === "no_va") {
+            setNoVa(event.target.value);
         }
     };
 
@@ -70,6 +73,7 @@ export default function Create() {
             });
             data.append("buka_hari", bukaHari);
             data.append("durasi", String(durasi));
+            data.append("no_va", noVa);
 
             const res = await addFasilitas(data);
         }
@@ -87,6 +91,7 @@ export default function Create() {
             );
 
             const resData = await res.json();
+            console.log(resData);
 
             if (resData.status === true) {
                 router.push("/fasilitas");
@@ -104,7 +109,8 @@ export default function Create() {
         jamBuka,
         jamTutup,
         durasi,
-        bukaHari
+        bukaHari,
+        noVa
     );
     return (
         <div className="flex">
@@ -201,6 +207,19 @@ export default function Create() {
                                             name="durasi"
                                             type="number"
                                             placeholder="per-jam maka input 1, per-hari maka input 24, dst.."
+                                            className="w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="p-4 flex justify-between gap-5">
+                                    <div className="w-full">
+                                        <h1>Nomor Virtual Account</h1>
+                                        <Input
+                                            name="no_va"
+                                            type="string"
+                                            placeholder="Nomor Virtual Account..."
                                             className="w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
                                             onChange={handleInputChange}
                                         />
