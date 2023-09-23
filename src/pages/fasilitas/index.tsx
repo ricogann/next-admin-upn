@@ -34,8 +34,23 @@ export default function Fasilitas() {
     const router = useRouter();
 
     const [activeTab, setActiveTab] = useState("fasilitas");
+    const [currentPage, setCurrentPage] = useState(1);
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
     const [dataHarga, setDataharga] = useState<harga[]>([]);
+
+    const itemsPerPage = 5;
+
+    const dataHargaToShow = dataHarga.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const dataFasilitasToShow = dataFasilitas.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const totalPages = Math.ceil(dataHarga.length / itemsPerPage);
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
@@ -131,7 +146,7 @@ export default function Fasilitas() {
                 <SideBar />
             </div>
 
-            <div className="h-screen w-full p-10 flex bg-[#F7F8FA]">
+            <div className="w-full p-10 flex bg-[#F7F8FA]">
                 <div className="p-5">
                     {activeTab === "fasilitas" && (
                         <div className="flex flex-col items-start justify-center">
@@ -240,7 +255,7 @@ export default function Fasilitas() {
 
                                 <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {dataFasilitas.map((data, index) => (
+                                        {dataFasilitasToShow.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">
                                                     {index + 1}
@@ -292,6 +307,21 @@ export default function Fasilitas() {
                                             </div>
                                         ))}
                                     </div>
+                                    <div className="flex items-center justify-center">
+                                    <div className="join">
+                    {Array.from({ length: totalPages }).map((_, index) => (
+                        <button
+                            key={index}
+                            className={`join-item btn ${
+                                currentPage === index + 1 ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(index + 1)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    </div>
+                </div>
                                 </div>
                             </div>
                         </div>
@@ -321,7 +351,7 @@ export default function Fasilitas() {
 
                                         <div className="bg-white divide-y divide-gray-200">
                                             <div className="">
-                                                {dataHarga.map(
+                                                {dataHargaToShow.map(
                                                     (data, index) => (
                                                         <div
                                                             className="flex"
@@ -360,6 +390,21 @@ export default function Fasilitas() {
                                                     )
                                                 )}
                                             </div>
+                                            <div className="flex items-center justify-center">
+                <div className="join">
+                    {Array.from({ length: totalPages }).map((_, index) => (
+                        <button
+                            key={index}
+                            className={`join-item btn ${
+                                currentPage === index + 1 ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(index + 1)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
+            </div>
                                         </div>
                                     </div>
                                 </div>
