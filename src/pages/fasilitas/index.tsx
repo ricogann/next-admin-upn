@@ -51,6 +51,30 @@ export default function Fasilitas() {
     );
 
     const totalPages = Math.ceil(dataHarga.length / itemsPerPage);
+    
+    // Calculate the range of pagination buttons to display
+    const pagesToDisplay = [];
+    if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i++) {
+            pagesToDisplay.push(i);
+        }
+    } else {
+        // Calculate the start and end pages based on the active page
+        let startPage = currentPage - 2;
+        let endPage = currentPage + 2;
+
+        if (startPage < 1) {
+            startPage = 1;
+            endPage = 5;
+        } else if (endPage > totalPages) {
+            endPage = totalPages;
+            startPage = totalPages - 4;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pagesToDisplay.push(i);
+        }
+    }
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
@@ -308,20 +332,20 @@ export default function Fasilitas() {
                                         ))}
                                     </div>
                                     <div className="flex items-center justify-center">
-                                    <div className="join">
-                    {Array.from({ length: totalPages }).map((_, index) => (
+                <div className="join">
+                {pagesToDisplay.map((page) => (
                         <button
-                            key={index}
+                            key={page}
                             className={`join-item btn ${
-                                currentPage === index + 1 ? 'btn-active' : ''
+                                currentPage === page ? 'btn-active' : ''
                             }`}
-                            onClick={() => setCurrentPage(index + 1)}
+                            onClick={() => setCurrentPage(page)}
                         >
-                            {index + 1}
+                            {page}
                         </button>
                     ))}
-                    </div>
                 </div>
+            </div>
                                 </div>
                             </div>
                         </div>
@@ -392,15 +416,15 @@ export default function Fasilitas() {
                                             </div>
                                             <div className="flex items-center justify-center">
                 <div className="join">
-                    {Array.from({ length: totalPages }).map((_, index) => (
+                {pagesToDisplay.map((page) => (
                         <button
-                            key={index}
+                            key={page}
                             className={`join-item btn ${
-                                currentPage === index + 1 ? 'btn-active' : ''
+                                currentPage === page ? 'btn-active' : ''
                             }`}
-                            onClick={() => setCurrentPage(index + 1)}
+                            onClick={() => setCurrentPage(page)}
                         >
-                            {index + 1}
+                            {page}
                         </button>
                     ))}
                 </div>

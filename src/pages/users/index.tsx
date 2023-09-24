@@ -61,10 +61,58 @@ export default function Users() {
     const [umum, setUmum] = useState<Umum[]>([]);
     const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
     const [dosen, setDosen] = useState<Dosen[]>([]);
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const itemsPerPage = 5;
+
+    // Umum
+    const dataUmumToShow = umum.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Dosen
+    const dataDosenToShow = dosen.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Dosen
+    const dataMahasiswaToShow = mahasiswa.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+    const totalPagesUmum = Math.ceil(umum.length / itemsPerPage);
+    const totalPagesDosen = Math.ceil(dosen.length / itemsPerPage);
+    const totalPagesMahasiswa = Math.ceil(mahasiswa.length / itemsPerPage);
+
+    const pagesUmumToDisplay = calculatePagesToDisplay(currentPage, totalPagesUmum);
+    const pagesDosenToDisplay = calculatePagesToDisplay(currentPage, totalPagesDosen);
+    const pagesMahasiswaToDisplay = calculatePagesToDisplay(currentPage, totalPagesMahasiswa);
+
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+    
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
+        }
+    }
 
     async function getUmum() {
         try {
@@ -340,7 +388,7 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {umum.map((umum, index) => (
+                                {dataUmumToShow.map((umum, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {index + 1}
@@ -402,6 +450,22 @@ export default function Users() {
                                     </div>
                                 ))}
                             </div>
+                            <div className="flex items-center justify-center">
+                <div className="join">
+                    {pagesUmumToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn  ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+                {/* Render pagesDosenToDisplay and pagesMahasiswaToDisplay similarly */}
+            </div>
                         </div>
                     )}
 
@@ -434,7 +498,7 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {dosen.map((dosen, index) => (
+                                {dataDosenToShow.map((dosen, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {index + 1}
@@ -498,6 +562,21 @@ export default function Users() {
                                     </div>
                                 ))}
                             </div>
+                            <div className="flex items-center justify-center">
+                <div className="join">
+                {pagesDosenToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn  ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
                         </div>
                     )}
 
@@ -538,7 +617,7 @@ export default function Users() {
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
                                 {
                                     // @ts-ignore
-                                    mahasiswa.map((mahasiswa, index) => (
+                                    dataMahasiswaToShow.map((mahasiswa, index) => (
                                         <div className="flex" key={index}>
                                             <div className="px-6 py-4 w-[50px]">
                                                 {index + 1}
@@ -615,6 +694,21 @@ export default function Users() {
                                     ))
                                 }
                             </div>
+                            <div className="flex items-center justify-center">
+                <div className="join">
+                {pagesMahasiswaToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn  ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
                         </div>
                     )}
                 </div>

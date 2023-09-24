@@ -60,10 +60,49 @@ export default function Dashboard() {
     const [dataUsers, setDataUsers] = useState<Account[]>([]);
     const [buktiIdentitas, setBuktiIdentitas] = useState<string[]>([]);
     const [allData, setAllData] = useState<Pemesanan[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+    const itemsPerPage = 5;
+
+    const dataPemesananToShow = dataPemesanan.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const dataUsersToShow = dataUsers.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const totalPages = Math.ceil(dataPemesanan.length / itemsPerPage);
+
+    // Calculate the range of pagination buttons to display
+    const pagesToDisplay = [];
+    if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i++) {
+            pagesToDisplay.push(i);
+        }
+    } else {
+        // Calculate the start and end pages based on the active page
+        let startPage = currentPage - 2;
+        let endPage = currentPage + 2;
+
+        if (startPage < 1) {
+            startPage = 1;
+            endPage = 5;
+        } else if (endPage > totalPages) {
+            endPage = totalPages;
+            startPage = totalPages - 4;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pagesToDisplay.push(i);
+        }
+    }
 
     async function getUsers() {
         try {
@@ -205,7 +244,7 @@ export default function Dashboard() {
             case "bookings":
                 return (
                     <div className="grid grid-cols-3">
-                        {dataPemesanan.map((item: Pemesanan, index: number) => (
+                        {dataPemesananToShow.map((item: Pemesanan, index: number) => (
                             <div
                                 className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
                                 key={index}
@@ -282,7 +321,7 @@ export default function Dashboard() {
             case "mahasiswa":
                 return (
                     <div className="grid grid-cols-3">
-                        {dataUsers.map((item: Account, index: number) => (
+                        {dataUsersToShow.map((item: Account, index: number) => (
                             <div
                                 className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
                                 key={index}
