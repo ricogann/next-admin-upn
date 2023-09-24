@@ -404,11 +404,11 @@ export default function Dashboard() {
         }
     };
     return (
-        <div className="flex">
+        <div className="flex bg-[#FFFFFF]">
             <div className="">
                 <SideBar />
             </div>
-            <div className="w-full">
+            <div className="flex w-full">
                 <div className="flex-1 bg-[#F7F8FA]">
                     <div className="p-10">
                         <div className="flex flex-col items-start justify-center">

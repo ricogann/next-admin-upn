@@ -79,7 +79,7 @@ export default function Booking() {
     console.log(dataBooking);
 
     return (
-        <div className="flex">
+        <div className="flex bg-[#FFFFFF]">
             <div className="">
                 <SideBar />
             </div>

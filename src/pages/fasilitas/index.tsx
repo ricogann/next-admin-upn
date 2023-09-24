@@ -165,7 +165,7 @@ export default function Fasilitas() {
     };
 
     return (
-        <div className="flex overflow-x-hidden">
+        <div className="flex bg-[#FFFFFF] overflow-x-hidden">
             <div className="">
                 <SideBar />
             </div>
