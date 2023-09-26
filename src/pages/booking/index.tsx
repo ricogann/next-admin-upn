@@ -84,7 +84,7 @@ export default function Booking() {
                 <SideBar />
             </div>
 
-            <div className="flex bg-[#F7F8FA]">
+            <div className="flex flex-1 bg-[#F7F8FA]">
                 <div className="p-5">
                     <div className="flex flex-col items-start justify-center">
                         <div className="flex flex-row items-start">
@@ -97,7 +97,7 @@ export default function Booking() {
                         </h4>
                     </div>
 
-                    <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
+                    <div className="flex items-start mb-5 border-b border-[#E2E7EE]">
                         <a href="#" onClick={() => toggleTab("Booking")}>
                             <h2
                                 className={`text-[18] font-regular mb-3 mr-14 ${
@@ -112,7 +112,7 @@ export default function Booking() {
                     </div>
 
                     {activeTab === "Booking" && (
-                        <div className="flex flex-wrap overflow-hidden rounded-lg">
+                        <div className="flex flex-col overflow-hidden rounded-lg">
                             <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
                                 <input
                                     className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"

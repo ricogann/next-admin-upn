@@ -38,41 +38,41 @@ export default function Fasilitas() {
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
     const [dataHarga, setDataharga] = useState<harga[]>([]);
 
-    const itemsPerPage = 5;
+    const ItemsHargaPerPage = 5;
+    const ItemsFasilitasPerPage = 3;
 
     const dataHargaToShow = dataHarga.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
+        (currentPage - 1) * ItemsHargaPerPage,
+        currentPage * ItemsHargaPerPage
     );
 
     const dataFasilitasToShow = dataFasilitas.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
+        (currentPage - 1) * ItemsFasilitasPerPage,
+        currentPage * ItemsFasilitasPerPage
     );
 
-    const totalPages = Math.ceil(dataHarga.length / itemsPerPage);
+    const totalPageFasilitas = Math.ceil(dataFasilitas.length / ItemsFasilitasPerPage);
+    const totalPageHarga = Math.ceil(dataHarga.length / ItemsHargaPerPage);
+
+    const pagesFasilitasToDisplay = calculatePagesToDisplay(currentPage, totalPageFasilitas);
+    const pagesHargaToDisplay = calculatePagesToDisplay(currentPage, totalPageHarga);
+
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
     
-    // Calculate the range of pagination buttons to display
-    const pagesToDisplay = [];
-    if (totalPages <= 5) {
-        for (let i = 1; i <= totalPages; i++) {
-            pagesToDisplay.push(i);
-        }
-    } else {
-        // Calculate the start and end pages based on the active page
-        let startPage = currentPage - 2;
-        let endPage = currentPage + 2;
-
-        if (startPage < 1) {
-            startPage = 1;
-            endPage = 5;
-        } else if (endPage > totalPages) {
-            endPage = totalPages;
-            startPage = totalPages - 4;
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pagesToDisplay.push(i);
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
         }
     }
 
@@ -333,7 +333,7 @@ export default function Fasilitas() {
                                     </div>
                                     <div className="flex items-center justify-center">
                 <div className="join">
-                {pagesToDisplay.map((page) => (
+                {pagesFasilitasToDisplay.map((page) => (
                         <button
                             key={page}
                             className={`join-item btn ${
@@ -414,9 +414,9 @@ export default function Fasilitas() {
                                                     )
                                                 )}
                                             </div>
-                                            <div className="flex items-center justify-center">
+                                            <div className="flex items-center justify-center p-3">
                 <div className="join">
-                {pagesToDisplay.map((page) => (
+                {pagesHargaToDisplay.map((page) => (
                         <button
                             key={page}
                             className={`join-item btn ${

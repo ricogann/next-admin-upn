@@ -47,7 +47,7 @@ interface Pemesanan {
     jam_checkout: string;
     total_harga: number;
     tanggal_pemesanan: string;
-    bukti_identitas: string;
+    bukti_pembayaran: string;
     status: string;
     createdAt: string;
 }
@@ -66,9 +66,11 @@ export default function Dashboard() {
         setActiveTab(tab);
     };
 
-    const itemsPerPage = 5;
+    
 
-    const dataPemesananToShow = dataPemesanan.slice(
+    const itemsPerPage = 6;
+
+    const dataPemesananToShow = allData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -273,7 +275,7 @@ export default function Dashboard() {
                                             Bukti Pembayaran
                                         </p>
                                         <Image
-                                            src={`https://api.ricogann.com/assets/${item.bukti_identitas}`}
+                                            src={`https://api.ricogann.com/assets/${item.bukti_pembayaran}`}
                                             alt="bukti-pembayaran"
                                             width={100}
                                             height={100}
@@ -308,11 +310,11 @@ export default function Dashboard() {
                                             Accept Booking
                                         </p>
                                     </button>
-                                    {/* <a href="https://">
+                                    <a href="https://">
                                             <p className="text-[14] font-Bold mr-10 text-[#69519E]">
                                                 Decline
                                             </p>
-                                        </a> */}
+                                        </a>
                                 </div>
                             </div>
                         ))}
