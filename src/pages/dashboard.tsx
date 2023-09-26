@@ -66,8 +66,6 @@ export default function Dashboard() {
         setActiveTab(tab);
     };
 
-    
-
     const itemsPerPage = 6;
 
     const dataPemesananToShow = allData.slice(
@@ -80,29 +78,28 @@ export default function Dashboard() {
         currentPage * itemsPerPage
     );
 
-    const totalPages = Math.ceil(dataPemesanan.length / itemsPerPage);
+    const totalPagesBookingFasilitas = Math.ceil(allData.length / itemsPerPage);
+    const totalPagesRequestAccount = Math.ceil(dataUsers.length / itemsPerPage);
 
-    // Calculate the range of pagination buttons to display
-    const pagesToDisplay = [];
-    if (totalPages <= 5) {
-        for (let i = 1; i <= totalPages; i++) {
-            pagesToDisplay.push(i);
-        }
-    } else {
-        // Calculate the start and end pages based on the active page
-        let startPage = currentPage - 2;
-        let endPage = currentPage + 2;
+    const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPagesBookingFasilitas);
+    const pagesRequestAccountToDisplay = calculatePagesToDisplay(currentPage, totalPagesRequestAccount);
 
-        if (startPage < 1) {
-            startPage = 1;
-            endPage = 5;
-        } else if (endPage > totalPages) {
-            endPage = totalPages;
-            startPage = totalPages - 4;
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pagesToDisplay.push(i);
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+    
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
         }
     }
 
@@ -245,7 +242,8 @@ export default function Dashboard() {
         switch (activeTab) {
             case "bookings":
                 return (
-                    <div className="grid grid-cols-3">
+                    <div className="flex flex-col">
+                            <div className="grid grid-cols-3">
                         {dataPemesananToShow.map((item: Pemesanan, index: number) => (
                             <div
                                 className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
@@ -318,11 +316,31 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         ))}
+                        
                     </div>
+                         <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesBookingToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
+                    </div>
+                    
+                    
                 );
             case "mahasiswa":
                 return (
-                    <div className="grid grid-cols-3">
+                    <div className="flex flex-col">
+                        <div className="grid grid-cols-3">
                         {dataUsersToShow.map((item: Account, index: number) => (
                             <div
                                 className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
@@ -399,7 +417,25 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         ))}
+
                     </div>
+                    <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesRequestAccountToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
+                    </div>
+                    
                 );
             default:
                 return null;

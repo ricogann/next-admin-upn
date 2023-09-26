@@ -450,7 +450,7 @@ export default function Users() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-center p-3">
                 <div className="join">
                     {pagesUmumToDisplay.map((page) => (
                         <button
@@ -562,7 +562,7 @@ export default function Users() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-center p-3">
                 <div className="join">
                 {pagesDosenToDisplay.map((page) => (
                         <button
@@ -694,7 +694,7 @@ export default function Users() {
                                     ))
                                 }
                             </div>
-                            <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-center p-3">
                 <div className="join">
                 {pagesMahasiswaToDisplay.map((page) => (
                         <button

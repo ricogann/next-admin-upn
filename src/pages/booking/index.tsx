@@ -43,13 +43,41 @@ interface Account {
 
 export default function Booking() {
     const router = useRouter();
-
+    const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState("Booking");
     const [dataBooking, setDataBooking] = useState<Booking[]>([]);
+
+    const itemsBookingPerPage = 5;
+    const totalPageBooking = Math.ceil(dataBooking.length / itemsBookingPerPage);
+    const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPageBooking);
+
+    const dataBookingToShow = dataBooking.slice(
+        (currentPage - 1) * itemsBookingPerPage,
+        currentPage * itemsBookingPerPage
+    );
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+    
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
+        }
+    }
 
     async function getDataBooking() {
         try {
@@ -123,7 +151,7 @@ export default function Booking() {
                             <div className="divide-y divide-gray-200 rounded-lg overflow-hidden ">
                                 <div className="flex">
                                     <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider">
-                                        NO
+                                        ID
                                     </h1>
                                     <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[130px]">
                                         Nama Fasilitas
@@ -153,10 +181,10 @@ export default function Booking() {
 
                                 <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {dataBooking.map((data, index) => (
+                                        {dataBookingToShow.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">
-                                                    {index + 1}
+                                                    {data.id_pemesanan}
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
                                                     {data.Fasilitas &&
@@ -229,6 +257,21 @@ export default function Booking() {
                                         ))}
                                     </div>
                                 </div>
+                                <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesBookingToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
                             </div>
                         </div>
                     )}

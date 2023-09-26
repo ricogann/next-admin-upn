@@ -282,7 +282,7 @@ export default function Fasilitas() {
                                         {dataFasilitasToShow.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">
-                                                    {index + 1}
+                                                    {data.id_fasilitas}
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
                                                     {data.nama}
@@ -331,7 +331,7 @@ export default function Fasilitas() {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center justify-center">
+                                    <div className="flex items-center justify-center p-3">
                 <div className="join">
                 {pagesFasilitasToDisplay.map((page) => (
                         <button
