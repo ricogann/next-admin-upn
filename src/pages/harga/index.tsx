@@ -14,6 +14,27 @@ export default function Harga() {
     const router = useRouter();
 
     const [dataharga, setDataharga] = useState<harga[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+    const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
+
+    //SearchForHarga
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = dataharga.filter((item) =>
+          Object.values(item).some(
+            (value) =>
+              typeof value === 'string' &&
+              value.toLowerCase().includes(searchText.toLowerCase())
+          )
+        );
+    
+        setfilteredHarga(filteredData);
+      }, [dataharga, searchText]);
+    
+    // Function to handle input change
+    const handleInputHargaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
 
     const handlePage = (link: string) => {
         router.push(link);

@@ -37,22 +37,63 @@ export default function Fasilitas() {
     const [currentPage, setCurrentPage] = useState(1);
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
     const [dataHarga, setDataharga] = useState<harga[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+    const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
+    const [filteredFasilitas, setfilteredFasilitas] = useState<Fasilitas[]>([]);
+
+    //SearchForHarga
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = dataHarga.filter((item) =>
+          Object.values(item).some(
+            (value) =>
+              typeof value === 'string' &&
+              value.toLowerCase().includes(searchText.toLowerCase())
+          )
+        );
+    
+        setfilteredHarga(filteredData);
+      }, [dataHarga, searchText]);
+    
+    // Function to handle input change
+    const handleInputHargaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
+
+    //SearchForFasilitas
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = dataFasilitas.filter((item) =>
+            Object.values(item).some(
+            (value) =>
+                typeof value === 'string' &&
+                value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+        
+        setfilteredFasilitas(filteredData);
+        }, [dataFasilitas, searchText]);
+        
+    // Function to handle input change
+    const handleInputFasilitasChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
 
     const ItemsHargaPerPage = 5;
     const ItemsFasilitasPerPage = 3;
 
-    const dataHargaToShow = dataHarga.slice(
+    const dataHargaToShow = filteredHarga.slice(
         (currentPage - 1) * ItemsHargaPerPage,
         currentPage * ItemsHargaPerPage
     );
 
-    const dataFasilitasToShow = dataFasilitas.slice(
+    const dataFasilitasToShow = filteredFasilitas.slice(
         (currentPage - 1) * ItemsFasilitasPerPage,
         currentPage * ItemsFasilitasPerPage
     );
 
-    const totalPageFasilitas = Math.ceil(dataFasilitas.length / ItemsFasilitasPerPage);
-    const totalPageHarga = Math.ceil(dataHarga.length / ItemsHargaPerPage);
+    const totalPageFasilitas = Math.ceil(filteredFasilitas.length / ItemsFasilitasPerPage);
+    const totalPageHarga = Math.ceil(filteredHarga.length / ItemsHargaPerPage);
 
     const pagesFasilitasToDisplay = calculatePagesToDisplay(currentPage, totalPageFasilitas);
     const pagesHargaToDisplay = calculatePagesToDisplay(currentPage, totalPageHarga);
@@ -227,6 +268,8 @@ export default function Fasilitas() {
                                 className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                                 type="text"
                                 placeholder="Cari Data Fasilitas"
+                                value={searchText}
+                                onChange={handleInputFasilitasChange}
                             />
 
                             <button
@@ -243,6 +286,8 @@ export default function Fasilitas() {
                                 className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                                 type="text"
                                 placeholder="Cari Data Harga"
+                                value={searchText}
+                                onChange={handleInputHargaChange}
                             />
 
                             <button
