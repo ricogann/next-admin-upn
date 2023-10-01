@@ -46,12 +46,37 @@ export default function Booking() {
     const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState("Booking");
     const [dataBooking, setDataBooking] = useState<Booking[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+    const [filteredBooking, setfilteredBooking] = useState<Booking[]>([]);
+
+    useEffect(() => {
+        // Filter the dataBooking array based on whether any field contains the searchText
+        const filteredData = dataBooking.filter((item) =>
+          Object.values(item).some((value) => {
+            if (typeof value === 'string' || typeof value === 'number' || value instanceof Date) {
+              // Convert non-string values to string for comparison
+              const stringValue = typeof value === 'string' ? value : String(value);
+      
+              // Perform case-insensitive search
+              return stringValue.toLowerCase().includes(searchText.toLowerCase());
+            }
+            return false; // Skip other types
+          })
+        );
+      
+        setfilteredBooking(filteredData);
+      }, [dataBooking, searchText]);
+    
+    // Function to handle input change
+    const handleInputBookingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
 
     const itemsBookingPerPage = 5;
     const totalPageBooking = Math.ceil(dataBooking.length / itemsBookingPerPage);
     const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPageBooking);
 
-    const dataBookingToShow = dataBooking.slice(
+    const dataBookingToShow = filteredBooking.slice(
         (currentPage - 1) * itemsBookingPerPage,
         currentPage * itemsBookingPerPage
     );
@@ -145,7 +170,9 @@ export default function Booking() {
                                 <input
                                     className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                                     type="text"
-                                    placeholder="Cari Data Harga"
+                                    placeholder="Cari Data Booking"
+                                    value={searchText}
+                                    onChange={handleInputBookingChange}
                                 />
                             </div>
                             <div className="divide-y divide-gray-200 rounded-lg overflow-hidden ">
@@ -256,7 +283,7 @@ export default function Booking() {
                                             </div>
                                         ))}
                                     </div>
-                                </div>
+                                </div>  
                                 <div className="flex items-center justify-center p-3">
                 <div className="join">
                 {pagesBookingToDisplay.map((page) => (
