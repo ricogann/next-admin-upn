@@ -195,7 +195,7 @@ export default function Fasilitas() {
                         </div>
                                                         <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {dataKamar.map((data, index) => (
+                                        {/* {dataKamar.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">
                                                     {data.id}
@@ -235,7 +235,7 @@ export default function Fasilitas() {
                                                     </button>
                                                 </div>
                                             </div>
-                                        ))}
+                                        ))} */}
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-center p-3"></div>
