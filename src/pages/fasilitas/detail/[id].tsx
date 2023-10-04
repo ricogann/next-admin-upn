@@ -24,12 +24,11 @@ interface Fasilitas {
 interface Kamar {
     id_asrama: number;
     no_kamar: number;
-    id_lantai: number;
+    id : number;
     npm_bed1_a?: string;
     npm_bed2_b?: string;
     npm_bed3_c?: string;
     status_kamar: boolean;
-    LantaiAsrama: Object;
 }
 
 export default function Fasilitas() {
@@ -73,9 +72,19 @@ export default function Fasilitas() {
         async function fetchData(id: number) {
             try {
                 const dataFasilitas = await getDataFasilitasById(Number(id));
-                const dataKamar = await getdataKamar();
 
                  setDataFasilitas(dataFasilitas.data);
+
+
+            } catch (error) {
+                console.error("error fetching data fasilitas ", error);
+            }
+        }
+
+        async function fetchDataKamar() {
+            try {
+                const dataKamar = await getdataKamar();
+
                  setDataKamar(dataKamar.data);
 
             } catch (error) {
@@ -83,12 +92,13 @@ export default function Fasilitas() {
             }
         }
 
+        fetchDataKamar()
         fetchData(Number(id))
         
-    }, [id]);
+    });
                     console.log(id);
                     console.log(dataFasilitas);
-                    console.log(dataKamar);
+                    console.log(dataKamar?.no_kamar);
     return (
         <div className="flex bg-[#FFFFFF] overflow-x-hidden">
             <div className="">
@@ -185,45 +195,31 @@ export default function Fasilitas() {
                         </div>
                                                         <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {/* {dataFasilitas.map((data, index) => (
+                                        {dataKamar.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">
-                                                    {data.id_fasilitas}
+                                                    {data.id}
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
-                                                    {data.nama}
+                                                    {data.id_asrama}
                                                 </div>
                                                 <div className="px-6 py-4 break-all w-[200px]">
-                                                    {data.deskripsi}
+                                                    {data.npm_bed1_a}
                                                 </div>
                                                 <div className="px-6 py-4 break-all w-[200px]">
-                                                    {data.alamat}
+                                                    {data.npm_bed1_b}
                                                 </div>
-                                                <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
-                                                    {JSON.parse(data.foto).map(
-                                                        (
-                                                            foto: string,
-                                                            index: number
-                                                        ) => (
-                                                            <div
-                                                                className=""
-                                                                key={index}
-                                                            >
-                                                                <Image
-                                                                    src={`https://api.ricogann.com/assets/${foto}`}
-                                                                    alt="foto"
-                                                                    width={100}
-                                                                    height={100}
-                                                                />
-                                                            </div>
-                                                        )
-                                                    )}
+                                                <div className="px-6 py-4 break-all w-[200px]">
+                                                    {data.npm_bed1_c}
+                                                </div>
+                                                <div className="px-6 py-4 break-all w-[200px]">
+                                                    {data.status_kamar}
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
                                                     <button 
                                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
                                                     onClick={() => 
-                                                        router.push(`/fasilitas/detail/${data.id_fasilitas}`)}
+                                                        router.push(`/fasilitas/detail/kamar/${data.id}`)}
                                                     >
                                                         Detail
                                                     </button>
@@ -239,7 +235,7 @@ export default function Fasilitas() {
                                                     </button>
                                                 </div>
                                             </div>
-                                        ))} */}
+                                        ))}
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-center p-3"></div>

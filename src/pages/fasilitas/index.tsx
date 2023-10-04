@@ -19,17 +19,6 @@ interface harga {
     harga: number;
 }
 
-interface Kamar {
-    id_asrama: number;
-    no_kamar: number;
-    id_lantai: number;
-    npm_bed1_a?: string;
-    npm_bed2_b?: string;
-    npm_bed3_c?: string;
-    status_kamar: boolean;
-    LantaiAsrama: Object;
-}
-
 export default function Fasilitas() {
     const router = useRouter();
 
