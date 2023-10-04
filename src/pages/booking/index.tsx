@@ -73,7 +73,7 @@ export default function Booking() {
     };
 
     const itemsBookingPerPage = 5;
-    const totalPageBooking = Math.ceil(dataBooking.length / itemsBookingPerPage);
+    const totalPageBooking = Math.ceil(filteredBooking.length / itemsBookingPerPage);
     const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPageBooking);
 
     const dataBookingToShow = filteredBooking.slice(

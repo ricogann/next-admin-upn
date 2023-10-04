@@ -114,10 +114,10 @@ export default function Create() {
     );
     return (
         <div className="flex">
-            <div className="">
+            <div className="bg-[#FFFFFF]">
                 <SideBar />
             </div>
-            <div className="h-screen w-full p-10 flex bg-[#F7F8FA]">
+            <div className="w-full p-10 flex bg-[#F7F8FA]">
                 <div className="p-5">
                     <div className="flex flex-col items-start justify-center">
                         <div className="flex flex-row items-start">

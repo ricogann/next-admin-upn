@@ -409,11 +409,23 @@ export default function Dashboard() {
                                             Approve
                                         </p>
                                     </button>
-                                    <a href="https://">
-                                        <p className="text-[14] font-Bold ml-8 text-[#69519E]">
+                                    <button
+                                        onClick={() =>
+                                            handleStatusAccount(
+                                                item.id_account,
+                                                item.Mahasiswa.length > 0
+                                                    ? item.Mahasiswa[0].id
+                                                    : item.Dosen.length > 0
+                                                    ? item.Dosen[0].id
+                                                    : item.Umum[0].id,
+                                                false
+                                            )
+                                        }
+                                    >
+                                        <p className="text-[14] font-Bold mr-14 text-[#69519E]">
                                             Decline
                                         </p>
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         ))}

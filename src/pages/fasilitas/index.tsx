@@ -41,6 +41,8 @@ export default function Fasilitas() {
     const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
     const [filteredFasilitas, setfilteredFasilitas] = useState<Fasilitas[]>([]);
 
+    console.log(dataFasilitas);
+
     //SearchForHarga
     useEffect(() => {
         // Filter the umum array based on whether any field contains the searchText
@@ -152,6 +154,8 @@ export default function Fasilitas() {
             try {
                 const dataFasilitas = await getDataFasilitas();
                 const dataHarga = await getDataharga();
+
+                console.log(dataFasilitas.data)
 
                 setDataFasilitas(dataFasilitas.data);
                 setDataharga(dataHarga.data);
@@ -359,8 +363,12 @@ export default function Fasilitas() {
                                                     )}
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2">
-                                                        Edit
+                                                    <button 
+                                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+                                                    onClick={() => 
+                                                        router.push(`/fasilitas/detail/${data.id_fasilitas}`)}
+                                                    >
+                                                        Detail
                                                     </button>
                                                     <button
                                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
