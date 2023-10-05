@@ -133,7 +133,7 @@ export default function Fasilitas() {
 
     async function getDataharga() {
         try {
-            const res = await fetch("http://localhost:5000/api/harga");
+            const res = await fetch("https://api.ricogann.com/api/harga");
             const data = await res.json();
 
             return data;
@@ -144,7 +144,7 @@ export default function Fasilitas() {
 
     async function getDataFasilitas() {
         try {
-            const res = await fetch("http://localhost:5000/api/fasilitas");
+            const res = await fetch("https://api.ricogann.com/api/fasilitas");
             const data = await res.json();
 
             return data;
