@@ -25,9 +25,9 @@ interface Kamar {
     id_asrama: number;
     no_kamar: number;
     id : number;
-    npm_bed1_a?: string;
-    npm_bed2_b?: string;
-    npm_bed3_c?: string;
+    npm_bed1_a: string;
+    npm_bed2_b: string;
+    npm_bed3_c: string;
     status_kamar: boolean;
 }
 
@@ -73,7 +73,7 @@ export default function Fasilitas() {
             try {
                 const dataFasilitas = await getDataFasilitasById(Number(id));
 
-                 setDataFasilitas(dataFasilitas.data);
+                return setDataFasilitas(dataFasilitas.data);
 
 
             } catch (error) {
@@ -85,7 +85,7 @@ export default function Fasilitas() {
             try {
                 const dataKamar = await getdataKamar();
 
-                 setDataKamar(dataKamar.data);
+                return setDataKamar(dataKamar.data);
 
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -98,7 +98,7 @@ export default function Fasilitas() {
     });
                     console.log(id);
                     console.log(dataFasilitas);
-                    console.log(dataKamar?.no_kamar);
+                    console.log(dataKamar);
     return (
         <div className="flex bg-[#FFFFFF] overflow-x-hidden">
             <div className="">

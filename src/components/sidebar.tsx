@@ -8,6 +8,7 @@ import { AiOutlineArrowLeft } from "react-icons/ai";
 import { BiSolidDashboard, BiCalendar, BiLogOut } from "react-icons/bi";
 import { FaLandmark } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
+import {MdMiscellaneousServices} from "react-icons/md"
 import { IoMdNotifications } from "react-icons/io";
 
 export default function SideBar() {
@@ -23,6 +24,7 @@ export default function SideBar() {
         { title: "Booking", src: BiCalendar, link: "/booking" },
         { title: "Data Fasilitas", src: FaLandmark, link: "/fasilitas" },
         { title: "Data Users", src: BsFillPeopleFill, link: "/users" },
+        { title: "Miscellaneous", src: MdMiscellaneousServices, link: "/miscellaneous" },
         {
             title: "Notification",
             src: IoMdNotifications,
