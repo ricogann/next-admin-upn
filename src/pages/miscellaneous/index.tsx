@@ -2,6 +2,7 @@ import { useState, useEffect, MouseEventHandler } from "react";
 import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import _misc from "@/services/misc.service";
 
 interface misc {
     id_misc: number;
@@ -18,24 +19,14 @@ interface misc {
 
 export default function Miscellaneous() {
     const router = useRouter();
+    const misc = new _misc();
 
     const [dataMisc, setDataMisc] = useState<misc>();
-
-    async function getDataMisc() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/misc");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const dataMisc = await getDataMisc();
+                const dataMisc = await misc.getDataMisc();
 
                 setDataMisc(dataMisc.data);
             } catch (error) {
@@ -44,8 +35,6 @@ export default function Miscellaneous() {
         }
         fetchData();
     });
-
-    console.log(dataMisc);
 
     return (
         <div className="flex  bg-[#FFFFFF] overflow-x-hidden">
