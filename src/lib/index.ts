@@ -1,3 +1,5 @@
+import * as crypto from "crypto-js";
+
 class _lib {
     calculatePagesToDisplay(currentPage: number, totalPages: number) {
         if (totalPages <= 5) {
@@ -26,6 +28,12 @@ class _lib {
             (currentPage - 1) * itemsPerPage,
             currentPage * itemsPerPage
         );
+    }
+
+    decrypt(password: string) {
+        const bytes = crypto.AES.decrypt(password, "secretkeyforupnreservasi");
+
+        return bytes.toString(crypto.enc.Utf8);
     }
 }
 

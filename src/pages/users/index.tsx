@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import SideBar from "@/components/sidebar";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import _users from "@/services/users.service";
+import _lib from "@/lib";
+
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 interface Umum {
     id: number;
@@ -9,6 +13,7 @@ interface Umum {
     NIK: string;
     nama: string;
     email: string;
+    password: string;
     no_telp: string;
     status: boolean;
     bukti_identitas: string;
@@ -18,14 +23,14 @@ interface Mahasiswa {
     id: number;
     id_account: number;
     npm: string;
+    password: string;
     nama: string;
     email: string;
     bukti_identitas: string;
     no_telp: number;
     status: boolean;
-    id_fakultas: Fakultas;
-    id_prodi: Prodi;
-    id_tahun_ajaran: TahunAjaran;
+    Fakultas: Fakultas;
+    Prodi: Prodi;
 }
 
 interface Dosen {
@@ -37,6 +42,7 @@ interface Dosen {
     bukti_identitas: string;
     status: boolean;
     email: string;
+    password: string;
 }
 
 interface Prodi {
@@ -62,84 +68,92 @@ export default function Users() {
     const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
     const [dosen, setDosen] = useState<Dosen[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchText, setSearchText] = useState<string>('');
+    const [searchText, setSearchText] = useState<string>("");
     const [filteredUmum, setFilteredUmum] = useState<Umum[]>([]);
     const [filteredDosen, setFilteredDosen] = useState<Dosen[]>([]);
     const [filteredMahasiswa, setFilteredMahasiswa] = useState<Mahasiswa[]>([]);
-    
-    //SearchForUmum
+
+    const [eyeOpen, setEyeOpen] = useState<boolean>(true);
+    const [buktiToShow, setBuktiToShow] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+    const users = new _users();
+    const lib = new _lib();
+
     useEffect(() => {
-        // Filter the umum array based on whether any field contains the searchText
-        const filteredData = umum.filter((item) =>
-          Object.values(item).some(
-            (value) =>
-              typeof value === 'string' &&
-              value.toLowerCase().includes(searchText.toLowerCase())
-          )
-        );
-    
-        setFilteredUmum(filteredData);
-      }, [umum, searchText]);
-    
-    // Function to handle input change
-    const handleInputUmumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        async function fetchData() {
+            try {
+                const dataUmum = await users.getUmum();
+                const dataMahasiswa = await users.getMahasiswa();
+                const dataDosen = await users.getDosen();
+
+                setUmum(dataUmum.data);
+                setMahasiswa(dataMahasiswa.data);
+                setDosen(dataDosen.data);
+            } catch (error) {
+                console.error("error fetching data fasilitas ", error);
+                throw error;
+            }
+        }
+
+        fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
     };
-      
-    //SearchForDosen
+
     useEffect(() => {
-        // Filter the umum array based on whether any field contains the searchText
-        const filteredDataDosen = dosen.filter((item) =>
-            Object.values(item).some(
-            (value) =>
-                typeof value === 'string' &&
-                value.toLowerCase().includes(searchText.toLowerCase())
-            )
-        );
-        
-        setFilteredDosen(filteredDataDosen);
-        }, [dosen, searchText]);
-        
-        // Function to handle input change
-        const handleInputDosenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(event.target.value);
-        };
-    
-    //SearchForMahasiswa
-    useEffect(() => {
-        // Filter the umum array based on whether any field contains the searchText
         const filteredDataMahasiswa = mahasiswa.filter((item) =>
             Object.values(item).some(
-            (value) =>
-                typeof value === 'string' &&
-                value.toLowerCase().includes(searchText.toLowerCase())
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
             )
         );
-            
-        setFilteredMahasiswa(filteredDataMahasiswa);
-        }, [dosen, searchText]);
-            
-        // Function to handle input change
-        const handleInputMahasiswaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(event.target.value);
-        };
-    
+
+        const filteredData = umum.filter((item) =>
+            Object.values(item).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+
+        const filteredDataDosen = dosen.filter((item) =>
+            Object.values(item).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+
+        if (activeTab === "umum") {
+            setFilteredUmum(filteredData);
+        } else if (activeTab === "dosen") {
+            setFilteredDosen(filteredDataDosen);
+        } else {
+            setFilteredMahasiswa(filteredDataMahasiswa);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dosen, umum, mahasiswa, searchText]);
+
     const itemsPerPage = 5;
 
-    // Umum
-    const dataUmumToShow = filteredUmum.slice(
+    const dataUmumToShow = umum.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
 
-    // Dosen
-    const dataDosenToShow = filteredDosen.slice(
+    const dataDosenToShow = dosen.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
 
-    // Dosen
-    const dataMahasiswaToShow = filteredMahasiswa.slice(
+    const dataMahasiswaToShow = mahasiswa.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -152,163 +166,30 @@ export default function Users() {
     const totalPagesDosen = Math.ceil(dosen.length / itemsPerPage);
     const totalPagesMahasiswa = Math.ceil(mahasiswa.length / itemsPerPage);
 
-    const pagesUmumToDisplay = calculatePagesToDisplay(currentPage, totalPagesUmum);
-    const pagesDosenToDisplay = calculatePagesToDisplay(currentPage, totalPagesDosen);
-    const pagesMahasiswaToDisplay = calculatePagesToDisplay(currentPage, totalPagesMahasiswa);
+    const pagesUmumToDisplay = lib.calculatePagesToDisplay(
+        currentPage,
+        totalPagesUmum
+    );
+    const pagesDosenToDisplay = lib.calculatePagesToDisplay(
+        currentPage,
+        totalPagesDosen
+    );
+    const pagesMahasiswaToDisplay = lib.calculatePagesToDisplay(
+        currentPage,
+        totalPagesMahasiswa
+    );
 
-    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
-        if (totalPages <= 5) {
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
-        } else {
-            let startPage = currentPage - 2;
-            let endPage = currentPage + 2;
-    
-            if (startPage < 1) {
-                startPage = 1;
-                endPage = 5;
-            } else if (endPage > totalPages) {
-                endPage = totalPages;
-                startPage = totalPages - 4;
-            }
-    
-            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
-        }
-    }
-
-    async function getUmum() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/users/umum");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function getMahasiswa() {
-        try {
-            const res = await fetch(
-                "https://api.ricogann.com/api/users/mahasiswa"
-            );
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function getDosen() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/users/dosen");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function deleteUsers(id: number) {
-        try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/users/umum/delete/${id}`,
-                {
-                    method: "DELETE",
-                }
-            );
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function deleteDosen(id: number) {
-        try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/users/dosen/delete/${id}`,
-                {
-                    method: "DELETE",
-                }
-            );
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function deleteMahasiswa(id: number) {
-        try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/users/mahasiswa/delete/${id}`,
-                {
-                    method: "DELETE",
-                }
-            );
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function getAccountById(id: number) {
-        try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/users/account/${id}`
-            );
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const handleStatusAccount = (
+    const handleStatusAccount = async (
         id: number,
         id_account: number,
         status: boolean
     ) => {
-        updateStatusAcoount(id, id_account, status);
+        await users.updateStatusAccount(id, id_account, status);
     };
-
-    async function updateStatusAcoount(
-        id: number,
-        id_account: number,
-        status: boolean
-    ) {
-        try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/users/account/verifikasi/${id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        id: id_account,
-                        status_account: status,
-                    }),
-                }
-            );
-
-            const data = await res.json();
-            router.reload();
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     const handleDelete = async (id: number) => {
         try {
-            const data = await deleteUsers(id);
+            const data = await users.deleteUsers(id);
 
             if (data.status === true) {
                 window.location.reload();
@@ -320,7 +201,7 @@ export default function Users() {
 
     const handleDeleteDosen = async (id: number) => {
         try {
-            const data = await deleteDosen(id);
+            const data = await users.deleteDosen(id);
 
             if (data.status === true) {
                 window.location.reload();
@@ -332,7 +213,7 @@ export default function Users() {
 
     const handleDeleteMahasiswa = async (id: number) => {
         try {
-            const data = await deleteMahasiswa(id);
+            const data = await users.deleteMahasiswa(id);
 
             if (data.status === true) {
                 window.location.reload();
@@ -342,30 +223,43 @@ export default function Users() {
         }
     };
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const dataUmum = await getUmum();
-                const dataMahasiswa = await getMahasiswa();
-                const dataDosen = await getDosen();
+    const decryptedPassword = (password: string) => {
+        return lib.decrypt(password);
+    };
 
-                setUmum(dataUmum.data);
-                setMahasiswa(dataMahasiswa.data);
-                setDosen(dataDosen.data);
-            } catch (error) {
-                console.error("error fetching data fasilitas ", error);
-            }
-        }
+    console.log(dataMahasiswaToShow);
 
-        fetchData();
-    }, []);
+    const toggleModal = (bukti: string) => {
+        setBuktiToShow(bukti);
+        setIsModalOpen(!isModalOpen);
+    };
 
     return (
-        <div className=" flex bg-[#F7F8FA]">
+        <div className=" flex bg-[#F7F8FA] relative">
+            {isModalOpen && (
+                <div className="w-full h-full fixed flex justify-center items-center z-50 backdrop-blur-sm">
+                    <div className="rounded-lg p-10 flex flex-col justify-center items-center">
+                        <div className="flex flex-row justify-end w-full mb-5">
+                            <button
+                                className="text-[20px] font-bold text-[#F0EDEE] bg-[#07393C] px-5 py-2 rounded-xl"
+                                onClick={() => toggleModal("")}
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <Image
+                            src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                            width={500}
+                            height={500}
+                            alt="bukti-upload"
+                        />
+                    </div>
+                </div>
+            )}
             <div className="">
                 <SideBar />
             </div>
-            <div className="p-10">
+            <div className="p-10 text-black">
                 <div className="flex flex-col items-start justify-center">
                     <div className="flex flex-row items-start">
                         <h1 className="text-[40px] font-bold mr-14">Users</h1>
@@ -411,42 +305,41 @@ export default function Users() {
                     </a>
                 </div>
 
-
-
                 <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
-                    
                     {activeTab === "umum" && (
-                        
                         <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
-                                            <div className="relative rounded-full overflow-hidden mb-5">
-                    <input
-                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                        type="text"
-                        value={searchText}
-                        onChange={handleInputUmumChange}
-                        placeholder="Cari Users Umum"
-                    />
-                </div>
+                            <div className="relative rounded-full overflow-hidden mb-5">
+                                <input
+                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                    type="text"
+                                    value={searchText}
+                                    onChange={handleSearchChange}
+                                    placeholder="Cari Users Umum"
+                                />
+                            </div>
                             <div className="flex">
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
                                     ID
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
                                     NIK
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[130px]">
                                     Nama
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     Email
                                 </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
+                                    Password
+                                </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     No Telepon
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     Bukti Identitas
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[130px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
                                     Status
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
@@ -459,32 +352,83 @@ export default function Users() {
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {umum.id_account}
                                         </div>
-                                        <div className="px-6 py-4  w-[150px] text-center">
+                                        <div className="px-6 py-4  w-[120px] text-center">
                                             {umum.NIK}
                                         </div>
-                                        <div className="px-6 py-4 w-[150px] text-center ">
+                                        <div className="px-6 py-4 w-[130px] text-center ">
                                             {umum.nama}
                                         </div>
                                         <div className="px-6 py-4  break-all w-[150px] text-center">
                                             {umum.email}
                                         </div>
+                                        <div className="px-6 py-4 break-all w-[200px] text-center flex items-center justify-between">
+                                            <div className="">
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } text-[15px]`}
+                                                >
+                                                    {umum.password}
+                                                </h1>
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "hidden" : ""
+                                                    }`}
+                                                >
+                                                    {decryptedPassword(
+                                                        umum.password
+                                                    )}
+                                                </h1>
+                                            </div>
+                                            <div className="">
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(false)
+                                                    }
+                                                >
+                                                    <AiFillEye />
+                                                </div>
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "hidden" : ""
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(true)
+                                                    }
+                                                >
+                                                    <AiFillEyeInvisible />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
                                             {umum.no_telp}
                                         </div>
-                                        <div className="px-6 py-4  w-[200px]">
-                                            <Image
-                                                src={`https://api.ricogann.com/assets/${umum.bukti_identitas}`}
-                                                width={100}
-                                                height={100}
-                                                alt="bukti identitas"
-                                            />
+                                        <div className="px-6 py-4  w-[150px] flex items-center justify-center">
+                                            <div
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    toggleModal(
+                                                        umum.bukti_identitas
+                                                    )
+                                                }
+                                            >
+                                                <Image
+                                                    src={`https://api.ricogann.com/assets/${umum.bukti_identitas}`}
+                                                    width={100}
+                                                    height={100}
+                                                    alt="bukti registrasi"
+                                                />
+                                            </div>
                                         </div>
                                         {umum.status ? (
-                                            <div className="px-6 py-4  w-[130px] text-center text-green-800">
+                                            <div className="px-6 py-4  w-[80px] text-center text-green-800">
                                                 Aktif
                                             </div>
                                         ) : (
-                                            <div className="px-6 py-4  w-[130px] text-center text-red-500">
+                                            <div className="px-6 py-4  w-[80px] text-center text-red-500">
                                                 Tidak Aktif
                                             </div>
                                         )}
@@ -521,37 +465,39 @@ export default function Users() {
                                 ))}
                             </div>
                             <div className="flex items-center justify-center p-3">
-                <div className="join">
-                    {pagesUmumToDisplay.map((page) => (
-                        <button
-                            key={page}
-                            className={`join-item btn  ${
-                                currentPage === page ? 'btn-active' : ''
-                            }`}
-                            onClick={() => setCurrentPage(page)}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                </div>
-                {/* Render pagesDosenToDisplay and pagesMahasiswaToDisplay similarly */}
-            </div>
+                                <div className="join">
+                                    {pagesUmumToDisplay.map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`join-item btn  ${
+                                                currentPage === page
+                                                    ? "btn-active"
+                                                    : ""
+                                            }`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                                {/* Render pagesDosenToDisplay and pagesMahasiswaToDisplay similarly */}
+                            </div>
                         </div>
                     )}
 
                     {activeTab === "dosen" && (
                         <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
                             <div className="relative rounded-full overflow-hidden mb-5">
-                    <input
-                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                        type="text"
-                        value={searchText}
-                        onChange={handleInputDosenChange}
-                        placeholder="Cari Users Dosen"
-                    />
-                </div>
+                                <input
+                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                    type="text"
+                                    value={searchText}
+                                    onChange={handleSearchChange}
+                                    placeholder="Cari Users Dosen"
+                                />
+                            </div>
                             <div className="flex">
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[60px]">
                                     ID
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
@@ -563,13 +509,16 @@ export default function Users() {
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     Email
                                 </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
+                                    Password
+                                </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     No Telepon
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     Bukti Registrasi
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[130px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
                                     Status
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
@@ -579,7 +528,7 @@ export default function Users() {
                             <div className="bg-white divide-y divide-gray-200">
                                 {dataDosenToShow.map((dosen, index) => (
                                     <div className="flex" key={index}>
-                                        <div className="px-6 py-4  w-[80px] text-center">
+                                        <div className="px-6 py-4  w-[60px] text-center">
                                             {dosen.id_account}
                                         </div>
                                         <div className="px-6 py-4  w-[120px] text-center">
@@ -591,23 +540,74 @@ export default function Users() {
                                         <div className="px-6 py-4  break-all w-[150px] text-center">
                                             {dosen.email}
                                         </div>
+                                        <div className="px-6 py-4 break-all w-[200px] text-center flex items-center justify-between">
+                                            <div className="">
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } text-[15px]`}
+                                                >
+                                                    {dosen.password}
+                                                </h1>
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "hidden" : ""
+                                                    }`}
+                                                >
+                                                    {decryptedPassword(
+                                                        dosen.password
+                                                    )}
+                                                </h1>
+                                            </div>
+                                            <div className="">
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(false)
+                                                    }
+                                                >
+                                                    <AiFillEye />
+                                                </div>
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "hidden" : ""
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(true)
+                                                    }
+                                                >
+                                                    <AiFillEyeInvisible />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
                                             {dosen.no_telp}
                                         </div>
-                                        <div className="px-6 py-4  w-[200px] flex items-center justify-center">
-                                            <Image
-                                                src={`https://api.ricogann.com/assets/${dosen.bukti_identitas}`}
-                                                width={100}
-                                                height={100}
-                                                alt="bukti registrasi"
-                                            />
+                                        <div className="px-6 py-4  w-[150px] flex items-center justify-center">
+                                            <div
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    toggleModal(
+                                                        dosen.bukti_identitas
+                                                    )
+                                                }
+                                            >
+                                                <Image
+                                                    src={`https://api.ricogann.com/assets/${dosen.bukti_identitas}`}
+                                                    width={100}
+                                                    height={100}
+                                                    alt="bukti registrasi"
+                                                />
+                                            </div>
                                         </div>
                                         {dosen.status ? (
-                                            <div className="px-6 py-4  w-[130px] text-center text-green-800">
+                                            <div className="px-6 py-4  w-[80px] text-center text-green-800">
                                                 Aktif
                                             </div>
                                         ) : (
-                                            <div className="px-6 py-4  w-[130px] text-center text-red-500">
+                                            <div className="px-6 py-4  w-[80px] text-center text-red-500">
                                                 Tidak Aktif
                                             </div>
                                         )}
@@ -644,34 +644,36 @@ export default function Users() {
                                 ))}
                             </div>
                             <div className="flex items-center justify-center p-3">
-                <div className="join">
-                {pagesDosenToDisplay.map((page) => (
-                        <button
-                            key={page}
-                            className={`join-item btn  ${
-                                currentPage === page ? 'btn-active' : ''
-                            }`}
-                            onClick={() => setCurrentPage(page)}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                </div>
-            </div>
+                                <div className="join">
+                                    {pagesDosenToDisplay.map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`join-item btn  ${
+                                                currentPage === page
+                                                    ? "btn-active"
+                                                    : ""
+                                            }`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
 
                     {activeTab === "mahasiswa" && (
                         <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
                             <div className="relative rounded-full overflow-hidden mb-5">
-                    <input
-                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                        type="text"
-                        value={searchText}
-                        onChange={handleInputMahasiswaChange}
-                        placeholder="Cari Users Mahasiswa"
-                    />
-                </div>
+                                <input
+                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                    type="text"
+                                    value={searchText}
+                                    onChange={handleSearchChange}
+                                    placeholder="Cari Users Mahasiswa"
+                                />
+                            </div>
                             <div className="flex">
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-left text-xs leading-4 font-medium text-black uppercase w-[50px]">
                                     ID
@@ -682,14 +684,11 @@ export default function Users() {
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[100px]">
                                     NPM
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[100px]">
-                                    Tahun Ajaran
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[220px]">
+                                    Password
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                    Fakultas
-                                </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                    Jurusan
+                                    Fakultas, Jurusan
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     No Telepon
@@ -705,38 +704,75 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
-                                {
-                                    // @ts-ignore
-                                    dataMahasiswaToShow.map((mahasiswa, index) => (
-                                        <div className="flex" key={index}>
-                                            <div className="px-6 py-4 w-[50px]">
-                                                {mahasiswa.id}
+                                {dataMahasiswaToShow.map((mahasiswa, index) => (
+                                    <div className="flex" key={index}>
+                                        <div className="px-6 py-4 w-[50px]">
+                                            {mahasiswa.id}
+                                        </div>
+                                        <div className="px-6 py-4 w-[120px] text-center text-[15px]">
+                                            {mahasiswa.nama}
+                                        </div>
+                                        <div className="px-6 py-4 w-[100px] text-[15px]">
+                                            {mahasiswa.npm}
+                                        </div>
+                                        <div className="px-6 py-4 w-[220px] break-all text-[15px] flex items-center justify-between">
+                                            <div className="">
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "" : "hidden"
+                                                    }`}
+                                                >
+                                                    {mahasiswa.password}
+                                                </h1>
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "hidden" : ""
+                                                    }`}
+                                                >
+                                                    {decryptedPassword(
+                                                        mahasiswa.password
+                                                    )}
+                                                </h1>
                                             </div>
-                                            <div className="px-6 py-4 w-[120px] text-center text-[15px]">
-                                                {mahasiswa.nama}
+                                            <div className="">
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(false)
+                                                    }
+                                                >
+                                                    <AiFillEye />
+                                                </div>
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "hidden" : ""
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(true)
+                                                    }
+                                                >
+                                                    <AiFillEyeInvisible />
+                                                </div>
                                             </div>
-                                            <div className="px-6 py-4 w-[100px] text-[15px]">
-                                                {mahasiswa.npm}
-                                            </div>
-                                            <div className="px-6 py-4 w-[100px] text-[15px]">
-                                                {
-                                                    mahasiswa.id_tahun_ajaran
-                                                        .tahun_ajaran
+                                        </div>
+                                        <div className="px-6 py-4 w-[150px] text-[15px]">
+                                            {mahasiswa.Fakultas.nama_fakultas} ,{" "}
+                                            {mahasiswa.Prodi.nama_prodi}
+                                        </div>
+                                        <div className="px-6 py-4 text-[15px] w-[150px]">
+                                            {mahasiswa.no_telp}
+                                        </div>
+                                        <div className="px-6 py-4 text-[15px] w-[140px]">
+                                            <div
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    toggleModal(
+                                                        mahasiswa.bukti_identitas
+                                                    )
                                                 }
-                                            </div>
-                                            <div className="px-6 py-4 w-[150px] text-[15px]">
-                                                {
-                                                    mahasiswa.id_fakultas
-                                                        .nama_fakultas
-                                                }
-                                            </div>
-                                            <div className="px-6 py-4 w-[150px] text-[15px]">
-                                                {mahasiswa.id_prodi.nama_prodi}
-                                            </div>
-                                            <div className="px-6 py-4 text-[15px] w-[150px]">
-                                                {mahasiswa.no_telp}
-                                            </div>
-                                            <div className="px-6 py-4 text-[15px] w-[140px]">
+                                            >
                                                 <Image
                                                     src={`https://api.ricogann.com/assets/${mahasiswa.bukti_identitas}`}
                                                     width={100}
@@ -744,63 +780,65 @@ export default function Users() {
                                                     alt="bukti registrasi"
                                                 />
                                             </div>
-                                            {mahasiswa.status ? (
-                                                <div className="px-6 py-4 text-[15px] text-green-800 font-semibold w-[100px]">
-                                                    Aktif
-                                                </div>
-                                            ) : (
-                                                <div className="px-6 py-4 text-[15px] text-red-500 font-semibold w-[100px]">
-                                                    Tidak Aktif
-                                                </div>
-                                            )}
-                                            <div className="px-6 py-4  flex items-center justify-center w-[100px]">
-                                                {mahasiswa.status ? (
-                                                    <button
-                                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
-                                                        onClick={() =>
-                                                            handleStatusAccount(
-                                                                mahasiswa.id_account,
-                                                                mahasiswa.id,
-                                                                false
-                                                            )
-                                                        }
-                                                    >
-                                                        DeActive
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
-                                                        onClick={() =>
-                                                            handleStatusAccount(
-                                                                mahasiswa.id_account,
-                                                                mahasiswa.id,
-                                                                true
-                                                            )
-                                                        }
-                                                    >
-                                                        Approve
-                                                    </button>
-                                                )}
-                                            </div>
                                         </div>
-                                    ))
-                                }
+                                        {mahasiswa.status ? (
+                                            <div className="px-6 py-4 text-[15px] text-green-800 font-semibold w-[100px]">
+                                                Aktif
+                                            </div>
+                                        ) : (
+                                            <div className="px-6 py-4 text-[15px] text-red-500 font-semibold w-[100px]">
+                                                Tidak Aktif
+                                            </div>
+                                        )}
+                                        <div className="px-6 py-4  flex items-center justify-center w-[100px]">
+                                            {mahasiswa.status ? (
+                                                <button
+                                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleStatusAccount(
+                                                            mahasiswa.id_account,
+                                                            mahasiswa.id,
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    DeActive
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleStatusAccount(
+                                                            mahasiswa.id_account,
+                                                            mahasiswa.id,
+                                                            true
+                                                        )
+                                                    }
+                                                >
+                                                    Approve
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                             <div className="flex items-center justify-center p-3">
-                <div className="join">
-                {pagesMahasiswaToDisplay.map((page) => (
-                        <button
-                            key={page}
-                            className={`join-item btn  ${
-                                currentPage === page ? 'btn-active' : ''
-                            }`}
-                            onClick={() => setCurrentPage(page)}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                </div>
-            </div>
+                                <div className="join">
+                                    {pagesMahasiswaToDisplay.map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`join-item btn  ${
+                                                currentPage === page
+                                                    ? "btn-active"
+                                                    : ""
+                                            }`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>

@@ -43,6 +43,101 @@ class _users extends _core {
             throw error;
         }
     }
+
+    async getUmum() {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/users/umum`);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async getMahasiswa() {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/users/mahasiswa`);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async getDosen() {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/users/dosen`);
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async deleteUsers(id: number) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/users/umum/delete/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async deleteDosen(id: number) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/users/dosen/delete/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async deleteMahasiswa(id: number) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/users/mahasiswa/delete/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async getAccountById(id: number) {
+        try {
+            const res = await fetch(
+                `https://api.ricogann.com/api/users/account/${id}`
+            );
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }
 
 export default _users;
