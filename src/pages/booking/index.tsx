@@ -1,7 +1,8 @@
-import { useState, useEffect, MouseEventHandler } from "react";
+import { useState, useEffect } from "react";
 import SideBar from "@/components/sidebar";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import _booking from "@/services/booking.service";
+import _lib from "@/lib";
 
 interface Booking {
     Fasilitas: Fasilitas;
@@ -42,39 +43,73 @@ interface Account {
 }
 
 export default function Booking() {
-    const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState("Booking");
     const [dataBooking, setDataBooking] = useState<Booking[]>([]);
-    const [searchText, setSearchText] = useState<string>('');
+    const [searchText, setSearchText] = useState<string>("");
     const [filteredBooking, setfilteredBooking] = useState<Booking[]>([]);
+
+    const booking = new _booking();
+    const lib = new _lib();
 
     useEffect(() => {
         // Filter the dataBooking array based on whether any field contains the searchText
         const filteredData = dataBooking.filter((item) =>
-          Object.values(item).some((value) => {
-            if (typeof value === 'string' || typeof value === 'number' || value instanceof Date) {
-              // Convert non-string values to string for comparison
-              const stringValue = typeof value === 'string' ? value : String(value);
-      
-              // Perform case-insensitive search
-              return stringValue.toLowerCase().includes(searchText.toLowerCase());
-            }
-            return false; // Skip other types
-          })
+            Object.values(item).some((value) => {
+                if (
+                    typeof value === "string" ||
+                    typeof value === "number" ||
+                    value instanceof Date
+                ) {
+                    // Convert non-string values to string for comparison
+                    const stringValue =
+                        typeof value === "string" ? value : String(value);
+
+                    // Perform case-insensitive search
+                    return stringValue
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase());
+                } else {
+                    if (value && "nama" in value) {
+                        return value.nama
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if (value && "Mahasiswa" in value) {
+                        return value.Mahasiswa[0].nama
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if (value && "Dosen" in value) {
+                        return value.Dosen[0].nama
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if (value && "Umum" in value) {
+                        return value.Umum[0].nama
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    }
+                }
+                return false; // Skip other types
+            })
         );
-      
+
         setfilteredBooking(filteredData);
-      }, [dataBooking, searchText]);
-    
+    }, [dataBooking, searchText]);
+
     // Function to handle input change
-    const handleInputBookingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputBookingChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         setSearchText(event.target.value);
     };
 
     const itemsBookingPerPage = 5;
-    const totalPageBooking = Math.ceil(filteredBooking.length / itemsBookingPerPage);
-    const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPageBooking);
+    const totalPageBooking = Math.ceil(
+        filteredBooking.length / itemsBookingPerPage
+    );
+    const pagesBookingToDisplay = lib.calculatePagesToDisplay(
+        currentPage,
+        totalPageBooking
+    );
 
     const dataBookingToShow = filteredBooking.slice(
         (currentPage - 1) * itemsBookingPerPage,
@@ -85,51 +120,26 @@ export default function Booking() {
         setActiveTab(tab);
     };
 
-    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
-        if (totalPages <= 5) {
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
-        } else {
-            let startPage = currentPage - 2;
-            let endPage = currentPage + 2;
-    
-            if (startPage < 1) {
-                startPage = 1;
-                endPage = 5;
-            } else if (endPage > totalPages) {
-                endPage = totalPages;
-                startPage = totalPages - 4;
-            }
-    
-            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
-        }
-    }
-
-    async function getDataBooking() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/booking");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
         async function fetchData() {
             try {
-                const dataBooking = await getDataBooking();
+                const dataBooking = await booking.getPemesanan();
 
-                setDataBooking(dataBooking.data);
+                setDataBooking(dataBooking);
             } catch (error) {
                 console.error("error fetching data Booking ", error);
+                throw error;
             }
         }
 
         fetchData();
     }, []);
 
-    console.log(dataBooking);
+    const statusCheck = (status: string) => {
+        if (status === "Menunggu Pembayaran" || status === "Dibatalkan") {
+            return "hidden";
+        }
+    };
 
     return (
         <div className="flex bg-[#FFFFFF]">
@@ -137,7 +147,7 @@ export default function Booking() {
                 <SideBar />
             </div>
 
-            <div className="flex flex-1 bg-[#F7F8FA]">
+            <div className="flex flex-1 bg-[#F7F8FA] text-black p-4">
                 <div className="p-5">
                     <div className="flex flex-col items-start justify-center">
                         <div className="flex flex-row items-start">
@@ -208,97 +218,104 @@ export default function Booking() {
 
                                 <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {dataBookingToShow.map((data, index) => (
-                                            <div className="flex" key={index}>
-                                                <div className="px-6 py-4 whitespace-no-wrap">
-                                                    {data.id_pemesanan}
-                                                </div>
-                                                <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
-                                                    {data.Fasilitas &&
-                                                        data.Fasilitas.nama}
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[200px]">
-                                                    {data.Account.Mahasiswa
-                                                        .length > 0
-                                                        ? data.Account
-                                                              .Mahasiswa[0].nama
-                                                        : data.Account.Dosen
-                                                              .length > 0
-                                                        ? data.Account.Dosen[0]
-                                                              .nama
-                                                        : data.Account.Umum[0]
-                                                              .nama}
-                                                </div>
-                                                <div className="px-6 py-4 break-all text-center w-[130px]">
-                                                    {
-                                                        data.tanggal_pemesanan
+                                        {dataBookingToShow.map(
+                                            (data, index) => (
+                                                <div
+                                                    className="flex"
+                                                    key={index}
+                                                >
+                                                    <div className="px-6 py-4 whitespace-no-wrap">
+                                                        {data.id_pemesanan}
+                                                    </div>
+                                                    <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
+                                                        {data.Fasilitas &&
+                                                            data.Fasilitas.nama}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                        {data.Account.Mahasiswa
+                                                            .length > 0
+                                                            ? data.Account
+                                                                  .Mahasiswa[0]
+                                                                  .nama
+                                                            : data.Account.Dosen
+                                                                  .length > 0
+                                                            ? data.Account
+                                                                  .Dosen[0].nama
+                                                            : data.Account
+                                                                  .Umum[0].nama}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all text-center w-[130px]">
+                                                        {
+                                                            data.tanggal_pemesanan
+                                                                .toString()
+                                                                .split("T")[0]
+                                                        }
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[100px]">
+                                                        {data.jam_checkin}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[100px]">
+                                                        {data.jam_checkout}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[137px]">
+                                                        {data.status}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[140px]">
+                                                        Rp
+                                                        {data.total_harga
                                                             .toString()
-                                                            .split("T")[0]
-                                                    }
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[100px]">
-                                                    {data.jam_checkin}
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[100px]">
-                                                    {data.jam_checkout}
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[137px]">
-                                                    {data.status}
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[140px]">
-                                                    Rp
-                                                    {data.total_harga
-                                                        .toString()
-                                                        .replace(
-                                                            /\B(?=(\d{3})+(?!\d))/g,
-                                                            "."
-                                                        )}
-                                                </div>
+                                                            .replace(
+                                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                                "."
+                                                            )}
+                                                    </div>
 
-                                                <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]">
-                                                        Bukti Pembayaran
-                                                    </button>
-                                                    <button
-                                                        className={`${
-                                                            data.status ===
-                                                            "Dikonfirmasi"
-                                                                ? "block"
-                                                                : "hidden"
-                                                        } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                    <button
-                                                        className={`${
-                                                            data.status ===
-                                                            "Dikonfirmasi"
-                                                                ? "hidden"
-                                                                : "block"
-                                                        } bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
-                                                    >
-                                                        Approve
-                                                    </button>
+                                                    <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
+                                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]">
+                                                            Bukti Pembayaran
+                                                        </button>
+                                                        <button
+                                                            className={`${statusCheck(
+                                                                data.status
+                                                            )} bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                        <button
+                                                            className={`${
+                                                                data.status ===
+                                                                "Menunggu Konfirmasi"
+                                                                    ? "block"
+                                                                    : "hidden"
+                                                            } bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-center p-3">
+                                    <div className="join">
+                                        {pagesBookingToDisplay.map((page) => (
+                                            <button
+                                                key={page}
+                                                className={`join-item btn ${
+                                                    currentPage === page
+                                                        ? "btn-active"
+                                                        : ""
+                                                }`}
+                                                onClick={() =>
+                                                    setCurrentPage(page)
+                                                }
+                                            >
+                                                {page}
+                                            </button>
                                         ))}
                                     </div>
-                                </div>  
-                                <div className="flex items-center justify-center p-3">
-                <div className="join">
-                {pagesBookingToDisplay.map((page) => (
-                        <button
-                            key={page}
-                            className={`join-item btn ${
-                                currentPage === page ? 'btn-active' : ''
-                            }`}
-                            onClick={() => setCurrentPage(page)}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                </div>
-            </div>
+                                </div>
                             </div>
                         </div>
                     )}
