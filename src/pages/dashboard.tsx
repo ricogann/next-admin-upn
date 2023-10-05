@@ -67,6 +67,9 @@ export default function Dashboard() {
     const [currentPage, setCurrentPage] = useState(1);
     const [allData, setAllData] = useState<Pemesanan[]>([]);
 
+    const [buktiToShow, setBuktiToShow] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
     const booking = new _booking();
     const users = new _users();
     const lib = new _lib();
@@ -229,16 +232,28 @@ export default function Dashboard() {
                                                             ? "Bukti Pembayaran"
                                                             : "SIK"}
                                                     </p>
-                                                    <Image
-                                                        src={`https://api.ricogann.com/assets/${imageCheck(
-                                                            item.bukti_pembayaran,
-                                                            item.SIK
-                                                        )}`}
-                                                        alt="bukti-pembayaran"
-                                                        width={100}
-                                                        height={100}
-                                                        className="m-2 rounded-lg"
-                                                    />
+                                                    <div
+                                                        className="cursor-pointer"
+                                                        onClick={() =>
+                                                            toggleModal(
+                                                                imageCheck(
+                                                                    item.bukti_pembayaran,
+                                                                    item.SIK
+                                                                )
+                                                            )
+                                                        }
+                                                    >
+                                                        <Image
+                                                            src={`https://api.ricogann.com/assets/${imageCheck(
+                                                                item.bukti_pembayaran,
+                                                                item.SIK
+                                                            )}`}
+                                                            alt="bukti-pembayaran"
+                                                            width={100}
+                                                            height={100}
+                                                            className="m-2 rounded-lg"
+                                                        />
+                                                    </div>
                                                 </div>
                                                 <div className="flex-col text-[14px] text-center mr-12">
                                                     <p className="font-bold">
@@ -420,13 +435,24 @@ export default function Dashboard() {
                                                 <div className="text-[14] font-bold">
                                                     Bukti Registrasi
                                                 </div>
-                                                <Image
-                                                    src={`https://api.ricogann.com/assets/${buktiIdentitas[index]}`}
-                                                    alt="bukti-pembayaran"
-                                                    width={120}
-                                                    height={120}
-                                                    className="my-2 rounded-lg"
-                                                />
+                                                <div
+                                                    className="cursor-pointer"
+                                                    onClick={() =>
+                                                        toggleModal(
+                                                            buktiIdentitas[
+                                                                index
+                                                            ]
+                                                        )
+                                                    }
+                                                >
+                                                    <Image
+                                                        src={`https://api.ricogann.com/assets/${buktiIdentitas[index]}`}
+                                                        alt="bukti-pembayaran"
+                                                        width={120}
+                                                        height={120}
+                                                        className="my-2 rounded-lg"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="flex flex-row border-t mt-2">
@@ -498,8 +524,33 @@ export default function Dashboard() {
                 return null;
         }
     };
+
+    const toggleModal = (bukti: string) => {
+        setBuktiToShow(bukti);
+        setIsModalOpen(!isModalOpen);
+    };
     return (
-        <div className="flex bg-[#FFFFFF] text-black">
+        <div className="flex bg-[#FFFFFF] text-black relative">
+            {isModalOpen && (
+                <div className="w-full h-full fixed flex justify-center items-center z-50 backdrop-blur-sm">
+                    <div className="rounded-lg p-10 flex flex-col justify-center items-center">
+                        <div className="flex flex-row justify-end w-full mb-5">
+                            <button
+                                className="text-[20px] font-bold text-[#F0EDEE] bg-[#07393C] px-5 py-2 rounded-xl"
+                                onClick={() => toggleModal("")}
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <Image
+                            src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                            width={500}
+                            height={500}
+                            alt="bukti-upload"
+                        />
+                    </div>
+                </div>
+            )}
             <div className="">
                 <SideBar />
             </div>

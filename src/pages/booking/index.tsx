@@ -15,6 +15,7 @@ interface Booking {
     total_harga: number;
     status: string;
     bukti_pembayaran: string;
+    SIK: string;
 }
 
 interface Fasilitas {
@@ -48,6 +49,9 @@ export default function Booking() {
     const [dataBooking, setDataBooking] = useState<Booking[]>([]);
     const [searchText, setSearchText] = useState<string>("");
     const [filteredBooking, setfilteredBooking] = useState<Booking[]>([]);
+
+    const [buktiToShow, setBuktiToShow] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const booking = new _booking();
     const lib = new _lib();
@@ -141,8 +145,34 @@ export default function Booking() {
         }
     };
 
+    const toggleModal = (bukti: string) => {
+        setBuktiToShow(bukti);
+        setIsModalOpen(!isModalOpen);
+    };
+
     return (
-        <div className="flex bg-[#FFFFFF]">
+        <div className="flex bg-[#FFFFFF] relative">
+            {isModalOpen && (
+                <div className="w-full h-full fixed flex justify-center items-center z-50 backdrop-blur-sm">
+                    <div className="rounded-lg p-10 flex flex-col justify-center items-center">
+                        <div className="flex flex-row justify-end w-full mb-5">
+                            <button
+                                className="text-[20px] font-bold text-[#F0EDEE] bg-[#07393C] px-5 py-2 rounded-xl"
+                                onClick={() => toggleModal("")}
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <Image
+                            src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                            width={500}
+                            height={500}
+                            alt="bukti-upload"
+                        />
+                    </div>
+                </div>
+            )}
+
             <div className="">
                 <SideBar />
             </div>
@@ -271,7 +301,22 @@ export default function Booking() {
                                                     </div>
 
                                                     <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]">
+                                                        <button
+                                                            className={`${
+                                                                data.status ===
+                                                                "Menunggu Pembayaran"
+                                                                    ? "hidden"
+                                                                    : "block"
+                                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]`}
+                                                            onClick={() =>
+                                                                toggleModal(
+                                                                    data.bukti_pembayaran !==
+                                                                        null
+                                                                        ? data.bukti_pembayaran
+                                                                        : data.SIK
+                                                                )
+                                                            }
+                                                        >
                                                             Bukti Pembayaran
                                                         </button>
                                                         <button
