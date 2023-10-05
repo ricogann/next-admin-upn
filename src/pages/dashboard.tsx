@@ -47,7 +47,7 @@ interface Pemesanan {
     jam_checkout: string;
     total_harga: number;
     tanggal_pemesanan: string;
-    bukti_identitas: string;
+    bukti_pembayaran: string;
     status: string;
     createdAt: string;
 }
@@ -60,10 +60,48 @@ export default function Dashboard() {
     const [dataUsers, setDataUsers] = useState<Account[]>([]);
     const [buktiIdentitas, setBuktiIdentitas] = useState<string[]>([]);
     const [allData, setAllData] = useState<Pemesanan[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+    const itemsPerPage = 6;
+
+    const dataPemesananToShow = allData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const dataUsersToShow = dataUsers.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const totalPagesBookingFasilitas = Math.ceil(allData.length / itemsPerPage);
+    const totalPagesRequestAccount = Math.ceil(dataUsers.length / itemsPerPage);
+
+    const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPagesBookingFasilitas);
+    const pagesRequestAccountToDisplay = calculatePagesToDisplay(currentPage, totalPagesRequestAccount);
+
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+    
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
+        }
+    }
 
     async function getUsers() {
         try {
@@ -204,8 +242,9 @@ export default function Dashboard() {
         switch (activeTab) {
             case "bookings":
                 return (
-                    <div className="grid grid-cols-3">
-                        {dataPemesanan.map((item: Pemesanan, index: number) => (
+                    <div className="flex flex-col">
+                            <div className="grid grid-cols-3">
+                        {dataPemesananToShow.map((item: Pemesanan, index: number) => (
                             <div
                                 className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
                                 key={index}
@@ -234,7 +273,7 @@ export default function Dashboard() {
                                             Bukti Pembayaran
                                         </p>
                                         <Image
-                                            src={`https://api.ricogann.com/assets/${item.bukti_identitas}`}
+                                            src={`https://api.ricogann.com/assets/${item.bukti_pembayaran}`}
                                             alt="bukti-pembayaran"
                                             width={100}
                                             height={100}
@@ -269,20 +308,40 @@ export default function Dashboard() {
                                             Accept Booking
                                         </p>
                                     </button>
-                                    {/* <a href="https://">
+                                    <a href="https://">
                                             <p className="text-[14] font-Bold mr-10 text-[#69519E]">
                                                 Decline
                                             </p>
-                                        </a> */}
+                                        </a>
                                 </div>
                             </div>
                         ))}
+                        
                     </div>
+                         <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesBookingToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
+                    </div>
+                    
+                    
                 );
             case "mahasiswa":
                 return (
-                    <div className="grid grid-cols-3">
-                        {dataUsers.map((item: Account, index: number) => (
+                    <div className="flex flex-col">
+                        <div className="grid grid-cols-3">
+                        {dataUsersToShow.map((item: Account, index: number) => (
                             <div
                                 className="bg-white rounded-lg shadow-lg p-5 mr-5 mb-5"
                                 key={index}
@@ -350,26 +409,56 @@ export default function Dashboard() {
                                             Approve
                                         </p>
                                     </button>
-                                    <a href="https://">
-                                        <p className="text-[14] font-Bold ml-8 text-[#69519E]">
+                                    <button
+                                        onClick={() =>
+                                            handleStatusAccount(
+                                                item.id_account,
+                                                item.Mahasiswa.length > 0
+                                                    ? item.Mahasiswa[0].id
+                                                    : item.Dosen.length > 0
+                                                    ? item.Dosen[0].id
+                                                    : item.Umum[0].id,
+                                                false
+                                            )
+                                        }
+                                    >
+                                        <p className="text-[14] font-Bold mr-14 text-[#69519E]">
                                             Decline
                                         </p>
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         ))}
+
                     </div>
+                    <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesRequestAccountToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
+                    </div>
+                    
                 );
             default:
                 return null;
         }
     };
     return (
-        <div className="flex">
+        <div className="flex bg-[#FFFFFF]">
             <div className="">
                 <SideBar />
             </div>
-            <div className="w-full">
+            <div className="flex w-full">
                 <div className="flex-1 bg-[#F7F8FA]">
                     <div className="p-10">
                         <div className="flex flex-col items-start justify-center">

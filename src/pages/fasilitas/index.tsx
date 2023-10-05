@@ -19,17 +19,6 @@ interface harga {
     harga: number;
 }
 
-interface Kamar {
-    id_asrama: number;
-    no_kamar: number;
-    id_lantai: number;
-    npm_bed1_a?: string;
-    npm_bed2_b?: string;
-    npm_bed3_c?: string;
-    status_kamar: boolean;
-    LantaiAsrama: Object;
-}
-
 export default function Fasilitas() {
     const router = useRouter();
 
@@ -37,22 +26,102 @@ export default function Fasilitas() {
     const [currentPage, setCurrentPage] = useState(1);
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
     const [dataHarga, setDataharga] = useState<harga[]>([]);
+    const [searchText, setSearchText] = useState<string>("");
+    const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
+    const [filteredFasilitas, setfilteredFasilitas] = useState<Fasilitas[]>([]);
 
-    const itemsPerPage = 5;
+    console.log(dataFasilitas);
 
-    const dataHargaToShow = dataHarga.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
+    //SearchForHarga
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = dataHarga.filter((item) =>
+            Object.values(item).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+
+        setfilteredHarga(filteredData);
+    }, [dataHarga, searchText]);
+
+    // Function to handle input change
+    const handleInputHargaChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setSearchText(event.target.value);
+    };
+
+    //SearchForFasilitas
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = dataFasilitas.filter((item) =>
+            Object.values(item).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+
+        setfilteredFasilitas(filteredData);
+    }, [dataFasilitas, searchText]);
+
+    // Function to handle input change
+    const handleInputFasilitasChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setSearchText(event.target.value);
+    };
+
+    const ItemsHargaPerPage = 5;
+    const ItemsFasilitasPerPage = 3;
+
+    const dataHargaToShow = filteredHarga.slice(
+        (currentPage - 1) * ItemsHargaPerPage,
+        currentPage * ItemsHargaPerPage
     );
 
-    const dataFasilitasToShow = dataFasilitas.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
+    const dataFasilitasToShow = filteredFasilitas.slice(
+        (currentPage - 1) * ItemsFasilitasPerPage,
+        currentPage * ItemsFasilitasPerPage
     );
 
-    console.log(dataFasilitasToShow);
+    const totalPageFasilitas = Math.ceil(
+        filteredFasilitas.length / ItemsFasilitasPerPage
+    );
+    const totalPageHarga = Math.ceil(filteredHarga.length / ItemsHargaPerPage);
 
-    const totalPages = Math.ceil(dataHarga.length / itemsPerPage);
+    const pagesFasilitasToDisplay = calculatePagesToDisplay(
+        currentPage,
+        totalPageFasilitas
+    );
+    const pagesHargaToDisplay = calculatePagesToDisplay(
+        currentPage,
+        totalPageHarga
+    );
+
+    function calculatePagesToDisplay(currentPage: number, totalPages: number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+
+            return Array.from(
+                { length: endPage - startPage + 1 },
+                (_, i) => i + startPage
+            );
+        }
+    }
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
@@ -64,7 +133,7 @@ export default function Fasilitas() {
 
     async function getDataharga() {
         try {
-            const res = await fetch("https://api.ricogann.com/api/harga");
+            const res = await fetch("http://localhost:5000/api/harga");
             const data = await res.json();
 
             return data;
@@ -75,7 +144,7 @@ export default function Fasilitas() {
 
     async function getDataFasilitas() {
         try {
-            const res = await fetch("https://api.ricogann.com/api/fasilitas");
+            const res = await fetch("http://localhost:5000/api/fasilitas");
             const data = await res.json();
 
             return data;
@@ -90,6 +159,8 @@ export default function Fasilitas() {
                 const dataFasilitas = await getDataFasilitas();
                 const dataHarga = await getDataharga();
 
+                console.log(dataFasilitas.data);
+
                 setDataFasilitas(dataFasilitas.data);
                 setDataharga(dataHarga.data);
             } catch (error) {
@@ -99,6 +170,8 @@ export default function Fasilitas() {
 
         fetchData();
     }, []);
+
+    console.log(dataFasilitas);
 
     const handleDeleteFasilitas = async (id: number) => {
         try {
@@ -145,7 +218,7 @@ export default function Fasilitas() {
     console.log(dataFasilitas);
 
     return (
-        <div className="flex overflow-x-hidden">
+        <div className="flex bg-[#FFFFFF] overflow-x-hidden">
             <div className="">
                 <SideBar />
             </div>
@@ -207,6 +280,8 @@ export default function Fasilitas() {
                                 className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                                 type="text"
                                 placeholder="Cari Data Fasilitas"
+                                value={searchText}
+                                onChange={handleInputFasilitasChange}
                             />
 
                             <button
@@ -223,6 +298,8 @@ export default function Fasilitas() {
                                 className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                                 type="text"
                                 placeholder="Cari Data Harga"
+                                value={searchText}
+                                onChange={handleInputHargaChange}
                             />
 
                             <button
@@ -266,7 +343,7 @@ export default function Fasilitas() {
                                                     key={index}
                                                 >
                                                     <div className="px-6 py-4 whitespace-no-wrap">
-                                                        {index + 1}
+                                                        {data.id_fasilitas}
                                                     </div>
                                                     <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
                                                         {data.nama}
@@ -304,8 +381,15 @@ export default function Fasilitas() {
                                                         )}
                                                     </div>
                                                     <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2">
-                                                            Edit
+                                                        <button
+                                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+                                                            onClick={() =>
+                                                                router.push(
+                                                                    `/fasilitas/detail/${data.id_fasilitas}`
+                                                                )
+                                                            }
+                                                        >
+                                                            Detail
                                                         </button>
                                                         <button
                                                             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
@@ -322,28 +406,25 @@ export default function Fasilitas() {
                                             )
                                         )}
                                     </div>
-                                    <div className="flex items-center justify-center">
+                                    <div className="flex items-center justify-center p-3">
                                         <div className="join">
-                                            {Array.from({
-                                                length: totalPages,
-                                            }).map((_, index) => (
-                                                <button
-                                                    key={index}
-                                                    className={`join-item btn ${
-                                                        currentPage ===
-                                                        index + 1
-                                                            ? "btn-active"
-                                                            : ""
-                                                    }`}
-                                                    onClick={() =>
-                                                        setCurrentPage(
-                                                            index + 1
-                                                        )
-                                                    }
-                                                >
-                                                    {index + 1}
-                                                </button>
-                                            ))}
+                                            {pagesFasilitasToDisplay.map(
+                                                (page) => (
+                                                    <button
+                                                        key={page}
+                                                        className={`join-item btn ${
+                                                            currentPage === page
+                                                                ? "btn-active"
+                                                                : ""
+                                                        }`}
+                                                        onClick={() =>
+                                                            setCurrentPage(page)
+                                                        }
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                )
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -414,28 +495,28 @@ export default function Fasilitas() {
                                                     )
                                                 )}
                                             </div>
-                                            <div className="flex items-center justify-center">
+                                            <div className="flex items-center justify-center p-3">
                                                 <div className="join">
-                                                    {Array.from({
-                                                        length: totalPages,
-                                                    }).map((_, index) => (
-                                                        <button
-                                                            key={index}
-                                                            className={`join-item btn ${
-                                                                currentPage ===
-                                                                index + 1
-                                                                    ? "btn-active"
-                                                                    : ""
-                                                            }`}
-                                                            onClick={() =>
-                                                                setCurrentPage(
-                                                                    index + 1
-                                                                )
-                                                            }
-                                                        >
-                                                            {index + 1}
-                                                        </button>
-                                                    ))}
+                                                    {pagesHargaToDisplay.map(
+                                                        (page) => (
+                                                            <button
+                                                                key={page}
+                                                                className={`join-item btn ${
+                                                                    currentPage ===
+                                                                    page
+                                                                        ? "btn-active"
+                                                                        : ""
+                                                                }`}
+                                                                onClick={() =>
+                                                                    setCurrentPage(
+                                                                        page
+                                                                    )
+                                                                }
+                                                            >
+                                                                {page}
+                                                            </button>
+                                                        )
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

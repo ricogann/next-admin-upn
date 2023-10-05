@@ -43,13 +43,66 @@ interface Account {
 
 export default function Booking() {
     const router = useRouter();
-
+    const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState("Booking");
     const [dataBooking, setDataBooking] = useState<Booking[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+    const [filteredBooking, setfilteredBooking] = useState<Booking[]>([]);
+
+    useEffect(() => {
+        // Filter the dataBooking array based on whether any field contains the searchText
+        const filteredData = dataBooking.filter((item) =>
+          Object.values(item).some((value) => {
+            if (typeof value === 'string' || typeof value === 'number' || value instanceof Date) {
+              // Convert non-string values to string for comparison
+              const stringValue = typeof value === 'string' ? value : String(value);
+      
+              // Perform case-insensitive search
+              return stringValue.toLowerCase().includes(searchText.toLowerCase());
+            }
+            return false; // Skip other types
+          })
+        );
+      
+        setfilteredBooking(filteredData);
+      }, [dataBooking, searchText]);
+    
+    // Function to handle input change
+    const handleInputBookingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
+
+    const itemsBookingPerPage = 5;
+    const totalPageBooking = Math.ceil(filteredBooking.length / itemsBookingPerPage);
+    const pagesBookingToDisplay = calculatePagesToDisplay(currentPage, totalPageBooking);
+
+    const dataBookingToShow = filteredBooking.slice(
+        (currentPage - 1) * itemsBookingPerPage,
+        currentPage * itemsBookingPerPage
+    );
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+    
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
+        }
+    }
 
     async function getDataBooking() {
         try {
@@ -79,12 +132,12 @@ export default function Booking() {
     console.log(dataBooking);
 
     return (
-        <div className="flex">
+        <div className="flex bg-[#FFFFFF]">
             <div className="">
                 <SideBar />
             </div>
 
-            <div className="flex bg-[#F7F8FA]">
+            <div className="flex flex-1 bg-[#F7F8FA]">
                 <div className="p-5">
                     <div className="flex flex-col items-start justify-center">
                         <div className="flex flex-row items-start">
@@ -97,7 +150,7 @@ export default function Booking() {
                         </h4>
                     </div>
 
-                    <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
+                    <div className="flex items-start mb-5 border-b border-[#E2E7EE]">
                         <a href="#" onClick={() => toggleTab("Booking")}>
                             <h2
                                 className={`text-[18] font-regular mb-3 mr-14 ${
@@ -112,18 +165,20 @@ export default function Booking() {
                     </div>
 
                     {activeTab === "Booking" && (
-                        <div className="flex flex-wrap overflow-hidden rounded-lg">
+                        <div className="flex flex-col overflow-hidden rounded-lg">
                             <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
                                 <input
                                     className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                                     type="text"
-                                    placeholder="Cari Data Harga"
+                                    placeholder="Cari Data Booking"
+                                    value={searchText}
+                                    onChange={handleInputBookingChange}
                                 />
                             </div>
                             <div className="divide-y divide-gray-200 rounded-lg overflow-hidden ">
                                 <div className="flex">
                                     <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider">
-                                        NO
+                                        ID
                                     </h1>
                                     <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[130px]">
                                         Nama Fasilitas
@@ -153,10 +208,10 @@ export default function Booking() {
 
                                 <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {dataBooking.map((data, index) => (
+                                        {dataBookingToShow.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">
-                                                    {index + 1}
+                                                    {data.id_pemesanan}
                                                 </div>
                                                 <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
                                                     {data.Fasilitas &&
@@ -228,7 +283,22 @@ export default function Booking() {
                                             </div>
                                         ))}
                                     </div>
-                                </div>
+                                </div>  
+                                <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesBookingToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
                             </div>
                         </div>
                     )}

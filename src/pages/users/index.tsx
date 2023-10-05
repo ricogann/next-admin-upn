@@ -61,10 +61,119 @@ export default function Users() {
     const [umum, setUmum] = useState<Umum[]>([]);
     const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
     const [dosen, setDosen] = useState<Dosen[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchText, setSearchText] = useState<string>('');
+    const [filteredUmum, setFilteredUmum] = useState<Umum[]>([]);
+    const [filteredDosen, setFilteredDosen] = useState<Dosen[]>([]);
+    const [filteredMahasiswa, setFilteredMahasiswa] = useState<Mahasiswa[]>([]);
+    
+    //SearchForUmum
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = umum.filter((item) =>
+          Object.values(item).some(
+            (value) =>
+              typeof value === 'string' &&
+              value.toLowerCase().includes(searchText.toLowerCase())
+          )
+        );
+    
+        setFilteredUmum(filteredData);
+      }, [umum, searchText]);
+    
+    // Function to handle input change
+    const handleInputUmumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
+      
+    //SearchForDosen
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredDataDosen = dosen.filter((item) =>
+            Object.values(item).some(
+            (value) =>
+                typeof value === 'string' &&
+                value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+        
+        setFilteredDosen(filteredDataDosen);
+        }, [dosen, searchText]);
+        
+        // Function to handle input change
+        const handleInputDosenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+        };
+    
+    //SearchForMahasiswa
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredDataMahasiswa = mahasiswa.filter((item) =>
+            Object.values(item).some(
+            (value) =>
+                typeof value === 'string' &&
+                value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+            
+        setFilteredMahasiswa(filteredDataMahasiswa);
+        }, [dosen, searchText]);
+            
+        // Function to handle input change
+        const handleInputMahasiswaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+        };
+    
+    const itemsPerPage = 5;
+
+    // Umum
+    const dataUmumToShow = filteredUmum.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Dosen
+    const dataDosenToShow = filteredDosen.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Dosen
+    const dataMahasiswaToShow = filteredMahasiswa.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
     };
+
+    const totalPagesUmum = Math.ceil(umum.length / itemsPerPage);
+    const totalPagesDosen = Math.ceil(dosen.length / itemsPerPage);
+    const totalPagesMahasiswa = Math.ceil(mahasiswa.length / itemsPerPage);
+
+    const pagesUmumToDisplay = calculatePagesToDisplay(currentPage, totalPagesUmum);
+    const pagesDosenToDisplay = calculatePagesToDisplay(currentPage, totalPagesDosen);
+    const pagesMahasiswaToDisplay = calculatePagesToDisplay(currentPage, totalPagesMahasiswa);
+
+    function calculatePagesToDisplay(currentPage : number, totalPages : number) {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        } else {
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+    
+            if (startPage < 1) {
+                startPage = 1;
+                endPage = 5;
+            } else if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = totalPages - 4;
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage);
+        }
+    }
 
     async function getUmum() {
         try {
@@ -302,20 +411,25 @@ export default function Users() {
                     </a>
                 </div>
 
-                <div className="relative rounded-full overflow-hidden mb-5">
+
+
+                <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
+                    
+                    {activeTab === "umum" && (
+                        
+                        <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                                            <div className="relative rounded-full overflow-hidden mb-5">
                     <input
                         className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
                         type="text"
-                        placeholder="Cari User"
+                        value={searchText}
+                        onChange={handleInputUmumChange}
+                        placeholder="Cari Users Umum"
                     />
                 </div>
-
-                <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
-                    {activeTab === "umum" && (
-                        <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
                             <div className="flex">
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
-                                    NO
+                                    ID
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     NIK
@@ -340,10 +454,10 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {umum.map((umum, index) => (
+                                {dataUmumToShow.map((umum, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
-                                            {index + 1}
+                                            {umum.id_account}
                                         </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
                                             {umum.NIK}
@@ -379,10 +493,14 @@ export default function Users() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDelete(umum.id)
+                                                        handleStatusAccount(
+                                                            umum.id_account,
+                                                            umum.id,
+                                                            false
+                                                        )
                                                     }
                                                 >
-                                                    Delete
+                                                    DeActive
                                                 </button>
                                             ) : (
                                                 <button
@@ -402,14 +520,39 @@ export default function Users() {
                                     </div>
                                 ))}
                             </div>
+                            <div className="flex items-center justify-center p-3">
+                <div className="join">
+                    {pagesUmumToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn  ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+                {/* Render pagesDosenToDisplay and pagesMahasiswaToDisplay similarly */}
+            </div>
                         </div>
                     )}
 
                     {activeTab === "dosen" && (
                         <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                            <div className="relative rounded-full overflow-hidden mb-5">
+                    <input
+                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                        type="text"
+                        value={searchText}
+                        onChange={handleInputDosenChange}
+                        placeholder="Cari Users Dosen"
+                    />
+                </div>
                             <div className="flex">
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
-                                    NO
+                                    ID
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
                                     NIP
@@ -434,10 +577,10 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {dosen.map((dosen, index) => (
+                                {dataDosenToShow.map((dosen, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
-                                            {index + 1}
+                                            {dosen.id_account}
                                         </div>
                                         <div className="px-6 py-4  w-[120px] text-center">
                                             {dosen.NIP}
@@ -473,12 +616,14 @@ export default function Users() {
                                                 <button
                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl "
                                                     onClick={() =>
-                                                        handleDeleteDosen(
-                                                            dosen.id
+                                                        handleStatusAccount(
+                                                            dosen.id_account,
+                                                            dosen.id,
+                                                            false
                                                         )
                                                     }
                                                 >
-                                                    Delete
+                                                    DeActive
                                                 </button>
                                             ) : (
                                                 <button
@@ -498,11 +643,35 @@ export default function Users() {
                                     </div>
                                 ))}
                             </div>
+                            <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesDosenToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn  ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
                         </div>
                     )}
 
                     {activeTab === "mahasiswa" && (
                         <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                            <div className="relative rounded-full overflow-hidden mb-5">
+                    <input
+                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                        type="text"
+                        value={searchText}
+                        onChange={handleInputMahasiswaChange}
+                        placeholder="Cari Users Mahasiswa"
+                    />
+                </div>
                             <div className="flex">
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-left text-xs leading-4 font-medium text-black uppercase w-[50px]">
                                     ID
@@ -538,10 +707,10 @@ export default function Users() {
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
                                 {
                                     // @ts-ignore
-                                    mahasiswa.map((mahasiswa, index) => (
+                                    dataMahasiswaToShow.map((mahasiswa, index) => (
                                         <div className="flex" key={index}>
                                             <div className="px-6 py-4 w-[50px]">
-                                                {index + 1}
+                                                {mahasiswa.id}
                                             </div>
                                             <div className="px-6 py-4 w-[120px] text-center text-[15px]">
                                                 {mahasiswa.nama}
@@ -589,12 +758,14 @@ export default function Users() {
                                                     <button
                                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
                                                         onClick={() =>
-                                                            handleDeleteMahasiswa(
-                                                                mahasiswa.id
+                                                            handleStatusAccount(
+                                                                mahasiswa.id_account,
+                                                                mahasiswa.id,
+                                                                false
                                                             )
                                                         }
                                                     >
-                                                        Delete
+                                                        DeActive
                                                     </button>
                                                 ) : (
                                                     <button
@@ -615,6 +786,21 @@ export default function Users() {
                                     ))
                                 }
                             </div>
+                            <div className="flex items-center justify-center p-3">
+                <div className="join">
+                {pagesMahasiswaToDisplay.map((page) => (
+                        <button
+                            key={page}
+                            className={`join-item btn  ${
+                                currentPage === page ? 'btn-active' : ''
+                            }`}
+                            onClick={() => setCurrentPage(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            </div>
                         </div>
                     )}
                 </div>

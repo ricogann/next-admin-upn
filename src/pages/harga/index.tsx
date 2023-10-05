@@ -14,6 +14,27 @@ export default function Harga() {
     const router = useRouter();
 
     const [dataharga, setDataharga] = useState<harga[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+    const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
+
+    //SearchForHarga
+    useEffect(() => {
+        // Filter the umum array based on whether any field contains the searchText
+        const filteredData = dataharga.filter((item) =>
+          Object.values(item).some(
+            (value) =>
+              typeof value === 'string' &&
+              value.toLowerCase().includes(searchText.toLowerCase())
+          )
+        );
+    
+        setfilteredHarga(filteredData);
+      }, [dataharga, searchText]);
+    
+    // Function to handle input change
+    const handleInputHargaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(event.target.value);
+    };
 
     const handlePage = (link: string) => {
         router.push(link);
@@ -21,7 +42,7 @@ export default function Harga() {
 
     async function getDataharga() {
         try {
-            const res = await fetch("https://api.ricogann.com/api/harga");
+            const res = await fetch("https://api.ricogann.com/api/harga" );
             const data = await res.json();
 
             return data;
@@ -47,7 +68,7 @@ export default function Harga() {
     const handleDelete = async (id: number) => {
         try {
             const res = await fetch(
-                `https://api.ricogann.com/api/harga/delete/${Number(id)}`,
+                `https://api.ricogann.com/api/harga/delete/${Number(id)}` ,
                 {
                     method: "DELETE",
                 }
