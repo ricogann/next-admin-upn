@@ -40,7 +40,8 @@ export default function Fasilitas() {
 
     async function getdataKamar() {
         try {
-            const res = await fetch("https://api.ricogann.com/api/kamar");
+            // const res = await fetch(`https://api.ricogann.com/api/kamar`);
+            const res = await fetch("http://localhost:5000/api/kamar");
             const data = await res.json();
 
             return data;
@@ -51,7 +52,8 @@ export default function Fasilitas() {
 
     async function getDataFasilitasById(id: number) {
         try {
-            const res = await fetch(`https://api.ricogann.com/api/fasilitas/${id}`);
+            // const res = await fetch(`https://api.ricogann.com/api/fasilitas/${id}`);
+            const res = await fetch(`http://localhost:5000/api/fasilitas/${id}`);
             const data = await res.json();
 
             return data;
@@ -73,7 +75,7 @@ export default function Fasilitas() {
             try {
                 const dataFasilitas = await getDataFasilitasById(Number(id));
 
-                return setDataFasilitas(dataFasilitas.data);
+                setDataFasilitas(dataFasilitas.data);
 
 
             } catch (error) {
@@ -85,13 +87,12 @@ export default function Fasilitas() {
             try {
                 const dataKamar = await getdataKamar();
 
-                return setDataKamar(dataKamar.data);
+                setDataKamar(dataKamar.data);
 
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
         }
-
         fetchDataKamar()
         fetchData(Number(id))
         
@@ -195,6 +196,7 @@ export default function Fasilitas() {
                         </div>
                                                         <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
+                                       
                                         {/* {dataKamar.map((data, index) => (
                                             <div className="flex" key={index}>
                                                 <div className="px-6 py-4 whitespace-no-wrap">

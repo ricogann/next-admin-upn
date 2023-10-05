@@ -24,7 +24,7 @@ export default function SideBar() {
         { title: "Booking", src: BiCalendar, link: "/booking" },
         { title: "Data Fasilitas", src: FaLandmark, link: "/fasilitas" },
         { title: "Data Users", src: BsFillPeopleFill, link: "/users" },
-        { title: "Miscellaneous", src: MdMiscellaneousServices, link: "/miscellaneous" },
+        { title: "Miscellaneous", src: MdMiscellaneousServices, link: "/miscellaneous" }, 
         {
             title: "Notification",
             src: IoMdNotifications,

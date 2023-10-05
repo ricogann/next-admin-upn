@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 interface misc {
-    id_misc : number;
     nama_instansi: string;
     logo_instansi: number;
     no_hp : string;
@@ -59,7 +58,7 @@ export default function Miscellaneous() {
                     <div className="flex flex-col items-start justify-center">
                         <div className="flex flex-row items-start">
                             <h1 className="text-[45px] font-bold mr-14">
-                                Miscellaneous
+                                Edit Miscellaneous
                             </h1>
                         </div>
                     </div>
@@ -147,12 +146,7 @@ export default function Miscellaneous() {
                                     </div>
                                
 
-                                 <button 
-                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
-                                                                                     onClick={() => 
-                                                        router.push(`/miscellaneous/edit`)}
-                                                    
-                                 >
+                                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2">
                                     Edit Miscellaneous
                                 </button>
                             </div>

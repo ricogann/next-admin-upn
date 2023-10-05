@@ -42,7 +42,7 @@ export default function Harga() {
 
     async function getDataharga() {
         try {
-            const res = await fetch("https://api.ricogann.com/api/harga");
+            const res = await fetch("https://api.ricogann.com/api/harga" );
             const data = await res.json();
 
             return data;
@@ -68,7 +68,7 @@ export default function Harga() {
     const handleDelete = async (id: number) => {
         try {
             const res = await fetch(
-                `https://api.ricogann.com/api/harga/delete/${Number(id)}`,
+                `https://api.ricogann.com/api/harga/delete/${Number(id)}` ,
                 {
                     method: "DELETE",
                 }
