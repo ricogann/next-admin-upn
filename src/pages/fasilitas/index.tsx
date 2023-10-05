@@ -50,6 +50,8 @@ export default function Fasilitas() {
         currentPage * itemsPerPage
     );
 
+    console.log(dataFasilitasToShow);
+
     const totalPages = Math.ceil(dataHarga.length / itemsPerPage);
 
     const toggleTab = (tab: string) => {
@@ -139,6 +141,8 @@ export default function Fasilitas() {
             console.log(error);
         }
     };
+
+    console.log(dataFasilitas);
 
     return (
         <div className="flex overflow-x-hidden">
@@ -255,73 +259,93 @@ export default function Fasilitas() {
 
                                 <div className="bg-white divide-y divide-gray-200">
                                     <div className="">
-                                        {dataFasilitasToShow.map((data, index) => (
-                                            <div className="flex" key={index}>
-                                                <div className="px-6 py-4 whitespace-no-wrap">
-                                                    {index + 1}
-                                                </div>
-                                                <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
-                                                    {data.nama}
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[200px]">
-                                                    {data.deskripsi}
-                                                </div>
-                                                <div className="px-6 py-4 break-all w-[200px]">
-                                                    {data.alamat}
-                                                </div>
-                                                <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
-                                                    {JSON.parse(data.foto).map(
-                                                        (
-                                                            foto: string,
-                                                            index: number
-                                                        ) => (
-                                                            <div
-                                                                className=""
-                                                                key={index}
-                                                            >
-                                                                <Image
-                                                                    src={`https://api.ricogann.com/assets/${foto}`}
-                                                                    alt="foto"
-                                                                    width={100}
-                                                                    height={100}
-                                                                />
-                                                            </div>
-                                                        )
-                                                    )}
-                                                </div>
-                                                <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2">
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
-                                                        onClick={() =>
-                                                            handleDeleteFasilitas(
-                                                                data.id_fasilitas
+                                        {dataFasilitasToShow.map(
+                                            (data, index) => (
+                                                <div
+                                                    className="flex"
+                                                    key={index}
+                                                >
+                                                    <div className="px-6 py-4 whitespace-no-wrap">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
+                                                        {data.nama}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                        {data.deskripsi}
+                                                    </div>
+                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                        {data.alamat}
+                                                    </div>
+                                                    <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
+                                                        {JSON.parse(
+                                                            data.foto
+                                                        ).map(
+                                                            (
+                                                                foto: string,
+                                                                index: number
+                                                            ) => (
+                                                                <div
+                                                                    className=""
+                                                                    key={index}
+                                                                >
+                                                                    <Image
+                                                                        src={`https://api.ricogann.com/assets/${foto}`}
+                                                                        alt="foto"
+                                                                        width={
+                                                                            100
+                                                                        }
+                                                                        height={
+                                                                            100
+                                                                        }
+                                                                    />
+                                                                </div>
                                                             )
-                                                        }
-                                                    >
-                                                        Delete
-                                                    </button>
+                                                        )}
+                                                    </div>
+                                                    <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
+                                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2">
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+                                                            onClick={() =>
+                                                                handleDeleteFasilitas(
+                                                                    data.id_fasilitas
+                                                                )
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        )}
                                     </div>
                                     <div className="flex items-center justify-center">
-                                    <div className="join">
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                        <button
-                            key={index}
-                            className={`join-item btn ${
-                                currentPage === index + 1 ? 'btn-active' : ''
-                            }`}
-                            onClick={() => setCurrentPage(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                    </div>
-                </div>
+                                        <div className="join">
+                                            {Array.from({
+                                                length: totalPages,
+                                            }).map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    className={`join-item btn ${
+                                                        currentPage ===
+                                                        index + 1
+                                                            ? "btn-active"
+                                                            : ""
+                                                    }`}
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            index + 1
+                                                        )
+                                                    }
+                                                >
+                                                    {index + 1}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -391,20 +415,29 @@ export default function Fasilitas() {
                                                 )}
                                             </div>
                                             <div className="flex items-center justify-center">
-                <div className="join">
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                        <button
-                            key={index}
-                            className={`join-item btn ${
-                                currentPage === index + 1 ? 'btn-active' : ''
-                            }`}
-                            onClick={() => setCurrentPage(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                </div>
-            </div>
+                                                <div className="join">
+                                                    {Array.from({
+                                                        length: totalPages,
+                                                    }).map((_, index) => (
+                                                        <button
+                                                            key={index}
+                                                            className={`join-item btn ${
+                                                                currentPage ===
+                                                                index + 1
+                                                                    ? "btn-active"
+                                                                    : ""
+                                                            }`}
+                                                            onClick={() =>
+                                                                setCurrentPage(
+                                                                    index + 1
+                                                                )
+                                                            }
+                                                        >
+                                                            {index + 1}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
