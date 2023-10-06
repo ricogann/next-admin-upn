@@ -216,7 +216,7 @@ export default function Fasilitas() {
     };
 
     console.log(dataFasilitas);
-
+    console.log(dataHarga);
     return (
         <div className="flex bg-[#FFFFFF] overflow-x-hidden">
             <div className="">

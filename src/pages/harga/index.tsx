@@ -2,6 +2,7 @@ import { useState, useEffect, MouseEventHandler } from "react";
 import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { data } from "autoprefixer";
 
 interface harga {
     id: number;
@@ -85,6 +86,8 @@ export default function Harga() {
             console.log(error);
         }
     };
+
+    console.log(dataharga);
 
     return (
         <div className="flex overflow-x-hidden">

@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import SideBar from "@/components/sidebar";
 import { Input } from "@/components/input";
 import { Textarea } from "@/components/textarea";
@@ -6,11 +6,23 @@ import { InputFiles } from "@/components/input-files";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
 
+
+interface Fasilitas {
+    id_fasilitas: number;
+    nama: string;
+    deskripsi: string;
+    alamat: string;
+    biaya: number;
+    foto: string;
+}
+
 export default function Create() {
     const router = useRouter();
 
     const [nama, setnama] = useState("");
     const [harga, setharga] = useState("");
+    const [id_fasilitas, setidfasilitas] = useState("");
+    const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
 
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,8 +30,16 @@ export default function Create() {
             setnama(event.target.value);
         } else if (event.target.name === "harga") {
             setharga(event.target.value);
+        } else if (event.target.name === "id_fasilitas") {
+            setidfasilitas(event.target.value);
         }
     };
+
+    const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (event.target.name === 'id_fasilitas') {
+      setidfasilitas(event.target.value);
+    }
+  };
 
     // const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     //     setDeskripsiFasilitas(event.target.value);
@@ -30,26 +50,52 @@ export default function Create() {
 
     //     setFotoFasilitas([...fotoFasilitas, ...files]);
     // };
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const dataFaslitas = await getDataFasilitas();
+
+                setDataFasilitas(dataFaslitas.data);
+            } catch (error) {
+                console.error("error fetching data fasilitas ", error);
+            }
+        }
+        fetchData();
+    }, []);
+    
 
     const sendData = async () => {
         if (
             nama === "" ||
-            harga === "" 
+            harga === "" ||
+            id_fasilitas === ""
         ) {
             alert("Mohon isi semua field!");
             return;
         } else {
             const data = new FormData();
             data.append("nama", nama);
-            data.append("alamat", harga);
+            data.append("harga", harga);
+            data.append("id_fasilitas", id_fasilitas);
             const res = await addHarga(data);
         }
     };
 
+    async function getDataFasilitas() {
+        try {
+            const res = await fetch("https://api.ricogann.com/api/fasilitas");
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async function addHarga(data: FormData) {
         try {
             console.log(data);
-            const res = await fetch("http://localhost:5000/api/harga/add", {
+            const res = await fetch("https://api.ricogann.com/api/harga/add", {
                 method: "POST",
                 body: data,
             });
@@ -63,6 +109,10 @@ export default function Create() {
             console.log(error);
         }
     }
+
+    console.log(dataFasilitas);
+
+    
 
     // console.log(
     //     nama,
@@ -107,18 +157,21 @@ export default function Create() {
                             <div className="flex flex-col p-4">
                                 <h1 className="px-4">Data Fasilitas</h1>
                                 <div className="flex flex-row p-4 gap-5">
-                                <select
-  name="id_fasilitas"
-  className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
->
-  <option value="" disabled selected>
-    Type Fasilitas
-  </option>
-  <option value="option1">Option 1</option>
-  <option value="option2">Option 2</option>
-  <option value="option3">Option 3</option>
-</select>
-
+<select
+      name="id_fasilitas"
+      className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
+      placeholder="Fasilitas"
+      onChange={handleSelectChange}
+    >
+      <option value="" disabled selected>
+        Type Fasilitas
+      </option>
+      {dataFasilitas.map((fasilitas) => (
+        <option value={fasilitas.id_fasilitas}>
+          {fasilitas.nama}
+        </option>
+      ))}
+    </select>
                                     <Input
                                         name="nama"
                                         type="text"
