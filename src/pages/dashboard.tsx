@@ -4,6 +4,7 @@ import Image from "next/image";
 import _booking from "@/services/booking.service";
 import _users from "@/services/users.service";
 import _lib from "@/lib";
+import { io } from "socket.io-client";
 
 interface Mahasiswa {
     id: number;
@@ -69,6 +70,19 @@ export default function Dashboard() {
 
     const [buktiToShow, setBuktiToShow] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+    const [realTimeMessage, setRealTimeMessage] = useState<string>("");
+
+    useEffect(() => {
+        const socket = io("http://api.ricogann.com:5000", {
+            transports: ["websocket", "polling", "flashsocket"],
+        });
+        socket.on("connect", () => {
+            console.log("connected");
+        });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const booking = new _booking();
     const users = new _users();
@@ -152,7 +166,7 @@ export default function Dashboard() {
 
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [realTimeMessage]);
 
     const isTabActive = (tab: string) => activeTab === tab;
 
