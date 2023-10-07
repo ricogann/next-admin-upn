@@ -6,7 +6,6 @@ import { InputFiles } from "@/components/input-files";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
 
-
 interface Fasilitas {
     id_fasilitas: number;
     nama: string;
@@ -24,7 +23,6 @@ export default function Create() {
     const [id_fasilitas, setidfasilitas] = useState("");
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
 
-
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama") {
             setnama(event.target.value);
@@ -36,10 +34,10 @@ export default function Create() {
     };
 
     const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.name === 'id_fasilitas') {
-      setidfasilitas(event.target.value);
-    }
-  };
+        if (event.target.name === "id_fasilitas") {
+            setidfasilitas(event.target.value);
+        }
+    };
 
     // const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     //     setDeskripsiFasilitas(event.target.value);
@@ -62,14 +60,9 @@ export default function Create() {
         }
         fetchData();
     }, []);
-    
 
     const sendData = async () => {
-        if (
-            nama === "" ||
-            harga === "" ||
-            id_fasilitas === ""
-        ) {
+        if (nama === "" || harga === "" || id_fasilitas === "") {
             alert("Mohon isi semua field!");
             return;
         } else {
@@ -111,8 +104,6 @@ export default function Create() {
     }
 
     console.log(dataFasilitas);
-
-    
 
     // console.log(
     //     nama,
@@ -157,21 +148,28 @@ export default function Create() {
                             <div className="flex flex-col p-4">
                                 <h1 className="px-4">Data Fasilitas</h1>
                                 <div className="flex flex-row p-4 gap-5">
-<select
-      name="id_fasilitas"
-      className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
-      placeholder="Fasilitas"
-      onChange={handleSelectChange}
-    >
-      <option value="" disabled selected>
-        Type Fasilitas
-      </option>
-      {dataFasilitas.map((fasilitas) => (
-        <option value={fasilitas.id_fasilitas}>
-          {fasilitas.nama}
-        </option>
-      ))}
-    </select>
+                                    <select
+                                        name="id_fasilitas"
+                                        className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
+                                        placeholder="Fasilitas"
+                                        onChange={handleSelectChange}
+                                    >
+                                        <option value="" disabled selected>
+                                            Type Fasilitas
+                                        </option>
+                                        {dataFasilitas.map(
+                                            (fasilitas, index) => (
+                                                <option
+                                                    key={index}
+                                                    value={
+                                                        fasilitas.id_fasilitas
+                                                    }
+                                                >
+                                                    {fasilitas.nama}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
                                     <Input
                                         name="nama"
                                         type="text"
@@ -187,7 +185,6 @@ export default function Create() {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-
 
                                 <Submit
                                     message="SUBMIT"
