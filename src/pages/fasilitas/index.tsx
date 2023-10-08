@@ -2,6 +2,9 @@ import { useState, useEffect, MouseEventHandler } from "react";
 import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import _lib from "@/lib";
+import _fasilitas from "@/services/fasilitas.service";
+import _harga from "@/services/harga.service";
 
 interface Fasilitas {
     id_fasilitas: number;
@@ -17,6 +20,7 @@ interface harga {
     id_fasilitas: number;
     nama: string;
     harga: number;
+    Fasilitas: Fasilitas;
 }
 
 export default function Fasilitas() {
@@ -30,11 +34,11 @@ export default function Fasilitas() {
     const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
     const [filteredFasilitas, setfilteredFasilitas] = useState<Fasilitas[]>([]);
 
-    console.log(dataFasilitas);
+    const lib = new _lib();
+    const fasilitas = new _fasilitas();
+    const harga = new _harga();
 
-    //SearchForHarga
     useEffect(() => {
-        // Filter the umum array based on whether any field contains the searchText
         const filteredData = dataHarga.filter((item) =>
             Object.values(item).some(
                 (value) =>
@@ -46,16 +50,13 @@ export default function Fasilitas() {
         setfilteredHarga(filteredData);
     }, [dataHarga, searchText]);
 
-    // Function to handle input change
     const handleInputHargaChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         setSearchText(event.target.value);
     };
 
-    //SearchForFasilitas
     useEffect(() => {
-        // Filter the umum array based on whether any field contains the searchText
         const filteredData = dataFasilitas.filter((item) =>
             Object.values(item).some(
                 (value) =>
@@ -67,7 +68,6 @@ export default function Fasilitas() {
         setfilteredFasilitas(filteredData);
     }, [dataFasilitas, searchText]);
 
-    // Function to handle input change
     const handleInputFasilitasChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -92,36 +92,14 @@ export default function Fasilitas() {
     );
     const totalPageHarga = Math.ceil(filteredHarga.length / ItemsHargaPerPage);
 
-    const pagesFasilitasToDisplay = calculatePagesToDisplay(
+    const pagesFasilitasToDisplay = lib.calculatePagesToDisplay(
         currentPage,
         totalPageFasilitas
     );
-    const pagesHargaToDisplay = calculatePagesToDisplay(
+    const pagesHargaToDisplay = lib.calculatePagesToDisplay(
         currentPage,
         totalPageHarga
     );
-
-    function calculatePagesToDisplay(currentPage: number, totalPages: number) {
-        if (totalPages <= 5) {
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
-        } else {
-            let startPage = currentPage - 2;
-            let endPage = currentPage + 2;
-
-            if (startPage < 1) {
-                startPage = 1;
-                endPage = 5;
-            } else if (endPage > totalPages) {
-                endPage = totalPages;
-                startPage = totalPages - 4;
-            }
-
-            return Array.from(
-                { length: endPage - startPage + 1 },
-                (_, i) => i + startPage
-            );
-        }
-    }
 
     const toggleTab = (tab: string) => {
         setActiveTab(tab);
@@ -131,37 +109,13 @@ export default function Fasilitas() {
         router.push(link);
     };
 
-    async function getDataharga() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/harga");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async function getDataFasilitas() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/fasilitas");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(() => {
         async function fetchData() {
             try {
-                const dataFasilitas = await getDataFasilitas();
-                const dataHarga = await getDataharga();
+                const dataFasilitas = await fasilitas.getFasilitas();
+                const dataHarga = await harga.getDataharga();
 
-                console.log(dataFasilitas.data);
-
-                setDataFasilitas(dataFasilitas.data);
+                setDataFasilitas(dataFasilitas);
                 setDataharga(dataHarga.data);
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -170,8 +124,6 @@ export default function Fasilitas() {
 
         fetchData();
     }, []);
-
-    console.log(dataFasilitas);
 
     const handleDeleteFasilitas = async (id: number) => {
         try {
@@ -196,14 +148,7 @@ export default function Fasilitas() {
 
     const handleDeleteHarga = async (id: number) => {
         try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/Harga/delete/${Number(id)}`,
-                {
-                    method: "DELETE",
-                }
-            );
-
-            const data = await res.json();
+            const data = await harga.deleteHarga(id);
 
             if (data.status === true) {
                 window.location.reload();
@@ -214,16 +159,13 @@ export default function Fasilitas() {
             console.log(error);
         }
     };
-
-    console.log(dataFasilitas);
-    console.log(dataHarga);
     return (
         <div className="flex bg-[#FFFFFF] overflow-x-hidden">
             <div className="">
                 <SideBar />
             </div>
 
-            <div className="w-full p-10 flex bg-[#F7F8FA]">
+            <div className="w-full p-5 flex bg-[#F7F8FA] text-black">
                 <div className="p-5">
                     {activeTab === "fasilitas" && (
                         <div className="flex flex-col items-start justify-center">
@@ -320,14 +262,11 @@ export default function Fasilitas() {
                                     <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
                                         Nama Fasilitas
                                     </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px]">
                                         Deskripsi
                                     </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[350px]">
                                         Alamat
-                                    </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[130px]">
-                                        Foto
                                     </h1>
                                     <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
                                         Action
@@ -339,7 +278,7 @@ export default function Fasilitas() {
                                         {dataFasilitasToShow.map(
                                             (data, index) => (
                                                 <div
-                                                    className="flex"
+                                                    className="flex justify-between"
                                                     key={index}
                                                 >
                                                     <div className="px-6 py-4 whitespace-no-wrap">
@@ -348,37 +287,11 @@ export default function Fasilitas() {
                                                     <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
                                                         {data.nama}
                                                     </div>
-                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                    <div className="px-6 py-4 break-all w-[400px]">
                                                         {data.deskripsi}
                                                     </div>
-                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                    <div className="px-6 py-4 break-all w-[300px]">
                                                         {data.alamat}
-                                                    </div>
-                                                    <div className="px-6 py-4 whitespace-no-wrap w-[130px]">
-                                                        {JSON.parse(
-                                                            data.foto
-                                                        ).map(
-                                                            (
-                                                                foto: string,
-                                                                index: number
-                                                            ) => (
-                                                                <div
-                                                                    className=""
-                                                                    key={index}
-                                                                >
-                                                                    <Image
-                                                                        src={`https://api.ricogann.com/assets/${foto}`}
-                                                                        alt="foto"
-                                                                        width={
-                                                                            100
-                                                                        }
-                                                                        height={
-                                                                            100
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                            )
-                                                        )}
                                                     </div>
                                                     <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
                                                         <button
@@ -441,10 +354,10 @@ export default function Fasilitas() {
                                                 ID
                                             </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
-                                                ID_Fasilitas
+                                                Nama Fasilitas
                                             </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
-                                                Nama
+                                                Nama Harga
                                             </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
                                                 Harga
@@ -467,7 +380,9 @@ export default function Fasilitas() {
                                                             </div>
                                                             <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
                                                                 {
-                                                                    data.id_fasilitas
+                                                                    data
+                                                                        .Fasilitas
+                                                                        .nama
                                                                 }
                                                             </div>
                                                             <div className="px-6 py-4 break-all w-[200px]">
@@ -477,7 +392,14 @@ export default function Fasilitas() {
                                                                 {data.harga}
                                                             </div>
                                                             <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2">
+                                                                <button
+                                                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+                                                                    onClick={() =>
+                                                                        router.push(
+                                                                            `/harga/edit/${data.id}`
+                                                                        )
+                                                                    }
+                                                                >
                                                                     Edit
                                                                 </button>
                                                                 <button

@@ -74,13 +74,18 @@ export default function Dashboard() {
     const [realTimeMessage, setRealTimeMessage] = useState<string>("");
 
     useEffect(() => {
-        const socket = io("http://api.ricogann.com:5000", {
-            transports: ["websocket", "polling", "flashsocket"],
-        });
+        const socket = io("https://api.ricogann.com");
+
         socket.on("connect", () => {
             console.log("connected");
         });
 
+        socket.on("join", (data: string) => {
+            console.log(data);
+        });
+        // socket.on("", () => {
+        //     console.log();
+        // });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

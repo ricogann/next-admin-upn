@@ -15,75 +15,82 @@ interface Fasilitas {
     foto: string;
 }
 
-export default function Create() {
-    const router = useRouter();
+interface harga {
+    id: number;
+    id_fasilitas: number;
+    nama: string;
+    harga: number;
+    Fasilitas: Fasilitas;
+}
 
-    const [nama, setnama] = useState("");
-    const [harga, setharga] = useState("");
-    const [id_fasilitas, setidfasilitas] = useState("");
-    const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
+export default function Edit() {
+    const router = useRouter();
+    const [nama, setNama] = useState("");
+    const [harga, setHarga] = useState(0);
+    const [fasilitas, setFasilitas] = useState("");
+    const [id, setId] = useState("");
+
+    useEffect(() => {
+        if (router.isReady) {
+            setId(router.query.id as string);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [router.isReady]);
 
     const hargaService = new _harga();
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama") {
-            setnama(event.target.value);
+            setNama(event.target.value);
         } else if (event.target.name === "harga") {
-            setharga(event.target.value);
-        } else if (event.target.name === "id_fasilitas") {
-            setidfasilitas(event.target.value);
-        }
-    };
-
-    const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        if (event.target.name === "id_fasilitas") {
-            setidfasilitas(event.target.value);
+            setHarga(Number(event.target.value));
         }
     };
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const dataFaslitas = await getDataFasilitas();
+                const response: harga = await hargaService.getDatahargaById(
+                    Number(id)
+                );
 
-                setDataFasilitas(dataFaslitas.data);
+                setFasilitas(response.Fasilitas.nama);
+                setNama(response.nama);
+                setHarga(response.harga);
             } catch (error) {
-                console.error("error fetching data fasilitas ", error);
+                console.error("error fetching data harga ", error);
+                throw error;
             }
         }
-        fetchData();
-    }, []);
+
+        if (id !== "") {
+            fetchData();
+        }
+    }, [id]);
 
     const sendData = async () => {
-        if (nama === "" || harga === "" || id_fasilitas === "") {
+        if (nama === "" || harga === 0) {
             alert("Mohon isi semua field!");
             return;
-        } else {
-            const res = await hargaService.addHarga({
-                nama,
-                harga,
-                id_fasilitas,
-            });
+        }
 
-            if (res.status === true) {
-                alert("Berhasil menambahkan harga fasilitas!");
+        try {
+            const data = {
+                nama: nama,
+                harga: harga,
+            };
+
+            const response = await hargaService.updateHarga(Number(id), data);
+
+            if (response.status === true) {
+                alert("Data berhasil diubah!");
                 router.push("/fasilitas");
-            } else {
-                alert("Gagal menambahkan harga fasilitas!");
             }
+        } catch (error) {
+            console.error(error);
         }
     };
-
-    async function getDataFasilitas() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/fasilitas");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     return (
         <div className="flex">
@@ -95,11 +102,11 @@ export default function Create() {
                     <div className="flex flex-col items-start justify-center">
                         <div className="flex flex-row items-start">
                             <h1 className="text-[40px] font-bold mr-14">
-                                Form Add Harga Fasilitas
+                                Form Edit Harga Fasilitas
                             </h1>
                         </div>
                         <h4 className="text-[12] font-regular mb-14 text-dark-whiteText">
-                            Form Tambah Harga Fasilitas By Admin
+                            Form Edit Harga Fasilitas By Admin
                         </h4>
                     </div>
 
@@ -108,7 +115,7 @@ export default function Create() {
                             <h2
                                 className={`text-[18] font-regular mb-3 mr-14 font-bold border-b-2 border-[#FFA101]`}
                             >
-                                Form Tambah Harga Fasilitas
+                                Form Edit Harga Fasilitas
                             </h2>
                         </button>
                     </div>
@@ -118,37 +125,20 @@ export default function Create() {
                             <div className="flex flex-col p-4">
                                 <h1 className="px-4">Data Fasilitas</h1>
                                 <div className="flex flex-row p-4 gap-5">
-                                    <select
-                                        name="id_fasilitas"
-                                        className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
-                                        placeholder="Fasilitas"
-                                        onChange={handleSelectChange}
-                                    >
-                                        <option value="" disabled selected>
-                                            Type Fasilitas
-                                        </option>
-                                        {dataFasilitas.map(
-                                            (fasilitas, index) => (
-                                                <option
-                                                    key={index}
-                                                    value={
-                                                        fasilitas.id_fasilitas
-                                                    }
-                                                >
-                                                    {fasilitas.nama}
-                                                </option>
-                                            )
-                                        )}
-                                    </select>
-                                    <Input
+                                    <h1 className="px-5 py-2 text-gray-700 bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200">
+                                        {fasilitas}
+                                    </h1>
+                                    <input
                                         name="nama"
+                                        value={nama}
                                         type="text"
                                         className="px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
                                         placeholder="Nama..."
                                         onChange={handleInputChange}
                                     />
-                                    <Input
+                                    <input
                                         name="harga"
+                                        value={harga}
                                         type="number"
                                         className="px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
                                         placeholder="Harga..."
