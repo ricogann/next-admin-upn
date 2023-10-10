@@ -5,6 +5,7 @@ import _booking from "@/services/booking.service";
 import _users from "@/services/users.service";
 import _lib from "@/lib";
 import { io } from "socket.io-client";
+import useSound from "node_modules/use-sound/dist";
 
 interface Mahasiswa {
     id: number;
@@ -72,6 +73,15 @@ export default function Dashboard() {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const [realTimeMessage, setRealTimeMessage] = useState<string>("");
+    const [accountRealTimeMessage, setAccountRealTimeMessage] =
+        useState<string>("");
+
+    const playNotif = () => {
+        const audio = document.getElementById(
+            "notif-sound"
+        ) as HTMLAudioElement;
+        audio.play();
+    };
 
     useEffect(() => {
         const socket = io("https://api.ricogann.com");
@@ -80,12 +90,15 @@ export default function Dashboard() {
             console.log("connected");
         });
 
-        socket.on("join", (data: string) => {
-            console.log(data);
+        socket.on("newBooking", (message: string) => {
+            playNotif();
+            setRealTimeMessage(message);
         });
-        // socket.on("", () => {
-        //     console.log();
-        // });
+
+        socket.on("newUser", (message: string) => {
+            playNotif();
+            setAccountRealTimeMessage(message);
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -129,11 +142,6 @@ export default function Dashboard() {
         async function fetchData() {
             try {
                 const dataUsers = await users.getUsers();
-                const dataBooking = await booking.getPemesanan();
-
-                const filter = dataBooking.filter(
-                    (item: Pemesanan) => item.status === "Menunggu Konfirmasi"
-                );
 
                 const dataUsersFilter = dataUsers.filter(
                     (item: Account) => item.status_account === false
@@ -158,11 +166,30 @@ export default function Dashboard() {
                     }
                 );
 
-                setAllData(dataBooking);
                 setBuktiIdentitas(accountBukti);
                 setDataUsers(dataUsersFilter);
-                setDataPemesanan(filter);
                 setTotalSum(dataUsers.length);
+            } catch (error) {
+                console.error("error fetching data fasilitas ", error);
+                throw error;
+            }
+        }
+
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accountRealTimeMessage]);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const dataBooking = await booking.getPemesanan();
+
+                const filter = dataBooking.filter(
+                    (item: Pemesanan) => item.status === "Menunggu Konfirmasi"
+                );
+
+                setAllData(dataBooking);
+                setDataPemesanan(filter);
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -548,8 +575,15 @@ export default function Dashboard() {
         setBuktiToShow(bukti);
         setIsModalOpen(!isModalOpen);
     };
+
     return (
         <div className="flex bg-[#FFFFFF] text-black relative">
+            <audio
+                controls
+                src="/notification-sound.mp3"
+                className="hidden"
+                id="notif-sound"
+            />
             {isModalOpen && (
                 <div className="w-full h-full fixed flex justify-center items-center z-50 backdrop-blur-sm">
                     <div className="rounded-lg p-10 flex flex-col justify-center items-center">

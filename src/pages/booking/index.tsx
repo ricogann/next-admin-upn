@@ -3,6 +3,7 @@ import SideBar from "@/components/sidebar";
 import Image from "next/image";
 import _booking from "@/services/booking.service";
 import _lib from "@/lib";
+import { io } from "socket.io-client";
 
 interface Booking {
     Fasilitas: Fasilitas;
@@ -53,8 +54,23 @@ export default function Booking() {
     const [buktiToShow, setBuktiToShow] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+    const [realTimeMessage, setRealTimeMessage] = useState<string>("");
+
     const booking = new _booking();
     const lib = new _lib();
+
+    useEffect(() => {
+        const socket = io("https://api.ricogann.com");
+
+        socket.on("connect", () => {
+            console.log("connected");
+        });
+
+        socket.on("newPreBooking", (message: string) => {
+            setRealTimeMessage(message);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         // Filter the dataBooking array based on whether any field contains the searchText
@@ -137,7 +153,7 @@ export default function Booking() {
         }
 
         fetchData();
-    }, []);
+    }, [realTimeMessage]);
 
     const statusCheck = (status: string) => {
         if (status === "Menunggu Pembayaran" || status === "Dibatalkan") {
