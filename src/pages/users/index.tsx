@@ -404,7 +404,10 @@ export default function Users() {
                                             </div>
                                         </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
-                                            {umum.no_telp}
+                                            <a href={`https://wa.me/${umum.no_telp}?text=Halo%20${umum.nama},%20Kami%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                            >
+                                                {umum.no_telp}
+                                            </a>
                                         </div>
                                         <div className="px-6 py-4  w-[150px] flex items-center justify-center">
                                             <div
@@ -583,7 +586,10 @@ export default function Users() {
                                             </div>
                                         </div>
                                         <div className="px-6 py-4  w-[150px] text-center">
-                                            {dosen.no_telp}
+                                            <a href={`https://wa.me/${dosen.no_telp}?text=Halo%20${dosen.nama}%20Saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                            >
+                                                {dosen.no_telp}
+                                            </a>
                                         </div>
                                         <div className="px-6 py-4  w-[150px] flex items-center justify-center">
                                             <div
@@ -761,8 +767,11 @@ export default function Users() {
                                             {mahasiswa.Fakultas.nama_fakultas} ,{" "}
                                             {mahasiswa.Prodi.nama_prodi}
                                         </div>
-                                        <div className="px-6 py-4 text-[15px] w-[150px]">
-                                            {mahasiswa.no_telp}
+                                        <div className="px-6 py-4 text-[15px] w-[150px] ">
+                                            <a href={`https://wa.me/${mahasiswa.no_telp}?text=Halo%20${mahasiswa.nama}Halo,%20saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                            >
+                                                {mahasiswa.no_telp}
+                                            </a>
                                         </div>
                                         <div className="px-6 py-4 text-[15px] w-[140px]">
                                             <div
