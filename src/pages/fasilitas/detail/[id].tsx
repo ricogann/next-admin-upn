@@ -12,6 +12,7 @@ import { InputFiles } from "@/components/input-files";
 import { Submit } from "@/components/submit-button";
 import { Input } from "@/components/input";
 import _fasilitas from "@/services/fasilitas.service";
+import _booking from "@/services/booking.service";
 
 interface Fasilitas {
     id_fasilitas: number;
@@ -48,8 +49,14 @@ export default function Fasilitas() {
     const [fotoFasilitas, setFotoFasilitas] = useState<string[]>([]);
     const [id, setId] = useState("");
     const [editStatus, setEditStatus] = useState(false);
+    const [editKamarStatus, setEditKamarStatus] = useState(false);
+    const [indexEditKamar, setIndexEditKamar] = useState(0);
+    const [npmBed1, setNpmBed1] = useState("");
+    const [npmBed2, setNpmBed2] = useState("");
+    const [npmBed3, setNpmBed3] = useState("");
 
     const fasilitas = new _fasilitas();
+    const booking = new _booking();
 
     const [namaFasilitas, setNamaFasilitas] = useState("");
     const [alamatFasilitas, setAlamatFasilitas] = useState("");
@@ -78,6 +85,12 @@ export default function Fasilitas() {
             setDurasi(Number(event.target.value));
         } else if (event.target.name === "no_va") {
             setNoVa(event.target.value);
+        } else if (event.target.name === "npm_bed1_a") {
+            setNpmBed1(event.target.value);
+        } else if (event.target.name === "npm_bed2_b") {
+            setNpmBed2(event.target.value);
+        } else if (event.target.name === "npm_bed3_c") {
+            setNpmBed3(event.target.value);
         }
     };
 
@@ -106,7 +119,6 @@ export default function Fasilitas() {
         data.append("name_foto_old", JSON.stringify(fotoFasilitas));
 
         const res = await fasilitas.updateFasilitas(Number(id), data);
-        console.log(res);
     };
 
     async function getdataKamar() {
@@ -157,6 +169,49 @@ export default function Fasilitas() {
             fetchData(Number(id));
         }
     }, [id]);
+
+    const editKamarHandle = (
+        npmBed1: string,
+        npmBed2: string,
+        npmBed3: string,
+        index: number
+    ) => {
+        if (npmBed1 === null) {
+            setNpmBed1("");
+        } else {
+            setNpmBed1(npmBed1);
+        }
+        if (npmBed2 === null) {
+            setNpmBed2("");
+        } else {
+            setNpmBed2(npmBed2);
+        }
+        if (npmBed3 === null) {
+            setNpmBed3("");
+        } else {
+            setNpmBed3(npmBed3);
+        }
+        setIndexEditKamar(index);
+        setEditKamarStatus(true);
+    };
+
+    const saveEditKamar = async (id: number) => {
+        if (npmBed1 === "" || npmBed2 === "" || npmBed3 === "") {
+            const updateKamar = await booking.updateKamar(id, {
+                npm_bed1_a: npmBed1,
+                npm_bed2_b: npmBed2,
+                npm_bed3_c: npmBed3,
+                status_kamar: true,
+            });
+        } else {
+            const updateKamar = await booking.updateKamar(id, {
+                npm_bed1_a: npmBed1,
+                npm_bed2_b: npmBed2,
+                npm_bed3_c: npmBed3,
+                status_kamar: false,
+            });
+        }
+    };
 
     return (
         <div className="flex bg-[#FFFFFF] overflow-x-hidden">
@@ -453,7 +508,7 @@ export default function Fasilitas() {
                                 <div className="">
                                     {dataKamar?.map((data, index) => (
                                         <div
-                                            className="flex gap-9 text-center"
+                                            className="flex gap-9 text-center my-2"
                                             key={index}
                                         >
                                             <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
@@ -465,32 +520,128 @@ export default function Fasilitas() {
                                             <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
                                                 {data.no_kamar}
                                             </div>
-                                            <div className="px-6 py-3 break-all w-[150px]">
+                                            <div
+                                                className={`${
+                                                    editKamarStatus &&
+                                                    index === indexEditKamar
+                                                        ? "hidden"
+                                                        : "block"
+                                                } px-6 py-3 break-all w-[150px]`}
+                                            >
                                                 {data.npm_bed1_a}
                                             </div>
-                                            <div className="px-6 py-3 break-all w-[150px]">
+                                            <input
+                                                name="npm_bed1_a"
+                                                value={npmBed1}
+                                                type="text"
+                                                className={`${
+                                                    editKamarStatus &&
+                                                    index === indexEditKamar
+                                                        ? "block"
+                                                        : "hidden"
+                                                } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                placeholder="Npm Bed 1"
+                                                onChange={handleInputChange}
+                                            />
+                                            <div
+                                                className={`${
+                                                    editKamarStatus &&
+                                                    index === indexEditKamar
+                                                        ? "hidden"
+                                                        : "block"
+                                                } px-6 py-3 break-all w-[150px]`}
+                                            >
                                                 {data.npm_bed2_b}
                                             </div>
-                                            <div className="px-6 py-3 break-all w-[150px]">
+                                            <input
+                                                name="npm_bed2_b"
+                                                value={npmBed2}
+                                                type="text"
+                                                className={`${
+                                                    editKamarStatus &&
+                                                    index === indexEditKamar
+                                                        ? "block"
+                                                        : "hidden"
+                                                } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                placeholder="Npm Bed 2"
+                                                onChange={handleInputChange}
+                                            />
+                                            <div
+                                                className={`${
+                                                    editKamarStatus &&
+                                                    index === indexEditKamar
+                                                        ? "hidden"
+                                                        : "block"
+                                                } px-6 py-3 break-all w-[150px]`}
+                                            >
                                                 {data.npm_bed3_c}
                                             </div>
+                                            <input
+                                                name="npm_bed3_c"
+                                                value={npmBed3}
+                                                type="text"
+                                                className={`${
+                                                    editKamarStatus &&
+                                                    index === indexEditKamar
+                                                        ? "block"
+                                                        : "hidden"
+                                                } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                placeholder="Npm Bed 3"
+                                                onChange={handleInputChange}
+                                            />
                                             <div className="px-6 py-3 break-all w-[110px]">
                                                 {data.status_kamar === false
                                                     ? "Penuh "
                                                     : "Kosong"}
                                             </div>
-                                            <div className="">
+                                            <div className="flex flex-col gap-2">
                                                 <button
                                                     className={`${
-                                                        editStatus
+                                                        editKamarStatus &&
+                                                        index === indexEditKamar
                                                             ? "hidden"
                                                             : "block"
                                                     } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
                                                     onClick={() =>
-                                                        setEditStatus(true)
+                                                        editKamarHandle(
+                                                            data.npm_bed1_a,
+                                                            data.npm_bed2_b,
+                                                            data.npm_bed3_c,
+                                                            index
+                                                        )
                                                     }
                                                 >
                                                     Edit
+                                                </button>
+                                                <button
+                                                    className={`${
+                                                        editKamarStatus &&
+                                                        index === indexEditKamar
+                                                            ? "block"
+                                                            : "hidden"
+                                                    } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                    onClick={() => {
+                                                        setEditKamarStatus(
+                                                            false
+                                                        );
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    className={`${
+                                                        editKamarStatus &&
+                                                        index === indexEditKamar
+                                                            ? "block"
+                                                            : "hidden"
+                                                    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                    onClick={() =>
+                                                        saveEditKamar(
+                                                            data.id_asrama
+                                                        )
+                                                    }
+                                                >
+                                                    Save
                                                 </button>
                                             </div>
                                         </div>
