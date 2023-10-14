@@ -2,10 +2,14 @@ import { useState, useEffect, ChangeEvent } from "react";
 
 import { useRouter } from "next/router";
 
+
 import { AuthInput } from "../../components/auth-input";
+import _lib from "@/lib/index";
+
 
 export default function Login() {
     const router = useRouter();
+    const libCookies = new _lib()
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -35,7 +39,7 @@ export default function Login() {
             const resData = await res.json();
             if (resData.data.token) {
                 const token = resData.data.token;
-                setCookie("CERT", token, 1);
+                await libCookies.setCookie("CERT", token, 1);
                 router.push("/");
             } else {
                 return {
@@ -48,12 +52,7 @@ export default function Login() {
         }
     };
 
-    async function setCookie(name: string, value: string, days: number) {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000); // Calculate the expiration time
-        const cookieString = `${name}=${value};expires=${expires.toUTCString()};path=/`;
-        document.cookie = cookieString;
-    }
+
 
     return (
         <div className="h-screen flex items-center justify-center bg-[#F7F8FA] overflow-hidden text-black gap-24">

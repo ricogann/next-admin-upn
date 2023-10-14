@@ -3,9 +3,12 @@ import SideBar from "@/components/sidebar";
 import Image from "next/image";
 import _booking from "@/services/booking.service";
 import _users from "@/services/users.service";
-import _lib from "@/lib";
+import _lib from "@/lib/index";
 import { io } from "socket.io-client";
 import useSound from "node_modules/use-sound/dist";
+import CookiesDTO from "@/interfaces/cookiesDTO";
+import Login from "@/pages/auth/login";
+import { useRouter } from "next/router";
 
 interface Mahasiswa {
     id: number;
@@ -68,6 +71,9 @@ export default function Dashboard() {
     const [buktiIdentitas, setBuktiIdentitas] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [allData, setAllData] = useState<Pemesanan[]>([]);
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
+    const router = useRouter();
 
     const [buktiToShow, setBuktiToShow] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -101,6 +107,7 @@ export default function Dashboard() {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    
 
     const booking = new _booking();
     const users = new _users();
@@ -141,6 +148,7 @@ export default function Dashboard() {
     useEffect(() => {
         async function fetchData() {
             try {
+                
                 const dataUsers = await users.getUsers();
 
                 const dataUsersFilter = dataUsers.filter(
@@ -169,6 +177,15 @@ export default function Dashboard() {
                 setBuktiIdentitas(accountBukti);
                 setDataUsers(dataUsersFilter);
                 setTotalSum(dataUsers.length);
+            
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+    if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+    }
+                
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -199,6 +216,7 @@ export default function Dashboard() {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [realTimeMessage]);
+    
 
     const isTabActive = (tab: string) => activeTab === tab;
 

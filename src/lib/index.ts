@@ -1,6 +1,42 @@
 import * as crypto from "crypto-js";
+import CookiesDTO from "@/interfaces/cookiesDTO";
 
 class _lib {
+
+    async getCookies(): Promise<CookiesDTO> {
+        try {
+            const cookies = document.cookie.split(";").reduce((res, c) => {
+                const [key, val] = c.trim().split("=");
+                try {
+                    return Object.assign(res, { [key]: JSON.parse(val) });
+                } catch (e) {
+                    return Object.assign(res, { [key]: val });
+                }
+            }, {} as CookiesDTO);
+
+            return cookies;
+        } catch (error) {
+            console.error("get cookies error", error);
+            throw error;
+        }
+    }
+
+    async setCookie(name: string, value: string, days: number) {
+        try {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+            const cookieString = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+            document.cookie = cookieString;
+
+            return true;
+        } catch (error) {
+            console.error("set cookies error", error);
+            throw error;
+        }
+    }
+
+
+
     calculatePagesToDisplay(currentPage: number, totalPages: number) {
         if (totalPages <= 5) {
             return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -22,6 +58,8 @@ class _lib {
             );
         }
     }
+
+    
 
     dataToShow(data: any[], currentPage: number, itemsPerPage: number) {
         return data.slice(

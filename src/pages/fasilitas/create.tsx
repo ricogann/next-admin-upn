@@ -1,10 +1,12 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import SideBar from "@/components/sidebar";
 import { Input } from "@/components/input";
 import { Textarea } from "@/components/textarea";
 import { InputFiles } from "@/components/input-files";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
+import _lib from "@/lib/index";
+import CookiesDTO from "@/interfaces/cookiesDTO";
 
 export default function Create() {
     const router = useRouter();
@@ -18,6 +20,9 @@ export default function Create() {
     const [durasi, setDurasi] = useState(0);
     const [bukaHari, setBukaHari] = useState("");
     const [noVa, setNoVa] = useState("");
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
+    const lib = new _lib();
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama_fasilitas") {
@@ -100,6 +105,25 @@ export default function Create() {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
+            } catch (error) {
+                console.error("error fetching data fasilitas ", error);
+            }
+        }
+
+        fetchData();
+    }, []);
 
     return (
         <div className="flex">

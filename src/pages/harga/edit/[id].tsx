@@ -3,6 +3,8 @@ import SideBar from "@/components/sidebar";
 import { Input } from "@/components/input";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
+import CookiesDTO from "@/interfaces/cookiesDTO";
+import _lib from "@/lib";
 
 import _harga from "@/services/harga.service";
 
@@ -29,6 +31,8 @@ export default function Edit() {
     const [harga, setHarga] = useState(0);
     const [fasilitas, setFasilitas] = useState("");
     const [id, setId] = useState("");
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
 
     useEffect(() => {
         if (router.isReady) {
@@ -58,6 +62,15 @@ export default function Edit() {
                 setFasilitas(response.Fasilitas.nama);
                 setNama(response.nama);
                 setHarga(response.harga);
+
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
             } catch (error) {
                 console.error("error fetching data harga ", error);
                 throw error;

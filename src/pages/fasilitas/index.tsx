@@ -5,6 +5,7 @@ import Image from "next/image";
 import _lib from "@/lib";
 import _fasilitas from "@/services/fasilitas.service";
 import _harga from "@/services/harga.service";
+import CookiesDTO from "@/interfaces/cookiesDTO";
 
 interface Fasilitas {
     id_fasilitas: number;
@@ -33,7 +34,8 @@ export default function Fasilitas() {
     const [searchText, setSearchText] = useState<string>("");
     const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
     const [filteredFasilitas, setfilteredFasilitas] = useState<Fasilitas[]>([]);
-
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
     const lib = new _lib();
     const fasilitas = new _fasilitas();
     const harga = new _harga();
@@ -117,6 +119,15 @@ export default function Fasilitas() {
 
                 setDataFasilitas(dataFasilitas);
                 setDataharga(dataHarga.data);
+
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }

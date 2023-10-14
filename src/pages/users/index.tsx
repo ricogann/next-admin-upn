@@ -5,6 +5,9 @@ import { useRouter } from "next/router";
 import _users from "@/services/users.service";
 import _lib from "@/lib";
 
+import CookiesDTO from "@/interfaces/cookiesDTO";
+
+
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 interface Umum {
@@ -72,6 +75,9 @@ export default function Users() {
     const [filteredUmum, setFilteredUmum] = useState<Umum[]>([]);
     const [filteredDosen, setFilteredDosen] = useState<Dosen[]>([]);
     const [filteredMahasiswa, setFilteredMahasiswa] = useState<Mahasiswa[]>([]);
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
+
 
     const [eyeOpen, setEyeOpen] = useState<boolean>(true);
     const [buktiToShow, setBuktiToShow] = useState<string>("");
@@ -90,6 +96,15 @@ export default function Users() {
                 setUmum(dataUmum.data);
                 setMahasiswa(dataMahasiswa.data);
                 setDosen(dataDosen.data);
+
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -137,6 +152,8 @@ export default function Users() {
         } else {
             setFilteredMahasiswa(filteredDataMahasiswa);
         }
+
+        
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dosen, umum, mahasiswa, searchText]);

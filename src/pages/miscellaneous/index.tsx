@@ -3,6 +3,9 @@ import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import _misc from "@/services/misc.service";
+import _lib from "@/lib";
+
+import CookiesDTO from "@/interfaces/cookiesDTO";
 
 interface misc {
     id_misc: number;
@@ -20,7 +23,8 @@ interface misc {
 export default function Miscellaneous() {
     const router = useRouter();
     const misc = new _misc();
-
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
     const [dataMisc, setDataMisc] = useState<misc>();
 
     useEffect(() => {
@@ -29,6 +33,14 @@ export default function Miscellaneous() {
                 const dataMisc = await misc.getDataMisc();
 
                 setDataMisc(dataMisc.data);
+                                const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }

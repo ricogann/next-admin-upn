@@ -13,6 +13,8 @@ import { Submit } from "@/components/submit-button";
 import { Input } from "@/components/input";
 import _fasilitas from "@/services/fasilitas.service";
 import _booking from "@/services/booking.service";
+import CookiesDTO from "@/interfaces/cookiesDTO";
+import _lib from "@/lib/index";
 
 interface Fasilitas {
     id_fasilitas: number;
@@ -54,7 +56,8 @@ export default function Fasilitas() {
     const [npmBed1, setNpmBed1] = useState("");
     const [npmBed2, setNpmBed2] = useState("");
     const [npmBed3, setNpmBed3] = useState("");
-
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
     const fasilitas = new _fasilitas();
     const booking = new _booking();
 
@@ -159,6 +162,15 @@ export default function Fasilitas() {
                 setDataKamar(dataKamar);
                 setDataFasilitas(dataFasilitas);
                 setFotoFasilitas(JSON.parse(dataFasilitas.foto));
+
+                                 const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;

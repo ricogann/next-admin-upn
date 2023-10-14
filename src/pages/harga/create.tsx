@@ -3,6 +3,8 @@ import SideBar from "@/components/sidebar";
 import { Input } from "@/components/input";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
+import CookiesDTO from "@/interfaces/cookiesDTO";
+import _lib from "@/lib";
 
 import _harga from "@/services/harga.service";
 
@@ -22,6 +24,9 @@ export default function Create() {
     const [harga, setharga] = useState("");
     const [id_fasilitas, setidfasilitas] = useState("");
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
+    const [isLogin, setIsLogin] = useState(false);
+    const libCookies = new _lib()
+
 
     const hargaService = new _harga();
 
@@ -47,6 +52,14 @@ export default function Create() {
                 const dataFaslitas = await getDataFasilitas();
 
                 setDataFasilitas(dataFaslitas.data);
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+        if (dataCookies.CERT !== undefined) {
+                setIsLogin(true);
+            } else 
+            {
+                setIsLogin(false);
+                router.push("/auth/login");
+            }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
