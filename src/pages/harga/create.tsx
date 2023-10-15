@@ -3,7 +3,6 @@ import SideBar from "@/components/sidebar";
 import { Input } from "@/components/input";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
-import CookiesDTO from "@/interfaces/cookiesDTO";
 import _lib from "@/lib";
 
 import _harga from "@/services/harga.service";
@@ -16,6 +15,10 @@ interface Fasilitas {
     alamat: string;
     biaya: number;
     foto: string;
+}
+
+interface CookiesDTO {
+    CERT: string;
 }
 
 export default function Create() {

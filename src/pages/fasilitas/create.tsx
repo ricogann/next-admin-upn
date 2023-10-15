@@ -6,8 +6,11 @@ import { InputFiles } from "@/components/input-files";
 import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
 import _lib from "@/lib/index";
-import CookiesDTO from "@/interfaces/cookiesDTO";
 import _fasilitas from "@/services/fasilitas.service";
+
+interface CookiesDTO {
+    CERT: string;
+}
 
 export default function Create() {
     const router = useRouter();

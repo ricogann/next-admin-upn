@@ -5,9 +5,12 @@ import _booking from "@/services/booking.service";
 import _users from "@/services/users.service";
 import _lib from "@/lib/index";
 import { io } from "socket.io-client";
-import CookiesDTO from "@/interfaces/cookiesDTO";
 
 import { useRouter } from "next/router";
+
+interface CookiesDTO {
+    CERT: string;
+}
 
 interface Mahasiswa {
     id: number;

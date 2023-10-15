@@ -3,10 +3,12 @@ import SideBar from "@/components/sidebar";
 import Image from "next/image";
 import _booking from "@/services/booking.service";
 import { io } from "socket.io-client";
-import CookiesDTO from "@/interfaces/cookiesDTO";
 import { useRouter } from "next/router";
 import _lib from "@/lib/index";
 
+interface CookiesDTO {
+    CERT: string;
+}
 
 interface Booking {
     Fasilitas: Fasilitas;
@@ -62,7 +64,7 @@ export default function Booking() {
 
     const booking = new _booking();
     const lib = new _lib();
-    const libCookies = new _lib()
+    const libCookies = new _lib();
     const router = useRouter();
 
     useEffect(() => {
@@ -117,7 +119,6 @@ export default function Booking() {
                 return false; // Skip other types
             })
         );
-       
 
         setfilteredBooking(filteredData);
     }, [dataBooking, searchText]);
@@ -154,14 +155,13 @@ export default function Booking() {
 
                 setDataBooking(dataBooking);
 
-                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data Booking ", error);
                 throw error;

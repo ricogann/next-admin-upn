@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import _lib from "@/lib";
 import _fasilitas from "@/services/fasilitas.service";
 import _harga from "@/services/harga.service";
-import CookiesDTO from "@/interfaces/cookiesDTO";
+
+interface CookiesDTO {
+    CERT: string;
+}
 
 interface Fasilitas {
     id_fasilitas: number;

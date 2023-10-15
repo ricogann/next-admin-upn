@@ -5,7 +5,9 @@ import Image from "next/image";
 import _misc from "@/services/misc.service";
 import _lib from "@/lib";
 
-import CookiesDTO from "@/interfaces/cookiesDTO";
+interface CookiesDTO {
+    CERT: string;
+}
 
 interface misc {
     id_misc: number;

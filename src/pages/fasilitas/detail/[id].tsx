@@ -13,8 +13,11 @@ import { Submit } from "@/components/submit-button";
 import { Input } from "@/components/input";
 import _fasilitas from "@/services/fasilitas.service";
 import _booking from "@/services/booking.service";
-import CookiesDTO from "@/interfaces/cookiesDTO";
 import _lib from "@/lib/index";
+
+interface CookiesDTO {
+    CERT: string;
+}
 
 interface Fasilitas {
     id_fasilitas: number;
