@@ -1,5 +1,5 @@
 import * as crypto from "crypto-js";
-import CookiesDTO from "@/interfaces/cookiesDTO";
+import CookiesDTO from "@/interfaces/CookiesDTO";
 
 class _lib {
     async getCookies(): Promise<CookiesDTO> {
