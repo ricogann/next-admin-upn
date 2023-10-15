@@ -159,193 +159,108 @@ export default function Fasilitas() {
         }
     };
     return (
-        <div className="flex bg-[#FFFFFF] overflow-x-hidden">
-            <div className="">
-                <SideBar />
-            </div>
-
-            <div className="w-full p-5 flex bg-[#F7F8FA] text-black">
-                <div className="p-5">
-                    {activeTab === "fasilitas" && (
-                        <div className="flex flex-col items-start justify-center">
-                            <div className="flex flex-row items-start">
-                                <h1 className="text-[45px] font-bold mr-14">
-                                    Fasilitas
-                                </h1>
-                            </div>
-                            <h4 className="text-[12] font-regular mb-14 text-dark-whiteText">
-                                Tabel Data Fasilitas
-                            </h4>
-                        </div>
-                    )}
-                    {activeTab === "harga" && (
-                        <div className="flex flex-col items-start justify-center">
-                            <div className="flex flex-row items-start">
-                                <h1 className="text-[45px] font-bold mr-14">
-                                    Harga
-                                </h1>
-                            </div>
-                            <h4 className="text-[12] font-regular mb-14 text-dark-whiteText">
-                                Tabel Data Harga Fasilitas
-                            </h4>
-                        </div>
-                    )}
-
-                    <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
-                        <a href="#" onClick={() => toggleTab("fasilitas")}>
-                            <h2
-                                className={`text-[18] font-regular mb-3 mr-14 ${
-                                    activeTab === "fasilitas"
-                                        ? "border-b-2 border-[#FFA101] font-bold"
-                                        : ""
-                                }`}
-                            >
-                                Fasilitas
-                            </h2>
-                        </a>
-                        <a href="#" onClick={() => toggleTab("harga")}>
-                            <h2
-                                className={`text-[18] font-regular mb-3 mr-14 ${
-                                    activeTab === "harga"
-                                        ? "border-b-2 border-[#FFA101] font-bold"
-                                        : ""
-                                }`}
-                            >
-                                Harga
-                            </h2>
-                        </a>
+        <div className="">
+            {isLogin ? (
+                <div className="flex bg-[#FFFFFF] overflow-x-hidden">
+                    <div className="">
+                        <SideBar />
                     </div>
-                    {activeTab === "fasilitas" && (
-                        <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
-                            <input
-                                className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                                type="text"
-                                placeholder="Cari Data Fasilitas"
-                                value={searchText}
-                                onChange={handleInputFasilitasChange}
-                            />
 
-                            <button
-                                className="bg-blue-500 h-[40px] md:h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8"
-                                onClick={() => handlePage("/fasilitas/create")}
-                            >
-                                Add Data
-                            </button>
-                        </div>
-                    )}
-                    {activeTab === "harga" && (
-                        <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
-                            <input
-                                className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                                type="text"
-                                placeholder="Cari Data Harga"
-                                value={searchText}
-                                onChange={handleInputHargaChange}
-                            />
-
-                            <button
-                                className="bg-blue-500 h-[40px] md:h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8"
-                                onClick={() => handlePage("/harga/create")}
-                            >
-                                Add Data
-                            </button>
-                        </div>
-                    )}
-                    {activeTab === "fasilitas" && (
-                        <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
-                            <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
-                                <div className="flex">
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider">
-                                        ID
-                                    </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
-                                        Nama Fasilitas
-                                    </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px]">
-                                        Deskripsi
-                                    </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[350px]">
-                                        Alamat
-                                    </h1>
-                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
-                                        Action
-                                    </h1>
-                                </div>
-
-                                <div className="bg-white divide-y divide-gray-200">
-                                    <div className="">
-                                        {dataFasilitasToShow.map(
-                                            (data, index) => (
-                                                <div
-                                                    className="flex justify-between"
-                                                    key={index}
-                                                >
-                                                    <div className="px-6 py-4 whitespace-no-wrap">
-                                                        {data.id_fasilitas}
-                                                    </div>
-                                                    <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
-                                                        {data.nama}
-                                                    </div>
-                                                    <div className="px-6 py-4 break-all w-[400px]">
-                                                        {data.deskripsi}
-                                                    </div>
-                                                    <div className="px-6 py-4 break-all w-[300px]">
-                                                        {data.alamat}
-                                                    </div>
-                                                    <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
-                                                        <button
-                                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
-                                                            onClick={() =>
-                                                                router.push(
-                                                                    `/fasilitas/detail/${data.id_fasilitas}`
-                                                                )
-                                                            }
-                                                        >
-                                                            Detail
-                                                        </button>
-                                                        <button
-                                                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
-                                                            onClick={() =>
-                                                                handleDeleteFasilitas(
-                                                                    data.id_fasilitas
-                                                                )
-                                                            }
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )
-                                        )}
+                    <div className="w-full p-5 flex bg-[#F7F8FA] text-black">
+                        <div className="p-5">
+                            {activeTab === "fasilitas" && (
+                                <div className="flex flex-col items-start justify-center">
+                                    <div className="flex flex-row items-start">
+                                        <h1 className="text-[45px] font-bold mr-14">
+                                            Fasilitas
+                                        </h1>
                                     </div>
-                                    <div className="flex items-center justify-center p-3">
-                                        <div className="join">
-                                            {pagesFasilitasToDisplay.map(
-                                                (page) => (
-                                                    <button
-                                                        key={page}
-                                                        className={`join-item btn ${
-                                                            currentPage === page
-                                                                ? "btn-active"
-                                                                : ""
-                                                        }`}
-                                                        onClick={() =>
-                                                            setCurrentPage(page)
-                                                        }
-                                                    >
-                                                        {page}
-                                                    </button>
-                                                )
-                                            )}
-                                        </div>
-                                    </div>
+                                    <h4 className="text-[12] font-regular mb-14 text-dark-whiteText">
+                                        Tabel Data Fasilitas
+                                    </h4>
                                 </div>
+                            )}
+                            {activeTab === "harga" && (
+                                <div className="flex flex-col items-start justify-center">
+                                    <div className="flex flex-row items-start">
+                                        <h1 className="text-[45px] font-bold mr-14">
+                                            Harga
+                                        </h1>
+                                    </div>
+                                    <h4 className="text-[12] font-regular mb-14 text-dark-whiteText">
+                                        Tabel Data Harga Fasilitas
+                                    </h4>
+                                </div>
+                            )}
+
+                            <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
+                                <a
+                                    href="#"
+                                    onClick={() => toggleTab("fasilitas")}
+                                >
+                                    <h2
+                                        className={`text-[18] font-regular mb-3 mr-14 ${
+                                            activeTab === "fasilitas"
+                                                ? "border-b-2 border-[#FFA101] font-bold"
+                                                : ""
+                                        }`}
+                                    >
+                                        Fasilitas
+                                    </h2>
+                                </a>
+                                <a href="#" onClick={() => toggleTab("harga")}>
+                                    <h2
+                                        className={`text-[18] font-regular mb-3 mr-14 ${
+                                            activeTab === "harga"
+                                                ? "border-b-2 border-[#FFA101] font-bold"
+                                                : ""
+                                        }`}
+                                    >
+                                        Harga
+                                    </h2>
+                                </a>
                             </div>
-                        </div>
-                    )}
-                    {activeTab === "harga" && (
-                        <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
-                            <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                            {activeTab === "fasilitas" && (
+                                <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
+                                    <input
+                                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                        type="text"
+                                        placeholder="Cari Data Fasilitas"
+                                        value={searchText}
+                                        onChange={handleInputFasilitasChange}
+                                    />
+
+                                    <button
+                                        className="bg-blue-500 h-[40px] md:h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8"
+                                        onClick={() =>
+                                            handlePage("/fasilitas/create")
+                                        }
+                                    >
+                                        Add Data
+                                    </button>
+                                </div>
+                            )}
+                            {activeTab === "harga" && (
+                                <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
+                                    <input
+                                        className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                        type="text"
+                                        placeholder="Cari Data Harga"
+                                        value={searchText}
+                                        onChange={handleInputHargaChange}
+                                    />
+
+                                    <button
+                                        className="bg-blue-500 h-[40px] md:h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8"
+                                        onClick={() =>
+                                            handlePage("/harga/create")
+                                        }
+                                    >
+                                        Add Data
+                                    </button>
+                                </div>
+                            )}
+                            {activeTab === "fasilitas" && (
                                 <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
                                     <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
                                         <div className="flex">
@@ -355,11 +270,11 @@ export default function Fasilitas() {
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
                                                 Nama Fasilitas
                                             </h1>
-                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
-                                                Nama Harga
+                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px]">
+                                                Deskripsi
                                             </h1>
-                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
-                                                Harga
+                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[350px]">
+                                                Alamat
                                             </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
                                                 Action
@@ -368,44 +283,42 @@ export default function Fasilitas() {
 
                                         <div className="bg-white divide-y divide-gray-200">
                                             <div className="">
-                                                {dataHargaToShow.map(
+                                                {dataFasilitasToShow.map(
                                                     (data, index) => (
                                                         <div
-                                                            className="flex"
+                                                            className="flex justify-between"
                                                             key={index}
                                                         >
                                                             <div className="px-6 py-4 whitespace-no-wrap">
-                                                                {data.id}
-                                                            </div>
-                                                            <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
                                                                 {
-                                                                    data
-                                                                        .Fasilitas
-                                                                        .nama
+                                                                    data.id_fasilitas
                                                                 }
                                                             </div>
-                                                            <div className="px-6 py-4 break-all w-[200px]">
+                                                            <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
                                                                 {data.nama}
                                                             </div>
-                                                            <div className="px-6 py-4 break-all w-[200px]">
-                                                                {data.harga}
+                                                            <div className="px-6 py-4 break-all w-[400px]">
+                                                                {data.deskripsi}
+                                                            </div>
+                                                            <div className="px-6 py-4 break-all w-[300px]">
+                                                                {data.alamat}
                                                             </div>
                                                             <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
                                                                 <button
                                                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
                                                                     onClick={() =>
                                                                         router.push(
-                                                                            `/harga/edit/${data.id}`
+                                                                            `/fasilitas/detail/${data.id_fasilitas}`
                                                                         )
                                                                     }
                                                                 >
-                                                                    Edit
+                                                                    Detail
                                                                 </button>
                                                                 <button
                                                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
                                                                     onClick={() =>
-                                                                        handleDeleteHarga(
-                                                                            data.id
+                                                                        handleDeleteFasilitas(
+                                                                            data.id_fasilitas
                                                                         )
                                                                     }
                                                                 >
@@ -418,7 +331,7 @@ export default function Fasilitas() {
                                             </div>
                                             <div className="flex items-center justify-center p-3">
                                                 <div className="join">
-                                                    {pagesHargaToDisplay.map(
+                                                    {pagesFasilitasToDisplay.map(
                                                         (page) => (
                                                             <button
                                                                 key={page}
@@ -443,11 +356,126 @@ export default function Fasilitas() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
+                            {activeTab === "harga" && (
+                                <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
+                                    <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                                        <div className="flex flex-wrap overflow-hidden rounded-lg shadow-lg">
+                                            <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                                                <div className="flex">
+                                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                                        ID
+                                                    </h1>
+                                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                                        Nama Fasilitas
+                                                    </h1>
+                                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                                        Nama Harga
+                                                    </h1>
+                                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                                        Harga
+                                                    </h1>
+                                                    <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                                        Action
+                                                    </h1>
+                                                </div>
+
+                                                <div className="bg-white divide-y divide-gray-200">
+                                                    <div className="">
+                                                        {dataHargaToShow.map(
+                                                            (data, index) => (
+                                                                <div
+                                                                    className="flex"
+                                                                    key={index}
+                                                                >
+                                                                    <div className="px-6 py-4 whitespace-no-wrap">
+                                                                        {
+                                                                            data.id
+                                                                        }
+                                                                    </div>
+                                                                    <div className="px-6 py-4 whitespace-no-wrap w-[200px]">
+                                                                        {
+                                                                            data
+                                                                                .Fasilitas
+                                                                                .nama
+                                                                        }
+                                                                    </div>
+                                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                                        {
+                                                                            data.nama
+                                                                        }
+                                                                    </div>
+                                                                    <div className="px-6 py-4 break-all w-[200px]">
+                                                                        {
+                                                                            data.harga
+                                                                        }
+                                                                    </div>
+                                                                    <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
+                                                                        <button
+                                                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+                                                                            onClick={() =>
+                                                                                router.push(
+                                                                                    `/harga/edit/${data.id}`
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Edit
+                                                                        </button>
+                                                                        <button
+                                                                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+                                                                            onClick={() =>
+                                                                                handleDeleteHarga(
+                                                                                    data.id
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center justify-center p-3">
+                                                        <div className="join">
+                                                            {pagesHargaToDisplay.map(
+                                                                (page) => (
+                                                                    <button
+                                                                        key={
+                                                                            page
+                                                                        }
+                                                                        className={`join-item btn ${
+                                                                            currentPage ===
+                                                                            page
+                                                                                ? "btn-active"
+                                                                                : ""
+                                                                        }`}
+                                                                        onClick={() =>
+                                                                            setCurrentPage(
+                                                                                page
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        {page}
+                                                                    </button>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="h-screen w-screen bg-white flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+            )}
         </div>
     );
 }

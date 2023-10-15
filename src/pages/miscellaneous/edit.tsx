@@ -130,150 +130,160 @@ export default function Miscellaneous() {
     }, []);
 
     return (
-        <div className="flex  bg-[#FFFFFF] overflow-x-hidden">
-            <div className="">
-                <SideBar />
-            </div>
-            <div className="h-screen w-full p-10 flex bg-[#F7F8FA]">
-                <div className="p-5">
-                    <div className="flex flex-col items-start justify-center">
-                        <div className="flex flex-row items-start">
-                            <h1 className="text-[45px] font-bold mr-14">
-                                Edit Miscellaneous
-                            </h1>
-                        </div>
+        <div className="">
+            {isLogin ? (
+                <div className="flex  bg-[#FFFFFF] overflow-x-hidden">
+                    <div className="">
+                        <SideBar />
                     </div>
+                    <div className="h-screen w-full p-10 flex bg-[#F7F8FA]">
+                        <div className="p-5">
+                            <div className="flex flex-col items-start justify-center">
+                                <div className="flex flex-row items-start">
+                                    <h1 className="text-[45px] font-bold mr-14">
+                                        Edit Miscellaneous
+                                    </h1>
+                                </div>
+                            </div>
 
-                    <div className="flex flex-row items-start mb-5 mt-8 border-b border-[#E2E7EE]"></div>
+                            <div className="flex flex-row items-start mb-5 mt-8 border-b border-[#E2E7EE]"></div>
 
-                    <div className="flex flex-full w-[900px] overflow-hidden rounded-lg shadow-lg">
-                        <div className="min-w-full rounded-lg overflow-hidden">
-                            <div className="flex flex-col gap-5 ">
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        Nama Instansi
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="Nama_Instansi"
-                                        value={nama_instansi}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        No HP BPU
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="No_Hp"
-                                        value={no_hp}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        NIP
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="Nip_Pic"
-                                        value={nip_pic}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        Nama Pimpinan BPU
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="Nama_Pic"
-                                        value={nama_pic}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        Instagram
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="Instagram"
-                                        value={instagram}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        Website
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="Laman_Web"
-                                        value={laman_web}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                    <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
-                                        Email
-                                    </h1>
-                                    <input
-                                        type="string"
-                                        className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
-                                        name="Email"
-                                        value={email}
-                                        onChange={handleInput}
-                                    ></input>
-                                </div>
-                                <div className="flex flex-row gap-3 rounded-lg">
-                                    <div className="flex items-center p-2 gap-3 bg-[#B9B9B9] rounded-lg">
-                                        <h1 className="text-center text-xs w-[100px] font-medium text-black uppercase tracking-wider ">
-                                            Logo BPU
-                                        </h1>
+                            <div className="flex flex-full w-[900px] overflow-hidden rounded-lg shadow-lg">
+                                <div className="min-w-full rounded-lg overflow-hidden">
+                                    <div className="flex flex-col gap-5 ">
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                Nama Instansi
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="Nama_Instansi"
+                                                value={nama_instansi}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                No HP BPU
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="No_Hp"
+                                                value={no_hp}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                NIP
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="Nip_Pic"
+                                                value={nip_pic}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                Nama Pimpinan BPU
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="Nama_Pic"
+                                                value={nama_pic}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                Instagram
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="Instagram"
+                                                value={instagram}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                Website
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="Laman_Web"
+                                                value={laman_web}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                                Email
+                                            </h1>
+                                            <input
+                                                type="string"
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                name="Email"
+                                                value={email}
+                                                onChange={handleInput}
+                                            ></input>
+                                        </div>
+                                        <div className="flex flex-row gap-3 rounded-lg">
+                                            <div className="flex items-center p-2 gap-3 bg-[#B9B9B9] rounded-lg">
+                                                <h1 className="text-center text-xs w-[100px] font-medium text-black uppercase tracking-wider ">
+                                                    Logo BPU
+                                                </h1>
+                                                <input
+                                                    type="file"
+                                                    name="Logo_Instansi"
+                                                    className="text-black"
+                                                    onChange={handleInput}
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-3 bg-[#B9B9B9] rounded-lg w-full">
+                                                <h1 className="text-center text-xs font-medium text-black uppercase tracking-wider ">
+                                                    Tanda Tangan Pimpinan
+                                                </h1>
+                                                <input
+                                                    type="file"
+                                                    name="tanda_tangan"
+                                                    className="text-black"
+                                                    onChange={handleInput}
+                                                />
+                                            </div>
+                                        </div>
                                         <input
-                                            type="file"
-                                            name="Logo_Instansi"
-                                            className="text-black"
-                                            onChange={handleInput}
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-3 bg-[#B9B9B9] rounded-lg w-full">
-                                        <h1 className="text-center text-xs font-medium text-black uppercase tracking-wider ">
-                                            Tanda Tangan Pimpinan
-                                        </h1>
-                                        <input
-                                            type="file"
-                                            name="tanda_tangan"
-                                            className="text-black"
-                                            onChange={handleInput}
-                                        />
+                                            type="string"
+                                            className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg hidden"
+                                            placeholder={
+                                                dataMisc?.id_misc + "......"
+                                            }
+                                        ></input>
+
+                                        <button
+                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2 mb-10"
+                                            onClick={handleDataMisc}
+                                        >
+                                            Submit
+                                        </button>
                                     </div>
                                 </div>
-                                <input
-                                    type="string"
-                                    className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg hidden"
-                                    placeholder={dataMisc?.id_misc + "......"}
-                                ></input>
-
-                                <button
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2 mb-10"
-                                    onClick={handleDataMisc}
-                                >
-                                    Submit
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className="h-screen w-screen bg-white flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+            )}
         </div>
     );
 }

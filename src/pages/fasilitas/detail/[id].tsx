@@ -237,445 +237,495 @@ export default function Fasilitas() {
     };
 
     return (
-        <div className="flex bg-[#FFFFFF] overflow-x-hidden">
-            <div className="">
-                <SideBar />
-            </div>
-
-            <div className="w-full p-5 flex bg-[#F7F8FA] text-black">
-                <div className="p-5 w-full">
-                    <div className="flex flex-col items-start justify-center ">
-                        <h1 className="text-[45px] font-bold ">Fasilitas</h1>
-                        <h4 className="text-[12] font-regular mb-8 text-dark-whiteText">
-                            Detail Fasilitas
-                        </h4>
+        <div className="">
+            {isLogin ? (
+                <div className="flex bg-[#FFFFFF] overflow-x-hidden">
+                    <div className="">
+                        <SideBar />
                     </div>
 
-                    <div className="flex flex-row bg-[#FFFFFF] gap-5 p-5 rounded-lg">
-                        <div
-                            className={`carousel w-[400px] ${
-                                editStatus ? "hidden" : ""
-                            }`}
-                        >
-                            {fotoFasilitas.map((foto, index) => (
+                    <div className="w-full p-5 flex bg-[#F7F8FA] text-black">
+                        <div className="p-5 w-full">
+                            <div className="flex flex-col items-start justify-center ">
+                                <h1 className="text-[45px] font-bold ">
+                                    Fasilitas
+                                </h1>
+                                <h4 className="text-[12] font-regular mb-8 text-dark-whiteText">
+                                    Detail Fasilitas
+                                </h4>
+                            </div>
+
+                            <div className="flex flex-row bg-[#FFFFFF] gap-5 p-5 rounded-lg">
                                 <div
-                                    id={`slide${index + 1}`}
-                                    className="carousel-item relative w-full"
-                                    key={index}
+                                    className={`carousel w-[400px] ${
+                                        editStatus ? "hidden" : ""
+                                    }`}
                                 >
-                                    <Image
-                                        src={`https://api.ricogann.com/assets/${foto}`}
-                                        width={400}
-                                        height={400}
-                                        className="rounded-lg"
-                                        alt="detail-fasilitas"
-                                    />
-                                    <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                        <a
-                                            href={
-                                                index === 0
-                                                    ? "#slide3"
-                                                    : `#slide${index}`
-                                            }
-                                            className="btn btn-circle"
-                                        >
-                                            ❮
-                                        </a>
-                                        <a
-                                            href={
-                                                index === 2
-                                                    ? "#slide1"
-                                                    : `#slide${index + 2}`
-                                            }
-                                            className="btn btn-circle"
-                                        >
-                                            ❯
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div
-                            className={`flex flex-col gap-5 p-5 ${
-                                editStatus ? "w-full" : ""
-                            }`}
-                        >
-                            <div
-                                className={`flex flex-row ${
-                                    editStatus ? "hidden" : "block"
-                                }`}
-                            >
-                                <div className="text-[30px] font-bold">
-                                    {dataFasilitas?.nama}
-                                </div>
-                            </div>
-                            <input
-                                name="nama_fasilitas"
-                                value={namaFasilitas}
-                                type="text"
-                                className={`${
-                                    editStatus ? "block" : "hidden"
-                                } px-5 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                placeholder="Nama Fasilitas..."
-                                onChange={handleInputChange}
-                            />
-                            <div
-                                className={`flex flex-row gap-10 ${
-                                    editStatus ? "justify-between" : ""
-                                }`}
-                            >
-                                <div className="flex flex-col gap-2">
-                                    <div className="flex items-center gap-3">
-                                        <BsFillPinMapFill className="text-black font-medium text-3xl" />
+                                    {fotoFasilitas.map((foto, index) => (
                                         <div
-                                            className={`text-[12px] font-medium ${
-                                                editStatus ? "hidden" : "block"
-                                            }`}
-                                        >
-                                            {dataFasilitas?.alamat}
-                                        </div>
-                                        <input
-                                            name="alamat_fasilitas"
-                                            value={alamatFasilitas}
-                                            type="text"
-                                            className={`${
-                                                editStatus ? "block" : "hidden"
-                                            } px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200 w-[500px]`}
-                                            placeholder="Alamat..."
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <BiBookmark className="text-black font-medium text-3xl" />
-                                        <div
-                                            className={`text-[12px] font-medium ${
-                                                editStatus ? "hidden" : "block"
-                                            }`}
-                                        >
-                                            {dataFasilitas?.deskripsi}
-                                        </div>
-                                        <textarea
-                                            name="deskripsi_fasilitas"
-                                            value={deskripsiFasilitas}
-                                            placeholder="Deskripsi..."
-                                            className={`${
-                                                editStatus ? "block" : "hidden"
-                                            } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                            onChange={handleTextAreaChange}
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <MdPayment className="text-black font-medium text-3xl" />
-                                        <div
-                                            className={`text-[12px] font-medium ${
-                                                editStatus ? "hidden" : "block"
-                                            }`}
-                                        >
-                                            {dataFasilitas?.no_va}
-                                        </div>
-                                        <input
-                                            name="no_va"
-                                            value={noVa}
-                                            type="string"
-                                            placeholder="Nomor Virtual Account..."
-                                            className={`${
-                                                editStatus ? "block" : "hidden"
-                                            } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-2">
-                                    <div className="flex items-center gap-3">
-                                        <MdOutlineWatchLater className="text-black font-medium text-3xl" />
-                                        <div
-                                            className={`text-[12px] font-medium ${
-                                                editStatus ? "hidden" : "block"
-                                            }`}
-                                        >
-                                            {dataFasilitas?.jam_buka}
-                                        </div>
-                                        <input
-                                            name="jam_masuk"
-                                            value={jamBuka}
-                                            type="time"
-                                            placeholder="Jam Masuk..."
-                                            className={`${
-                                                editStatus ? "block" : "hidden"
-                                            } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <MdOutlineWatchLater className="text-black font-medium text-3xl" />
-                                        <div
-                                            className={`text-[12px] font-medium ${
-                                                editStatus ? "hidden" : "block"
-                                            }`}
-                                        >
-                                            {dataFasilitas?.jam_tutup}
-                                        </div>
-                                        <input
-                                            name="jam_keluar"
-                                            value={jamTutup}
-                                            type="time"
-                                            placeholder="Jam Keluar..."
-                                            className={`${
-                                                editStatus
-                                                    ? "block w-[500px]"
-                                                    : "hidden"
-                                            } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <MdOutlineWatchLater className="text-black font-medium text-3xl" />
-                                        <div
-                                            className={`text-[12px] font-medium ${
-                                                editStatus ? "hidden" : "block"
-                                            }`}
-                                        >
-                                            {dataFasilitas?.buka_hari}
-                                        </div>
-                                        <input
-                                            name="buka_hari"
-                                            value={bukaHari}
-                                            type="text"
-                                            className={`${
-                                                editStatus
-                                                    ? "block w-[500px]"
-                                                    : "hidden"
-                                            } px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                            placeholder="Buka Hari..."
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <InputFiles
-                                name="foto_fasilitas"
-                                type="file"
-                                placeholder="Input Files..."
-                                className={`${
-                                    editStatus ? "block" : "hidden"
-                                } mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                accept=".png, .jpg, .jpeg"
-                                onChange={handleFotoChange}
-                            />
-
-                            <div className="flex flex-row">
-                                <button
-                                    className={`${
-                                        editStatus ? "hidden" : "block"
-                                    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[15px]`}
-                                    onClick={() => setEditStatus(true)}
-                                >
-                                    Edit Fasilitas
-                                </button>
-                                <button
-                                    className={`${
-                                        editStatus ? "block" : "hidden"
-                                    } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[15px]`}
-                                    onClick={() => setEditStatus(false)}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    className={`${
-                                        editStatus ? "block" : "hidden"
-                                    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[15px]`}
-                                    onClick={handleSubmit}
-                                >
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* if Asrama maka ini muncul */}
-                    {dataFasilitas?.nama === "Asrama" && (
-                        <div className="flex flex-col bg-[#FFFFFF] gap-5 p-5 rounded-lg mt-3 ">
-                            <div className="text-[24px] font-bold">
-                                Tabel Kamar Asrama{" "}
-                            </div>
-                            <div className="flex bg-[#898989] gap-9 rounded-t-lg">
-                                <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
-                                    NO
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
-                                    Lantai Asrama
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
-                                    Nomer Kamar
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                    Penyewa 1
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                    Penyewa 2
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                    Penyewa 3
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[110px]">
-                                    Status
-                                </div>
-                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
-                                    Action
-                                </div>
-                            </div>
-                            <div className="bg-white divide-y divide-gray-200">
-                                <div className="">
-                                    {dataKamar?.map((data, index) => (
-                                        <div
-                                            className="flex gap-9 text-center my-2"
+                                            id={`slide${index + 1}`}
+                                            className="carousel-item relative w-full"
                                             key={index}
                                         >
-                                            <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
-                                                {index + 1}
-                                            </div>
-                                            <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
-                                                {data.Harga.nama}
-                                            </div>
-                                            <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
-                                                {data.no_kamar}
-                                            </div>
-                                            <div
-                                                className={`${
-                                                    editKamarStatus &&
-                                                    index === indexEditKamar
-                                                        ? "hidden"
-                                                        : "block"
-                                                } px-6 py-3 break-all w-[150px]`}
-                                            >
-                                                {data.npm_bed1_a}
-                                            </div>
-                                            <input
-                                                name="npm_bed1_a"
-                                                value={npmBed1}
-                                                type="text"
-                                                className={`${
-                                                    editKamarStatus &&
-                                                    index === indexEditKamar
-                                                        ? "block"
-                                                        : "hidden"
-                                                } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                                placeholder="Npm Bed 1"
-                                                onChange={handleInputChange}
+                                            <Image
+                                                src={`https://api.ricogann.com/assets/${foto}`}
+                                                width={400}
+                                                height={400}
+                                                className="rounded-lg"
+                                                alt="detail-fasilitas"
                                             />
-                                            <div
-                                                className={`${
-                                                    editKamarStatus &&
-                                                    index === indexEditKamar
-                                                        ? "hidden"
-                                                        : "block"
-                                                } px-6 py-3 break-all w-[150px]`}
-                                            >
-                                                {data.npm_bed2_b}
-                                            </div>
-                                            <input
-                                                name="npm_bed2_b"
-                                                value={npmBed2}
-                                                type="text"
-                                                className={`${
-                                                    editKamarStatus &&
-                                                    index === indexEditKamar
-                                                        ? "block"
-                                                        : "hidden"
-                                                } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                                placeholder="Npm Bed 2"
-                                                onChange={handleInputChange}
-                                            />
-                                            <div
-                                                className={`${
-                                                    editKamarStatus &&
-                                                    index === indexEditKamar
-                                                        ? "hidden"
-                                                        : "block"
-                                                } px-6 py-3 break-all w-[150px]`}
-                                            >
-                                                {data.npm_bed3_c}
-                                            </div>
-                                            <input
-                                                name="npm_bed3_c"
-                                                value={npmBed3}
-                                                type="text"
-                                                className={`${
-                                                    editKamarStatus &&
-                                                    index === indexEditKamar
-                                                        ? "block"
-                                                        : "hidden"
-                                                } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                                placeholder="Npm Bed 3"
-                                                onChange={handleInputChange}
-                                            />
-                                            <div className="px-6 py-3 break-all w-[110px]">
-                                                {data.status_kamar === false
-                                                    ? "Penuh "
-                                                    : "Kosong"}
-                                            </div>
-                                            <div className="flex flex-col gap-2">
-                                                <button
-                                                    className={`${
-                                                        editKamarStatus &&
-                                                        index === indexEditKamar
-                                                            ? "hidden"
-                                                            : "block"
-                                                    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                                    onClick={() =>
-                                                        editKamarHandle(
-                                                            data.npm_bed1_a,
-                                                            data.npm_bed2_b,
-                                                            data.npm_bed3_c,
-                                                            index
-                                                        )
+                                            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                                <a
+                                                    href={
+                                                        index === 0
+                                                            ? "#slide3"
+                                                            : `#slide${index}`
                                                     }
+                                                    className="btn btn-circle"
                                                 >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    className={`${
-                                                        editKamarStatus &&
-                                                        index === indexEditKamar
-                                                            ? "block"
-                                                            : "hidden"
-                                                    } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                                    onClick={() => {
-                                                        setEditKamarStatus(
-                                                            false
-                                                        );
-                                                    }}
-                                                >
-                                                    Cancel
-                                                </button>
-                                                <button
-                                                    className={`${
-                                                        editKamarStatus &&
-                                                        index === indexEditKamar
-                                                            ? "block"
-                                                            : "hidden"
-                                                    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                                    onClick={() =>
-                                                        saveEditKamar(
-                                                            data.id_asrama
-                                                        )
+                                                    ❮
+                                                </a>
+                                                <a
+                                                    href={
+                                                        index === 2
+                                                            ? "#slide1"
+                                                            : `#slide${
+                                                                  index + 2
+                                                              }`
                                                     }
+                                                    className="btn btn-circle"
                                                 >
-                                                    Save
-                                                </button>
+                                                    ❯
+                                                </a>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
+
+                                <div
+                                    className={`flex flex-col gap-5 p-5 ${
+                                        editStatus ? "w-full" : ""
+                                    }`}
+                                >
+                                    <div
+                                        className={`flex flex-row ${
+                                            editStatus ? "hidden" : "block"
+                                        }`}
+                                    >
+                                        <div className="text-[30px] font-bold">
+                                            {dataFasilitas?.nama}
+                                        </div>
+                                    </div>
+                                    <input
+                                        name="nama_fasilitas"
+                                        value={namaFasilitas}
+                                        type="text"
+                                        className={`${
+                                            editStatus ? "block" : "hidden"
+                                        } px-5 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                        placeholder="Nama Fasilitas..."
+                                        onChange={handleInputChange}
+                                    />
+                                    <div
+                                        className={`flex flex-row gap-10 ${
+                                            editStatus ? "justify-between" : ""
+                                        }`}
+                                    >
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center gap-3">
+                                                <BsFillPinMapFill className="text-black font-medium text-3xl" />
+                                                <div
+                                                    className={`text-[12px] font-medium ${
+                                                        editStatus
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    {dataFasilitas?.alamat}
+                                                </div>
+                                                <input
+                                                    name="alamat_fasilitas"
+                                                    value={alamatFasilitas}
+                                                    type="text"
+                                                    className={`${
+                                                        editStatus
+                                                            ? "block"
+                                                            : "hidden"
+                                                    } px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200 w-[500px]`}
+                                                    placeholder="Alamat..."
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <BiBookmark className="text-black font-medium text-3xl" />
+                                                <div
+                                                    className={`text-[12px] font-medium ${
+                                                        editStatus
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    {dataFasilitas?.deskripsi}
+                                                </div>
+                                                <textarea
+                                                    name="deskripsi_fasilitas"
+                                                    value={deskripsiFasilitas}
+                                                    placeholder="Deskripsi..."
+                                                    className={`${
+                                                        editStatus
+                                                            ? "block"
+                                                            : "hidden"
+                                                    } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                    onChange={
+                                                        handleTextAreaChange
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center gap-3">
+                                                <MdPayment className="text-black font-medium text-3xl" />
+                                                <div
+                                                    className={`text-[12px] font-medium ${
+                                                        editStatus
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    {dataFasilitas?.no_va}
+                                                </div>
+                                                <input
+                                                    name="no_va"
+                                                    value={noVa}
+                                                    type="string"
+                                                    placeholder="Nomor Virtual Account..."
+                                                    className={`${
+                                                        editStatus
+                                                            ? "block"
+                                                            : "hidden"
+                                                    } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center gap-3">
+                                                <MdOutlineWatchLater className="text-black font-medium text-3xl" />
+                                                <div
+                                                    className={`text-[12px] font-medium ${
+                                                        editStatus
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    {dataFasilitas?.jam_buka}
+                                                </div>
+                                                <input
+                                                    name="jam_masuk"
+                                                    value={jamBuka}
+                                                    type="time"
+                                                    placeholder="Jam Masuk..."
+                                                    className={`${
+                                                        editStatus
+                                                            ? "block"
+                                                            : "hidden"
+                                                    } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <MdOutlineWatchLater className="text-black font-medium text-3xl" />
+                                                <div
+                                                    className={`text-[12px] font-medium ${
+                                                        editStatus
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    {dataFasilitas?.jam_tutup}
+                                                </div>
+                                                <input
+                                                    name="jam_keluar"
+                                                    value={jamTutup}
+                                                    type="time"
+                                                    placeholder="Jam Keluar..."
+                                                    className={`${
+                                                        editStatus
+                                                            ? "block w-[500px]"
+                                                            : "hidden"
+                                                    } w-full px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <MdOutlineWatchLater className="text-black font-medium text-3xl" />
+                                                <div
+                                                    className={`text-[12px] font-medium ${
+                                                        editStatus
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    {dataFasilitas?.buka_hari}
+                                                </div>
+                                                <input
+                                                    name="buka_hari"
+                                                    value={bukaHari}
+                                                    type="text"
+                                                    className={`${
+                                                        editStatus
+                                                            ? "block w-[500px]"
+                                                            : "hidden"
+                                                    } px-5 py-2 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                    placeholder="Buka Hari..."
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <InputFiles
+                                        name="foto_fasilitas"
+                                        type="file"
+                                        placeholder="Input Files..."
+                                        className={`${
+                                            editStatus ? "block" : "hidden"
+                                        } mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                        accept=".png, .jpg, .jpeg"
+                                        onChange={handleFotoChange}
+                                    />
+
+                                    <div className="flex flex-row">
+                                        <button
+                                            className={`${
+                                                editStatus ? "hidden" : "block"
+                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[15px]`}
+                                            onClick={() => setEditStatus(true)}
+                                        >
+                                            Edit Fasilitas
+                                        </button>
+                                        <button
+                                            className={`${
+                                                editStatus ? "block" : "hidden"
+                                            } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[15px]`}
+                                            onClick={() => setEditStatus(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className={`${
+                                                editStatus ? "block" : "hidden"
+                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[15px]`}
+                                            onClick={handleSubmit}
+                                        >
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex items-center justify-center p-3"></div>
+
+                            {/* if Asrama maka ini muncul */}
+                            {dataFasilitas?.nama === "Asrama" && (
+                                <div className="flex flex-col bg-[#FFFFFF] gap-5 p-5 rounded-lg mt-3 ">
+                                    <div className="text-[24px] font-bold">
+                                        Tabel Kamar Asrama{" "}
+                                    </div>
+                                    <div className="flex bg-[#898989] gap-9 rounded-t-lg">
+                                        <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
+                                            NO
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                            Lantai Asrama
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
+                                            Nomer Kamar
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                            Penyewa 1
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                            Penyewa 2
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                            Penyewa 3
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[110px]">
+                                            Status
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                            Action
+                                        </div>
+                                    </div>
+                                    <div className="bg-white divide-y divide-gray-200">
+                                        <div className="">
+                                            {dataKamar?.map((data, index) => (
+                                                <div
+                                                    className="flex gap-9 text-center my-2"
+                                                    key={index}
+                                                >
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
+                                                        {data.Harga.nama}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
+                                                        {data.no_kamar}
+                                                    </div>
+                                                    <div
+                                                        className={`${
+                                                            editKamarStatus &&
+                                                            index ===
+                                                                indexEditKamar
+                                                                ? "hidden"
+                                                                : "block"
+                                                        } px-6 py-3 break-all w-[150px]`}
+                                                    >
+                                                        {data.npm_bed1_a}
+                                                    </div>
+                                                    <input
+                                                        name="npm_bed1_a"
+                                                        value={npmBed1}
+                                                        type="text"
+                                                        className={`${
+                                                            editKamarStatus &&
+                                                            index ===
+                                                                indexEditKamar
+                                                                ? "block"
+                                                                : "hidden"
+                                                        } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                        placeholder="Npm Bed 1"
+                                                        onChange={
+                                                            handleInputChange
+                                                        }
+                                                    />
+                                                    <div
+                                                        className={`${
+                                                            editKamarStatus &&
+                                                            index ===
+                                                                indexEditKamar
+                                                                ? "hidden"
+                                                                : "block"
+                                                        } px-6 py-3 break-all w-[150px]`}
+                                                    >
+                                                        {data.npm_bed2_b}
+                                                    </div>
+                                                    <input
+                                                        name="npm_bed2_b"
+                                                        value={npmBed2}
+                                                        type="text"
+                                                        className={`${
+                                                            editKamarStatus &&
+                                                            index ===
+                                                                indexEditKamar
+                                                                ? "block"
+                                                                : "hidden"
+                                                        } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                        placeholder="Npm Bed 2"
+                                                        onChange={
+                                                            handleInputChange
+                                                        }
+                                                    />
+                                                    <div
+                                                        className={`${
+                                                            editKamarStatus &&
+                                                            index ===
+                                                                indexEditKamar
+                                                                ? "hidden"
+                                                                : "block"
+                                                        } px-6 py-3 break-all w-[150px]`}
+                                                    >
+                                                        {data.npm_bed3_c}
+                                                    </div>
+                                                    <input
+                                                        name="npm_bed3_c"
+                                                        value={npmBed3}
+                                                        type="text"
+                                                        className={`${
+                                                            editKamarStatus &&
+                                                            index ===
+                                                                indexEditKamar
+                                                                ? "block"
+                                                                : "hidden"
+                                                        } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                        placeholder="Npm Bed 3"
+                                                        onChange={
+                                                            handleInputChange
+                                                        }
+                                                    />
+                                                    <div className="px-6 py-3 break-all w-[110px]">
+                                                        {data.status_kamar ===
+                                                        false
+                                                            ? "Penuh "
+                                                            : "Kosong"}
+                                                    </div>
+                                                    <div className="flex flex-col gap-2">
+                                                        <button
+                                                            className={`${
+                                                                editKamarStatus &&
+                                                                index ===
+                                                                    indexEditKamar
+                                                                    ? "hidden"
+                                                                    : "block"
+                                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                            onClick={() =>
+                                                                editKamarHandle(
+                                                                    data.npm_bed1_a,
+                                                                    data.npm_bed2_b,
+                                                                    data.npm_bed3_c,
+                                                                    index
+                                                                )
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            className={`${
+                                                                editKamarStatus &&
+                                                                index ===
+                                                                    indexEditKamar
+                                                                    ? "block"
+                                                                    : "hidden"
+                                                            } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                            onClick={() => {
+                                                                setEditKamarStatus(
+                                                                    false
+                                                                );
+                                                            }}
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            className={`${
+                                                                editKamarStatus &&
+                                                                index ===
+                                                                    indexEditKamar
+                                                                    ? "block"
+                                                                    : "hidden"
+                                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                            onClick={() =>
+                                                                saveEditKamar(
+                                                                    data.id_asrama
+                                                                )
+                                                            }
+                                                        >
+                                                            Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-center p-3"></div>
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="h-screen w-screen bg-white flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+            )}
         </div>
     );
 }

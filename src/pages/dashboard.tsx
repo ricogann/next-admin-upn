@@ -5,9 +5,8 @@ import _booking from "@/services/booking.service";
 import _users from "@/services/users.service";
 import _lib from "@/lib/index";
 import { io } from "socket.io-client";
-import useSound from "node_modules/use-sound/dist";
 import CookiesDTO from "@/interfaces/cookiesDTO";
-import Login from "@/pages/auth/login";
+
 import { useRouter } from "next/router";
 
 interface Mahasiswa {
@@ -593,114 +592,124 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="flex bg-[#FFFFFF] text-black relative">
-            <audio
-                controls
-                src="/notification-sound.mp3"
-                className="hidden"
-                id="notif-sound"
-            />
-            {isModalOpen && (
-                <div className="w-full h-full fixed flex justify-center items-center z-50 backdrop-blur-sm">
-                    <div className="rounded-lg p-10 flex flex-col justify-center items-center">
-                        <div className="flex flex-row justify-end w-full mb-5">
-                            <button
-                                className="text-[20px] font-bold text-[#F0EDEE] bg-[#07393C] px-5 py-2 rounded-xl"
-                                onClick={() => toggleModal("")}
-                            >
-                                Close
-                            </button>
+        <div className="">
+            {isLogin ? (
+                <div className="flex bg-[#FFFFFF] text-black relative">
+                    <audio
+                        controls
+                        src="/notification-sound.mp3"
+                        className="hidden"
+                        id="notif-sound"
+                    />
+                    {isModalOpen && (
+                        <div className="w-full h-full fixed flex justify-center items-center z-50 backdrop-blur-sm">
+                            <div className="rounded-lg p-10 flex flex-col justify-center items-center">
+                                <div className="flex flex-row justify-end w-full mb-5">
+                                    <button
+                                        className="text-[20px] font-bold text-[#F0EDEE] bg-[#07393C] px-5 py-2 rounded-xl"
+                                        onClick={() => toggleModal("")}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                                <Image
+                                    src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                    width={500}
+                                    height={500}
+                                    alt="bukti-upload"
+                                />
+                            </div>
                         </div>
-                        <Image
-                            src={`https://api.ricogann.com/assets/${buktiToShow}`}
-                            width={500}
-                            height={500}
-                            alt="bukti-upload"
-                        />
+                    )}
+                    <div className="">
+                        <SideBar />
                     </div>
+                    <div className="flex w-full">
+                        <div className="flex-1 bg-[#F7F8FA]">
+                            <div className="p-10">
+                                <div className="flex flex-col items-start justify-center">
+                                    <h1 className="text-[45px] font-bold">
+                                        Dashboard
+                                    </h1>
+                                    <h4 className="text-[15px] font-regular mb-5 text-dark-whiteText">
+                                        Welcome Back!
+                                    </h4>
+                                    <h4 className="text-[20px] font-bold mb-3">
+                                        Quick Stats
+                                    </h4>
+                                </div>
+
+                                <div className="flex flex-row items-start mb-10">
+                                    <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
+                                        <h1 className="font-regular mb-3">
+                                            Total Bookings
+                                        </h1>
+                                        <h1 className="text-[28px] font-bold ">
+                                            {allData.length}
+                                        </h1>
+                                    </div>
+                                    <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
+                                        <h1 className="font-regular mb-3">
+                                            Pending Booking
+                                        </h1>
+                                        <h1 className="text-[28px] font-bold text-red-500">
+                                            {dataPemesanan.length}
+                                        </h1>
+                                    </div>
+                                    <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
+                                        <h1 className="font-regular mb-3">
+                                            Total Users
+                                        </h1>
+                                        <h1 className="text-[28px] font-bold ">
+                                            {totalSum}
+                                        </h1>
+                                    </div>
+                                    <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
+                                        <h1 className="font-regular mb-3">
+                                            Pending Mahasiswa
+                                        </h1>
+                                        <h1 className="text-[28px] font-bold text-red-500">
+                                            {dataUsers.length}
+                                        </h1>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
+                                    <a
+                                        href="#"
+                                        onClick={() => toggleTab("bookings")}
+                                        className={`text-[18] ${
+                                            isTabActive("bookings")
+                                                ? "font-bold mb-3 mr-14 border-b-2 border-[#FFA101]"
+                                                : "font-regular mb-3 mr-14"
+                                        }`}
+                                    >
+                                        Bookings Fasilitas
+                                    </a>
+                                    <a
+                                        href="#"
+                                        onClick={() => toggleTab("mahasiswa")}
+                                        className={`text-[18] ${
+                                            isTabActive("mahasiswa")
+                                                ? "font-bold mb-3 mr-14 border-b-2 border-[#FFA101]"
+                                                : "font-regular mb-3 mr-14"
+                                        }`}
+                                    >
+                                        Request Account
+                                    </a>
+                                </div>
+                                <div className="flex flex-wrap items-start mb-5">
+                                    {renderContent()}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="h-screen w-screen bg-white flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
                 </div>
             )}
-            <div className="">
-                <SideBar />
-            </div>
-            <div className="flex w-full">
-                <div className="flex-1 bg-[#F7F8FA]">
-                    <div className="p-10">
-                        <div className="flex flex-col items-start justify-center">
-                            <h1 className="text-[45px] font-bold">Dashboard</h1>
-                            <h4 className="text-[15px] font-regular mb-5 text-dark-whiteText">
-                                Welcome Back!
-                            </h4>
-                            <h4 className="text-[20px] font-bold mb-3">
-                                Quick Stats
-                            </h4>
-                        </div>
-
-                        <div className="flex flex-row items-start mb-10">
-                            <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
-                                <h1 className="font-regular mb-3">
-                                    Total Bookings
-                                </h1>
-                                <h1 className="text-[28px] font-bold ">
-                                    {allData.length}
-                                </h1>
-                            </div>
-                            <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
-                                <h1 className="font-regular mb-3">
-                                    Pending Booking
-                                </h1>
-                                <h1 className="text-[28px] font-bold text-red-500">
-                                    {dataPemesanan.length}
-                                </h1>
-                            </div>
-                            <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
-                                <h1 className="font-regular mb-3">
-                                    Total Users
-                                </h1>
-                                <h1 className="text-[28px] font-bold ">
-                                    {totalSum}
-                                </h1>
-                            </div>
-                            <div className="bg-white rounded-lg shadow-lg p-5 mr-5 w-[200px]">
-                                <h1 className="font-regular mb-3">
-                                    Pending Mahasiswa
-                                </h1>
-                                <h1 className="text-[28px] font-bold text-red-500">
-                                    {dataUsers.length}
-                                </h1>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-row items-start mb-5 border-b border-[#E2E7EE]">
-                            <a
-                                href="#"
-                                onClick={() => toggleTab("bookings")}
-                                className={`text-[18] ${
-                                    isTabActive("bookings")
-                                        ? "font-bold mb-3 mr-14 border-b-2 border-[#FFA101]"
-                                        : "font-regular mb-3 mr-14"
-                                }`}
-                            >
-                                Bookings Fasilitas
-                            </a>
-                            <a
-                                href="#"
-                                onClick={() => toggleTab("mahasiswa")}
-                                className={`text-[18] ${
-                                    isTabActive("mahasiswa")
-                                        ? "font-bold mb-3 mr-14 border-b-2 border-[#FFA101]"
-                                        : "font-regular mb-3 mr-14"
-                                }`}
-                            >
-                                Request Account
-                            </a>
-                        </div>
-                        <div className="flex flex-wrap items-start mb-5">
-                            {renderContent()}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }
