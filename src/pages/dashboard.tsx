@@ -152,6 +152,12 @@ export default function Dashboard() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
                 setCookiesCert(dataCookies.CERT);
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
                 const dataUsers = await users.getUsers(dataCookies.CERT);
 
                 const dataUsersFilter = dataUsers.filter(
@@ -180,13 +186,6 @@ export default function Dashboard() {
                 setBuktiIdentitas(accountBukti);
                 setDataUsers(dataUsersFilter);
                 setTotalSum(dataUsers.length);
-
-                if (dataCookies.CERT !== undefined) {
-                    setIsLogin(true);
-                } else {
-                    setIsLogin(false);
-                    router.push("/auth/login");
-                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
