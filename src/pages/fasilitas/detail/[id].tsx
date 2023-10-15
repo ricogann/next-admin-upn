@@ -57,7 +57,8 @@ export default function Fasilitas() {
     const [npmBed2, setNpmBed2] = useState("");
     const [npmBed3, setNpmBed3] = useState("");
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
+    const [cookies, setCookies] = useState("");
+    const libCookies = new _lib();
     const fasilitas = new _fasilitas();
     const booking = new _booking();
 
@@ -121,7 +122,7 @@ export default function Fasilitas() {
         data.append("no_va", noVa);
         data.append("name_foto_old", JSON.stringify(fotoFasilitas));
 
-        const res = await fasilitas.updateFasilitas(Number(id), data);
+        const res = await fasilitas.updateFasilitas(Number(id), data, cookies);
     };
 
     async function getdataKamar() {
@@ -146,6 +147,8 @@ export default function Fasilitas() {
     useEffect(() => {
         async function fetchData(id: number) {
             try {
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookies(dataCookies.CERT);
                 const dataFasilitas = await fasilitas.getFasilitasById(
                     Number(id)
                 );
@@ -163,14 +166,12 @@ export default function Fasilitas() {
                 setDataFasilitas(dataFasilitas);
                 setFotoFasilitas(JSON.parse(dataFasilitas.foto));
 
-                                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -180,6 +181,8 @@ export default function Fasilitas() {
         if (id) {
             fetchData(Number(id));
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const editKamarHandle = (
@@ -209,19 +212,27 @@ export default function Fasilitas() {
 
     const saveEditKamar = async (id: number) => {
         if (npmBed1 === "" || npmBed2 === "" || npmBed3 === "") {
-            const updateKamar = await booking.updateKamar(id, {
-                npm_bed1_a: npmBed1,
-                npm_bed2_b: npmBed2,
-                npm_bed3_c: npmBed3,
-                status_kamar: true,
-            });
+            const updateKamar = await booking.updateKamar(
+                id,
+                {
+                    npm_bed1_a: npmBed1,
+                    npm_bed2_b: npmBed2,
+                    npm_bed3_c: npmBed3,
+                    status_kamar: true,
+                },
+                cookies
+            );
         } else {
-            const updateKamar = await booking.updateKamar(id, {
-                npm_bed1_a: npmBed1,
-                npm_bed2_b: npmBed2,
-                npm_bed3_c: npmBed3,
-                status_kamar: false,
-            });
+            const updateKamar = await booking.updateKamar(
+                id,
+                {
+                    npm_bed1_a: npmBed1,
+                    npm_bed2_b: npmBed2,
+                    npm_bed3_c: npmBed3,
+                    status_kamar: false,
+                },
+                cookies
+            );
         }
     };
 

@@ -25,13 +25,14 @@ class _harga extends _core {
         }
     }
 
-    async addHarga(data: Object) {
+    async addHarga(data: Object, cookie: string) {
         try {
             console.log(data);
             const res = await fetch(`${this.getBaseUrl()}/api/harga/add`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${cookie}`,
                 },
                 body: JSON.stringify(data),
             });
@@ -44,7 +45,7 @@ class _harga extends _core {
         }
     }
 
-    async updateHarga(id: number, data: Object) {
+    async updateHarga(id: number, data: Object, cookie: string) {
         try {
             const res = await fetch(
                 `${this.getBaseUrl()}/api/harga/update/${id}`,
@@ -52,6 +53,7 @@ class _harga extends _core {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${cookie}`,
                     },
                     body: JSON.stringify(data),
                 }
@@ -66,12 +68,15 @@ class _harga extends _core {
         }
     }
 
-    async deleteHarga(id: number) {
+    async deleteHarga(id: number, cookie: string) {
         try {
             const res = await fetch(
                 `https://api.ricogann.com/api/Harga/delete/${Number(id)}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${cookie}`,
+                    },
                 }
             );
 

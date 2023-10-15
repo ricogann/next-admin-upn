@@ -7,7 +7,6 @@ import _lib from "@/lib";
 
 import CookiesDTO from "@/interfaces/cookiesDTO";
 
-
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 interface Umum {
@@ -76,8 +75,8 @@ export default function Users() {
     const [filteredDosen, setFilteredDosen] = useState<Dosen[]>([]);
     const [filteredMahasiswa, setFilteredMahasiswa] = useState<Mahasiswa[]>([]);
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
-
+    const [cookiesCert, setCookiesCert] = useState<string>("");
+    const libCookies = new _lib();
 
     const [eyeOpen, setEyeOpen] = useState<boolean>(true);
     const [buktiToShow, setBuktiToShow] = useState<string>("");
@@ -89,22 +88,25 @@ export default function Users() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const dataUmum = await users.getUmum();
-                const dataMahasiswa = await users.getMahasiswa();
-                const dataDosen = await users.getDosen();
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookiesCert(dataCookies.CERT);
+
+                const dataUmum = await users.getUmum(dataCookies.CERT);
+                const dataMahasiswa = await users.getMahasiswa(
+                    dataCookies.CERT
+                );
+                const dataDosen = await users.getDosen(dataCookies.CERT);
 
                 setUmum(dataUmum.data);
                 setMahasiswa(dataMahasiswa.data);
                 setDosen(dataDosen.data);
 
-                const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -153,8 +155,6 @@ export default function Users() {
             setFilteredMahasiswa(filteredDataMahasiswa);
         }
 
-        
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dosen, umum, mahasiswa, searchText]);
 
@@ -201,12 +201,12 @@ export default function Users() {
         id_account: number,
         status: boolean
     ) => {
-        await users.updateStatusAccount(id, id_account, status);
+        await users.updateStatusAccount(id, id_account, status, cookiesCert);
     };
 
     const handleDelete = async (id: number) => {
         try {
-            const data = await users.deleteUsers(id);
+            const data = await users.deleteUsers(id, cookiesCert);
 
             if (data.status === true) {
                 window.location.reload();
@@ -218,7 +218,7 @@ export default function Users() {
 
     const handleDeleteDosen = async (id: number) => {
         try {
-            const data = await users.deleteDosen(id);
+            const data = await users.deleteDosen(id, cookiesCert);
 
             if (data.status === true) {
                 window.location.reload();
@@ -230,7 +230,7 @@ export default function Users() {
 
     const handleDeleteMahasiswa = async (id: number) => {
         try {
-            const data = await users.deleteMahasiswa(id);
+            const data = await users.deleteMahasiswa(id, cookiesCert);
 
             if (data.status === true) {
                 window.location.reload();
@@ -243,8 +243,6 @@ export default function Users() {
     const decryptedPassword = (password: string) => {
         return lib.decrypt(password);
     };
-
-    console.log(dataMahasiswaToShow);
 
     const toggleModal = (bukti: string) => {
         setBuktiToShow(bukti);
@@ -350,7 +348,7 @@ export default function Users() {
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
                                     Password
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[140px]">
                                     No Telepon
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
@@ -420,8 +418,9 @@ export default function Users() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="px-6 py-4  w-[150px] text-center">
-                                            <a href={`https://wa.me/${umum.no_telp}?text=Halo%20${umum.nama},%20Kami%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                        <div className="px-6 py-4  w-[140px] text-center">
+                                            <a
+                                                href={`https://wa.me/${umum.no_telp}?text=Halo%20${umum.nama},%20Kami%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
                                             >
                                                 {umum.no_telp}
                                             </a>
@@ -532,7 +531,7 @@ export default function Users() {
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[200px]">
                                     Password
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[140px]">
                                     No Telepon
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
@@ -602,8 +601,9 @@ export default function Users() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="px-6 py-4  w-[150px] text-center">
-                                            <a href={`https://wa.me/${dosen.no_telp}?text=Halo%20${dosen.nama}%20Saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                        <div className="px-6 py-4  w-[140px] text-center">
+                                            <a
+                                                href={`https://wa.me/${dosen.no_telp}?text=Halo%20${dosen.nama}%20Saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
                                             >
                                                 {dosen.no_telp}
                                             </a>
@@ -704,7 +704,7 @@ export default function Users() {
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
                                     Nama Mahasiswa
                                 </div>
-                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[100px]">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
                                     NPM
                                 </div>
                                 <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[220px]">
@@ -735,7 +735,7 @@ export default function Users() {
                                         <div className="px-6 py-4 w-[120px] text-center text-[15px]">
                                             {mahasiswa.nama}
                                         </div>
-                                        <div className="px-6 py-4 w-[100px] text-[15px]">
+                                        <div className="px-6 py-4 w-[150px] break-all text-[15px]">
                                             {mahasiswa.npm}
                                         </div>
                                         <div className="px-6 py-4 w-[220px] break-all text-[15px] flex items-center justify-between">
@@ -785,7 +785,8 @@ export default function Users() {
                                             {mahasiswa.Prodi.nama_prodi}
                                         </div>
                                         <div className="px-6 py-4 text-[15px] w-[150px] ">
-                                            <a href={`https://wa.me/${mahasiswa.no_telp}?text=Halo%20${mahasiswa.nama}Halo,%20saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                            <a
+                                                href={`https://wa.me/${mahasiswa.no_telp}?text=Halo%20${mahasiswa.nama}Halo,%20saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
                                             >
                                                 {mahasiswa.no_telp}
                                             </a>

@@ -32,7 +32,8 @@ export default function Edit() {
     const [fasilitas, setFasilitas] = useState("");
     const [id, setId] = useState("");
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
+    const [cookies, setCookies] = useState("");
+    const libCookies = new _lib();
 
     useEffect(() => {
         if (router.isReady) {
@@ -55,6 +56,8 @@ export default function Edit() {
     useEffect(() => {
         async function fetchData() {
             try {
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookies(dataCookies.CERT);
                 const response: harga = await hargaService.getDatahargaById(
                     Number(id)
                 );
@@ -63,14 +66,12 @@ export default function Edit() {
                 setNama(response.nama);
                 setHarga(response.harga);
 
-                const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data harga ", error);
                 throw error;
@@ -80,6 +81,8 @@ export default function Edit() {
         if (id !== "") {
             fetchData();
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const sendData = async () => {
@@ -94,7 +97,11 @@ export default function Edit() {
                 harga: harga,
             };
 
-            const response = await hargaService.updateHarga(Number(id), data);
+            const response = await hargaService.updateHarga(
+                Number(id),
+                data,
+                cookies
+            );
 
             if (response.status === true) {
                 alert("Data berhasil diubah!");

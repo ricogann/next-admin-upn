@@ -1,7 +1,6 @@
 import { useState, useEffect, MouseEventHandler } from "react";
 import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import _lib from "@/lib";
 import _fasilitas from "@/services/fasilitas.service";
 import _harga from "@/services/harga.service";
@@ -35,7 +34,8 @@ export default function Fasilitas() {
     const [filteredHarga, setfilteredHarga] = useState<harga[]>([]);
     const [filteredFasilitas, setfilteredFasilitas] = useState<Fasilitas[]>([]);
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
+    const [cookies, setCookies] = useState("");
+    const libCookies = new _lib();
     const lib = new _lib();
     const fasilitas = new _fasilitas();
     const harga = new _harga();
@@ -114,44 +114,32 @@ export default function Fasilitas() {
     useEffect(() => {
         async function fetchData() {
             try {
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookies(dataCookies.CERT);
                 const dataFasilitas = await fasilitas.getFasilitas();
                 const dataHarga = await harga.getDataharga();
 
                 setDataFasilitas(dataFasilitas);
                 setDataharga(dataHarga.data);
-
-                const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
         }
 
         fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleDeleteFasilitas = async (id: number) => {
         try {
-            const res = await fetch(
-                `https://api.ricogann.com/api/fasilitas/delete/${Number(id)}`,
-                {
-                    method: "DELETE",
-                }
-            );
-
-            const data = await res.json();
-
-            if (data.status === true) {
-                window.location.reload();
-            } else {
-                alert("Gagal menghapus data fasilitas");
-            }
+            await fasilitas.deleteFasilitas(id, cookies);
         } catch (error) {
             console.log(error);
         }
@@ -159,7 +147,7 @@ export default function Fasilitas() {
 
     const handleDeleteHarga = async (id: number) => {
         try {
-            const data = await harga.deleteHarga(id);
+            const data = await harga.deleteHarga(id, cookies);
 
             if (data.status === true) {
                 window.location.reload();

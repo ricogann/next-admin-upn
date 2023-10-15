@@ -72,8 +72,9 @@ export default function Dashboard() {
     const [currentPage, setCurrentPage] = useState(1);
     const [allData, setAllData] = useState<Pemesanan[]>([]);
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
+    const libCookies = new _lib();
     const router = useRouter();
+    const [cookiesCert, setCookiesCert] = useState("");
 
     const [buktiToShow, setBuktiToShow] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -107,7 +108,6 @@ export default function Dashboard() {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    
 
     const booking = new _booking();
     const users = new _users();
@@ -148,8 +148,9 @@ export default function Dashboard() {
     useEffect(() => {
         async function fetchData() {
             try {
-                
-                const dataUsers = await users.getUsers();
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookiesCert(dataCookies.CERT);
+                const dataUsers = await users.getUsers(dataCookies.CERT);
 
                 const dataUsersFilter = dataUsers.filter(
                     (item: Account) => item.status_account === false
@@ -177,15 +178,13 @@ export default function Dashboard() {
                 setBuktiIdentitas(accountBukti);
                 setDataUsers(dataUsersFilter);
                 setTotalSum(dataUsers.length);
-            
-                const dataCookies: CookiesDTO = await libCookies.getCookies();
-    if (dataCookies.CERT !== undefined) {
+
+                if (dataCookies.CERT !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
                     router.push("/auth/login");
-    }
-                
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -216,12 +215,11 @@ export default function Dashboard() {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [realTimeMessage]);
-    
 
     const isTabActive = (tab: string) => activeTab === tab;
 
     const handleStatus = (id: number, status: string) => {
-        booking.updateStatus(id, status);
+        booking.updateStatus(id, status, cookiesCert);
     };
 
     const handleStatusAccount = (
@@ -229,7 +227,7 @@ export default function Dashboard() {
         id_account: number,
         status: boolean
     ) => {
-        users.updateStatusAccount(id, id_account, status);
+        users.updateStatusAccount(id, id_account, status, cookiesCert);
     };
 
     const imageCheck = (bukti_identitas: string, sik: string) => {

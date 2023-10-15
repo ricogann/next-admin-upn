@@ -14,11 +14,14 @@ class _misc extends _core {
         }
     }
 
-    async updateDataMisc(id: number, data: FormData) {
+    async updateDataMisc(id: number, data: FormData, cookie: string) {
         try {
             const res = await fetch(`${this.baseUrl}/api/misc/${id}`, {
                 method: "PUT",
                 body: data,
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
             });
 
             const resData = await res.json();

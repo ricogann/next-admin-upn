@@ -7,6 +7,7 @@ import { Submit } from "@/components/submit-button";
 import { useRouter } from "next/router";
 import _lib from "@/lib/index";
 import CookiesDTO from "@/interfaces/cookiesDTO";
+import _fasilitas from "@/services/fasilitas.service";
 
 export default function Create() {
     const router = useRouter();
@@ -21,8 +22,9 @@ export default function Create() {
     const [bukaHari, setBukaHari] = useState("");
     const [noVa, setNoVa] = useState("");
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
-    const lib = new _lib();
+    const [cookies, setCookies] = useState("");
+    const libCookies = new _lib();
+    const fasilitas = new _fasilitas();
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama_fasilitas") {
@@ -80,49 +82,37 @@ export default function Create() {
             data.append("durasi", String(1));
             data.append("no_va", noVa);
 
-            const res = await addFasilitas(data);
+            const res = await fasilitas.addFasilitas(data, cookies);
+
+            if (res.status === true) {
+                alert(res.message);
+                router.push("/fasilitas");
+            } else {
+                alert(res.message);
+            }
         }
     };
-
-    async function addFasilitas(data: FormData) {
-        try {
-            console.log(data);
-            const res = await fetch(
-                "https://api.ricogann.com/api/fasilitas/add",
-                {
-                    method: "POST",
-                    body: data,
-                }
-            );
-
-            const resData = await res.json();
-            console.log(resData);
-
-            if (resData.status === true) {
-                router.push("/fasilitas");
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                setCookies(dataCookies.CERT);
+
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
         }
 
         fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

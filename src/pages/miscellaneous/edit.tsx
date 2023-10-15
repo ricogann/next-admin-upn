@@ -26,7 +26,7 @@ export default function Miscellaneous() {
     const router = useRouter();
     const misc = new _misc();
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
+    const libCookies = new _lib();
 
     const [dataMisc, setDataMisc] = useState<misc>();
     //data input Misc
@@ -42,6 +42,7 @@ export default function Miscellaneous() {
     const [tanda_tangan, setTanda_Tangan] = useState<File>();
     const [logo_instansi_old, setLogo_Instansi_Old] = useState<string>("");
     const [tanda_tangan_old, setTanda_Tangan_Old] = useState<string>("");
+    const [cookies, setCookies] = useState("");
 
     const handleDataMisc = async () => {
         const data = new FormData();
@@ -57,7 +58,7 @@ export default function Miscellaneous() {
         data.append("logo_instansi_old", logo_instansi_old);
         data.append("tanda_tangan_old", tanda_tangan_old);
 
-        const res = await misc.updateDataMisc(id_misc as number, data);
+        const res = await misc.updateDataMisc(id_misc as number, data, cookies);
 
         if (res.status === true) {
             alert("Data Berhasil Diubah");
@@ -97,6 +98,8 @@ export default function Miscellaneous() {
         async function fetchData() {
             try {
                 const dataMisc = await misc.getDataMisc();
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookies(dataCookies.CERT);
 
                 setId_Misc(dataMisc.data.id_misc);
                 setNama_Instansi(dataMisc.data.nama_instansi);
@@ -111,19 +114,19 @@ export default function Miscellaneous() {
                 setLogo_Instansi_Old(dataMisc.data.logo_instansi);
                 setTanda_Tangan_Old(dataMisc.data.tanda_tangan);
 
-                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
         }
         fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

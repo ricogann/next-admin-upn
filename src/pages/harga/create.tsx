@@ -7,6 +7,7 @@ import CookiesDTO from "@/interfaces/cookiesDTO";
 import _lib from "@/lib";
 
 import _harga from "@/services/harga.service";
+import _fasilitas from "@/services/fasilitas.service";
 
 interface Fasilitas {
     id_fasilitas: number;
@@ -25,10 +26,11 @@ export default function Create() {
     const [id_fasilitas, setidfasilitas] = useState("");
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas[]>([]);
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
-
+    const [cookies, setCookies] = useState("");
+    const libCookies = new _lib();
 
     const hargaService = new _harga();
+    const fasilitas = new _fasilitas();
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama") {
@@ -49,17 +51,17 @@ export default function Create() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const dataFaslitas = await getDataFasilitas();
-
-                setDataFasilitas(dataFaslitas.data);
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+                setCookies(dataCookies.CERT);
+                const dataFaslitas = await fasilitas.getFasilitas();
+
+                setDataFasilitas(dataFaslitas);
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }
@@ -72,11 +74,14 @@ export default function Create() {
             alert("Mohon isi semua field!");
             return;
         } else {
-            const res = await hargaService.addHarga({
-                nama,
-                harga,
-                id_fasilitas,
-            });
+            const res = await hargaService.addHarga(
+                {
+                    nama,
+                    harga,
+                    id_fasilitas,
+                },
+                cookies
+            );
 
             if (res.status === true) {
                 alert("Berhasil menambahkan harga fasilitas!");
@@ -86,17 +91,6 @@ export default function Create() {
             }
         }
     };
-
-    async function getDataFasilitas() {
-        try {
-            const res = await fetch("https://api.ricogann.com/api/fasilitas");
-            const data = await res.json();
-
-            return data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     return (
         <div className="flex">

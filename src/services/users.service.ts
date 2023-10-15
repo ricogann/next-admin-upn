@@ -3,9 +3,14 @@ import _core from "./index.service";
 class _users extends _core {
     private baseUrl: string = this.getBaseUrl();
 
-    async getUsers() {
+    async getUsers(cookie: string) {
         try {
-            const response = await fetch(`${this.baseUrl}/api/users/account`);
+            const response = await fetch(`${this.baseUrl}/api/users/account`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
             const data = await response.json();
 
             return data.data;
@@ -15,7 +20,12 @@ class _users extends _core {
         }
     }
 
-    async updateStatusAccount(id: number, id_account: number, status: boolean) {
+    async updateStatusAccount(
+        id: number,
+        id_account: number,
+        status: boolean,
+        cookie: string
+    ) {
         try {
             const res = await fetch(
                 `${this.baseUrl}/api/users/account/verifikasi/${id}`,
@@ -23,6 +33,7 @@ class _users extends _core {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${cookie}`,
                     },
                     body: JSON.stringify({
                         id: id_account,
@@ -44,9 +55,13 @@ class _users extends _core {
         }
     }
 
-    async getUmum() {
+    async getUmum(cookie: string) {
         try {
-            const res = await fetch(`${this.baseUrl}/api/users/umum`);
+            const res = await fetch(`${this.baseUrl}/api/users/umum`, {
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
             const data = await res.json();
 
             return data;
@@ -56,9 +71,13 @@ class _users extends _core {
         }
     }
 
-    async getMahasiswa() {
+    async getMahasiswa(cookie: string) {
         try {
-            const res = await fetch(`${this.baseUrl}/api/users/mahasiswa`);
+            const res = await fetch(`${this.baseUrl}/api/users/mahasiswa`, {
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
             const data = await res.json();
 
             return data;
@@ -67,9 +86,13 @@ class _users extends _core {
         }
     }
 
-    async getDosen() {
+    async getDosen(cookie: string) {
         try {
-            const res = await fetch(`${this.baseUrl}/api/users/dosen`);
+            const res = await fetch(`${this.baseUrl}/api/users/dosen`, {
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
             const data = await res.json();
 
             return data;
@@ -78,12 +101,15 @@ class _users extends _core {
         }
     }
 
-    async deleteUsers(id: number) {
+    async deleteUsers(id: number, cookie: string) {
         try {
             const res = await fetch(
                 `https://api.ricogann.com/api/users/umum/delete/${id}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${cookie}`,
+                    },
                 }
             );
             const data = await res.json();
@@ -94,12 +120,15 @@ class _users extends _core {
         }
     }
 
-    async deleteDosen(id: number) {
+    async deleteDosen(id: number, cookie: string) {
         try {
             const res = await fetch(
                 `https://api.ricogann.com/api/users/dosen/delete/${id}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${cookie}`,
+                    },
                 }
             );
             const data = await res.json();
@@ -110,12 +139,15 @@ class _users extends _core {
         }
     }
 
-    async deleteMahasiswa(id: number) {
+    async deleteMahasiswa(id: number, cookie: string) {
         try {
             const res = await fetch(
                 `https://api.ricogann.com/api/users/mahasiswa/delete/${id}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${cookie}`,
+                    },
                 }
             );
             const data = await res.json();
@@ -126,10 +158,15 @@ class _users extends _core {
         }
     }
 
-    async getAccountById(id: number) {
+    async getAccountById(id: number, cookie: string) {
         try {
             const res = await fetch(
-                `https://api.ricogann.com/api/users/account/${id}`
+                `https://api.ricogann.com/api/users/account/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${cookie}`,
+                    },
+                }
             );
             const data = await res.json();
 

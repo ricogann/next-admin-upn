@@ -15,15 +15,15 @@ class _booking extends _core {
         }
     }
 
-    async updateStatus(id: number, status: string) {
+    async updateStatus(id: number, status: string, cookie: string) {
         try {
-            console.log(id, status);
             const res = await fetch(
                 `${this.baseUrl}/api/booking/verifikasi/${id}`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${cookie}`,
                     },
                     body: JSON.stringify({
                         status: status,
@@ -43,12 +43,13 @@ class _booking extends _core {
         }
     }
 
-    async updateKamar(id: number, body: Object) {
+    async updateKamar(id: number, body: Object, cookie: string) {
         try {
             const res = await fetch(`${this.baseUrl}/api/kamar/update/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${cookie}`,
                 },
                 body: JSON.stringify(body),
             });

@@ -1,7 +1,8 @@
-import { useRouter } from "next/router";
-
+import Login from "./auth/login";
 export default function Home() {
-    const router = useRouter();
-    if (typeof window === "undefined") return null;
-    router.push("/dashboard");
+    return (
+        <div>
+            <Login />
+        </div>
+    );
 }

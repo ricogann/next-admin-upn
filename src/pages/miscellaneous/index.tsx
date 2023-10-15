@@ -24,23 +24,22 @@ export default function Miscellaneous() {
     const router = useRouter();
     const misc = new _misc();
     const [isLogin, setIsLogin] = useState(false);
-    const libCookies = new _lib()
+    const libCookies = new _lib();
     const [dataMisc, setDataMisc] = useState<misc>();
 
     useEffect(() => {
         async function fetchData() {
             try {
+                const dataCookies: CookiesDTO = await libCookies.getCookies();
                 const dataMisc = await misc.getDataMisc();
-
                 setDataMisc(dataMisc.data);
-                                const dataCookies: CookiesDTO = await libCookies.getCookies();
-        if (dataCookies.CERT !== undefined) {
-                setIsLogin(true);
-            } else 
-            {
-                setIsLogin(false);
-                router.push("/auth/login");
-            }
+
+                if (dataCookies.CERT !== undefined) {
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                    router.push("/auth/login");
+                }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
             }

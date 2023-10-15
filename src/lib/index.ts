@@ -2,7 +2,6 @@ import * as crypto from "crypto-js";
 import CookiesDTO from "@/interfaces/cookiesDTO";
 
 class _lib {
-
     async getCookies(): Promise<CookiesDTO> {
         try {
             const cookies = document.cookie.split(";").reduce((res, c) => {
@@ -35,8 +34,6 @@ class _lib {
         }
     }
 
-
-
     calculatePagesToDisplay(currentPage: number, totalPages: number) {
         if (totalPages <= 5) {
             return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -58,8 +55,6 @@ class _lib {
             );
         }
     }
-
-    
 
     dataToShow(data: any[], currentPage: number, itemsPerPage: number) {
         return data.slice(
