@@ -8,12 +8,16 @@ import { AiOutlineArrowLeft } from "react-icons/ai";
 import { BiSolidDashboard, BiCalendar, BiLogOut } from "react-icons/bi";
 import { FaLandmark } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
-import {MdMiscellaneousServices} from "react-icons/md"
+import { MdMiscellaneousServices } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
+import _lib from "@/lib";
 
 export default function SideBar() {
     const [open, setOpen] = useState(true);
     const router = useRouter();
+
+    const lib = new _lib();
+
     const Menus = [
         {
             title: "Dashboard",
@@ -24,7 +28,11 @@ export default function SideBar() {
         { title: "Booking", src: BiCalendar, link: "/booking" },
         { title: "Data Fasilitas", src: FaLandmark, link: "/fasilitas" },
         { title: "Data Users", src: BsFillPeopleFill, link: "/users" },
-        { title: "Miscellaneous", src: MdMiscellaneousServices, link: "/miscellaneous" }, 
+        {
+            title: "Miscellaneous",
+            src: MdMiscellaneousServices,
+            link: "/miscellaneous",
+        },
         {
             title: "Notification",
             src: IoMdNotifications,
@@ -35,6 +43,10 @@ export default function SideBar() {
     ];
 
     const handlePage = (link: string) => {
+        if (link === "/logout") {
+            lib.deleteCookie("CERT");
+            router.push("/auth/login");
+        }
         router.push(link);
     };
 

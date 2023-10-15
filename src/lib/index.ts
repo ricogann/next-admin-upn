@@ -37,6 +37,19 @@ class _lib {
         }
     }
 
+    async deleteCookie(name: string) {
+        try {
+            const expires = "expires=Thu, 01 Jan 1970 00:00:00 UTC";
+            const cookieString = `${name}=;${expires};path=/`;
+            document.cookie = cookieString;
+
+            return true;
+        } catch (error) {
+            console.error("delete cookies error", error);
+            throw error;
+        }
+    }
+
     calculatePagesToDisplay(currentPage: number, totalPages: number) {
         if (totalPages <= 5) {
             return Array.from({ length: totalPages }, (_, i) => i + 1);
