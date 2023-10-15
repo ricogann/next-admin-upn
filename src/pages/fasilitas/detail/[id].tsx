@@ -128,13 +128,13 @@ export default function Fasilitas() {
         const res = await fasilitas.updateFasilitas(Number(id), data, cookies);
     };
 
-    async function getdataKamar() {
+    async function getdataKamar(cookie: string) {
         try {
             const res = await fetch(`https://api.ricogann.com/api/kamar`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${cookies}`,
+                    Authorization: `Bearer ${cookie}`,
                 },
             });
             const data = await res.json();
@@ -161,7 +161,7 @@ export default function Fasilitas() {
                 const dataFasilitas = await fasilitas.getFasilitasById(
                     Number(id)
                 );
-                const dataKamar = await getdataKamar();
+                const dataKamar = await getdataKamar(dataCookies.CERT);
 
                 setNamaFasilitas(dataFasilitas.nama);
                 setAlamatFasilitas(dataFasilitas.alamat);
