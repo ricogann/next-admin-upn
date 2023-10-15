@@ -46,8 +46,9 @@ export default function SideBar() {
         if (link === "/logout") {
             lib.deleteCookie("CERT");
             router.push("/auth/login");
+        } else {
+            router.push(link);
         }
-        router.push(link);
     };
 
     return (
