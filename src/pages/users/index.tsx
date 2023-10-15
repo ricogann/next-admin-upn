@@ -5,9 +5,11 @@ import { useRouter } from "next/router";
 import _users from "@/services/users.service";
 import _lib from "@/lib";
 
-import CookiesDTO from "@/interfaces/cookiesDTO";
-
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+
+interface CookiesDTO {
+    CERT: string;
+}
 
 interface Umum {
     id: number;
