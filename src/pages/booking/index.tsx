@@ -278,7 +278,7 @@ export default function Booking() {
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[140px]">
                                                 Total Harga
                                             </h1>
-                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[200px]">
+                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[212px]">
                                                 Action
                                             </h1>
                                         </div>
@@ -376,23 +376,32 @@ export default function Booking() {
                                                                     Bukti
                                                                     Pembayaran
                                                                 </button>
-                                                                <button
-                                                                    className={`${statusCheck(
-                                                                        data.status
-                                                                    )} bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                                <button
+                                                                <div
                                                                     className={`${
                                                                         data.status ===
                                                                         "Menunggu Konfirmasi"
-                                                                            ? "block"
+                                                                            ? "flex flex-col gap-2"
                                                                             : "hidden"
-                                                                    } bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                                    }`}
                                                                 >
-                                                                    Approve
-                                                                </button>
+                                                                    <button
+                                                                        className={`${statusCheck(
+                                                                            data.status
+                                                                        )} bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                                    >
+                                                                        Delete
+                                                                    </button>
+                                                                    <button
+                                                                        className={`${
+                                                                            data.status ===
+                                                                            "Menunggu Konfirmasi"
+                                                                                ? "block"
+                                                                                : "hidden"
+                                                                        } bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                                    >
+                                                                        Approve
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )

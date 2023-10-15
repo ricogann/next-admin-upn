@@ -256,12 +256,10 @@ export default function Dashboard() {
                                                 Nama Penyewa
                                             </p>
                                             <p className="text-[14] font-regular mb-5 xl:mb-2">
-                                                {item.Account.Mahasiswa[0].nama
-                                                    .length > 0
+                                                {item.Account.Mahasiswa[0]
                                                     ? item.Account.Mahasiswa[0]
                                                           .nama
-                                                    : item.Account.Dosen[0].nama
-                                                          .length > 0
+                                                    : item.Account.Dosen[0]
                                                     ? item.Account.Dosen[0].nama
                                                     : item.Account.Umum[0].nama}
                                             </p>
