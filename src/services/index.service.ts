@@ -1,6 +1,6 @@
 class _core {
     getBaseUrl() {
-        return "https://api.ricogann.com";
+        return "http://localhost:5000";
     }
 }
 

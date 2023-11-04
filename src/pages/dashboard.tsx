@@ -26,6 +26,18 @@ interface Dosen {
     NIP: string;
 }
 
+interface UKM {
+    id: number;
+    nama_ukm: string;
+    bukti_identitas: string;
+}
+
+interface Organisasi {
+    id: number;
+    nama_organisasi: string;
+    bukti_identitas: string;
+}
+
 interface Umum {
     id: number;
     nama: string;
@@ -45,6 +57,8 @@ interface Account {
     Dosen: Dosen[];
     Mahasiswa: Mahasiswa[];
     Umum: Umum[];
+    UKM: UKM[];
+    Organisasi: Organisasi[];
     Role: Role;
 
     id_account: number;
@@ -93,7 +107,7 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
-        const socket = io("https://api.ricogann.com");
+        const socket = io("http://localhost:5000");
 
         socket.on("connect", () => {
             console.log("connected");
@@ -165,7 +179,7 @@ export default function Dashboard() {
                 );
 
                 const accountBukti: string[] = [];
-                const buktiPembayaranFilter = dataUsers.filter(
+                const buktiPembayaranFilter = dataUsersFilter.filter(
                     (item: Account) => {
                         if (item.Mahasiswa.length > 0) {
                             item.Mahasiswa.map((item: Mahasiswa) => {
@@ -177,6 +191,14 @@ export default function Dashboard() {
                             });
                         } else if (item.Umum.length > 0) {
                             item.Umum.map((item: Umum) => {
+                                accountBukti.push(item.bukti_identitas);
+                            });
+                        } else if (item.UKM.length > 0) {
+                            item.UKM.map((item: UKM) => {
+                                accountBukti.push(item.bukti_identitas);
+                            });
+                        } else {
+                            item.Organisasi.map((item: Organisasi) => {
                                 accountBukti.push(item.bukti_identitas);
                             });
                         }
@@ -238,6 +260,8 @@ export default function Dashboard() {
             return sik;
         }
     };
+
+    console.log(dataUsersToShow);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -392,80 +416,24 @@ export default function Dashboard() {
                                         key={index}
                                     >
                                         {/* Mahasiswa content */}
-                                        <div className="text-[14] font-regular mb-1">
-                                            {item.Mahasiswa.length > 0
-                                                ? item.Mahasiswa.map(
-                                                      (
-                                                          item: Mahasiswa,
-                                                          index: number
-                                                      ) => (
-                                                          <div key={index}>
-                                                              <h1 className="font-bold">
-                                                                  Nama
-                                                              </h1>
-                                                              <h1>
-                                                                  {item.nama}
-                                                              </h1>
-                                                          </div>
-                                                      )
-                                                  )
-                                                : item.Dosen.length > 0
-                                                ? item.Dosen.map(
-                                                      (
-                                                          item: Dosen,
-                                                          index: number
-                                                      ) => (
-                                                          <div key={index}>
-                                                              <h1 className="font-bold">
-                                                                  Nama
-                                                              </h1>
-                                                              <h1>
-                                                                  {item.nama}
-                                                              </h1>
-                                                          </div>
-                                                      )
-                                                  )
-                                                : item.Umum.map(
-                                                      (
-                                                          item: Umum,
-                                                          index: number
-                                                      ) => (
-                                                          <div key={index}>
-                                                              <h1 className="font-bold">
-                                                                  Nama
-                                                              </h1>
-                                                              <h1>
-                                                                  {item.nama}
-                                                              </h1>
-                                                          </div>
-                                                      )
-                                                  )}
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <div className="text-[14] font-regular">
-                                                <h1 className="font-bold">
-                                                    Role
-                                                </h1>
-                                                {item.Role.nama_role
-                                                    .charAt(0)
-                                                    .toUpperCase() +
-                                                    item.Role.nama_role.slice(
-                                                        1
-                                                    )}
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <h1 className="font-bold">
-                                                    Nomor Identitas
-                                                </h1>
+                                        <div className="flex justify-between mx-3">
+                                            <div className="text-[14] font-regular mb-1">
                                                 {item.Mahasiswa.length > 0
                                                     ? item.Mahasiswa.map(
                                                           (
                                                               item: Mahasiswa,
                                                               index: number
                                                           ) => (
-                                                              <h1 key={index}>
-                                                                  {item.npm}
-                                                              </h1>
+                                                              <div key={index}>
+                                                                  <h1 className="font-bold">
+                                                                      Nama
+                                                                  </h1>
+                                                                  <h1>
+                                                                      {
+                                                                          item.nama
+                                                                      }
+                                                                  </h1>
+                                                              </div>
                                                           )
                                                       )
                                                     : item.Dosen.length > 0
@@ -474,21 +442,82 @@ export default function Dashboard() {
                                                               item: Dosen,
                                                               index: number
                                                           ) => (
-                                                              <h1 key={index}>
-                                                                  {item.NIP}
-                                                              </h1>
+                                                              <div key={index}>
+                                                                  <h1 className="font-bold">
+                                                                      Nama
+                                                                  </h1>
+                                                                  <h1>
+                                                                      {
+                                                                          item.nama
+                                                                      }
+                                                                  </h1>
+                                                              </div>
                                                           )
                                                       )
-                                                    : item.Umum.map(
+                                                    : item.Umum.length > 0
+                                                    ? item.Umum.map(
                                                           (
                                                               item: Umum,
                                                               index: number
                                                           ) => (
-                                                              <h1 key={index}>
-                                                                  {item.NIK}
-                                                              </h1>
+                                                              <div key={index}>
+                                                                  <h1 className="font-bold">
+                                                                      Nama
+                                                                  </h1>
+                                                                  <h1>
+                                                                      {
+                                                                          item.nama
+                                                                      }
+                                                                  </h1>
+                                                              </div>
+                                                          )
+                                                      )
+                                                    : item.UKM.length > 0
+                                                    ? item.UKM.map(
+                                                          (
+                                                              item: UKM,
+                                                              index: number
+                                                          ) => (
+                                                              <div key={index}>
+                                                                  <h1 className="font-bold">
+                                                                      Nama
+                                                                  </h1>
+                                                                  <h1>
+                                                                      {
+                                                                          item.nama_ukm
+                                                                      }
+                                                                  </h1>
+                                                              </div>
+                                                          )
+                                                      )
+                                                    : item.Organisasi.map(
+                                                          (
+                                                              item: Organisasi,
+                                                              index: number
+                                                          ) => (
+                                                              <div key={index}>
+                                                                  <h1 className="font-bold">
+                                                                      Nama
+                                                                  </h1>
+                                                                  <h1>
+                                                                      {
+                                                                          item.nama_organisasi
+                                                                      }
+                                                                  </h1>
+                                                              </div>
                                                           )
                                                       )}
+                                            </div>
+                                            <div className="text-[14] font-regular">
+                                                <h1 className="font-bold">
+                                                    Daftar Sebagai
+                                                </h1>
+                                                {item.Role.nama_role
+                                                    .charAt(0)
+                                                    .toUpperCase() +
+                                                    item.Role.nama_role.slice(
+                                                        1
+                                                    )}
                                             </div>
                                         </div>
                                         <div className="flex flex-row mt-4">
@@ -507,7 +536,7 @@ export default function Dashboard() {
                                                     }
                                                 >
                                                     <Image
-                                                        src={`https://api.ricogann.com/assets/${buktiIdentitas[index]}`}
+                                                        src={`http://localhost:5000/assets/${buktiIdentitas[index]}`}
                                                         alt="bukti-pembayaran"
                                                         width={120}
                                                         height={120}
@@ -528,7 +557,14 @@ export default function Dashboard() {
                                                             : item.Dosen
                                                                   .length > 0
                                                             ? item.Dosen[0].id
-                                                            : item.Umum[0].id,
+                                                            : item.Umum.length >
+                                                              0
+                                                            ? item.Umum[0].id
+                                                            : item.UKM.length >
+                                                              0
+                                                            ? item.UKM[0].id
+                                                            : item.Organisasi[0]
+                                                                  .id,
                                                         true
                                                     )
                                                 }
@@ -613,7 +649,7 @@ export default function Dashboard() {
                                     </button>
                                 </div>
                                 <Image
-                                    src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                    src={`http://localhost:5000/assets/${buktiToShow}`}
                                     width={500}
                                     height={500}
                                     alt="bukti-upload"
