@@ -308,8 +308,13 @@ export default function Dashboard() {
                                                 {item.Account.Mahasiswa[0]
                                                     ? item.Account.Mahasiswa[0]
                                                           .nama
-                                                    : item.Account.Dosen[0]
-                                                    ? item.Account.Dosen[0].nama
+                                                    : item.Account.UKM.length >
+                                                      0
+                                                    ? item.Account.UKM[0]
+                                                          .nama_ukm
+                                                    : item.Account.Organisasi
+                                                    ? item.Account.Organisasi[0]
+                                                          .nama_organisasi
                                                     : item.Account.Umum[0].nama}
                                             </p>
                                             <p className="text-[12] font-bold">
@@ -484,8 +489,13 @@ export default function Dashboard() {
                                                 {item.Account.Mahasiswa[0]
                                                     ? item.Account.Mahasiswa[0]
                                                           .nama
-                                                    : item.Account.Dosen[0]
-                                                    ? item.Account.Dosen[0].nama
+                                                    : item.Account.UKM.length >
+                                                      0
+                                                    ? item.Account.UKM[0]
+                                                          .nama_ukm
+                                                    : item.Account.Organisasi
+                                                    ? item.Account.Organisasi[0]
+                                                          .nama_organisasi
                                                     : item.Account.Umum[0].nama}
                                             </p>
                                             <p className="text-[12] font-bold">
