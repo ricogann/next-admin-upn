@@ -75,6 +75,7 @@ interface Pemesanan {
     tanggal_pemesanan: string;
     bukti_pembayaran: string;
     SIK: string;
+    durasi: number;
     status: string;
     createdAt: string;
 }
@@ -83,6 +84,7 @@ export default function Dashboard() {
     const [activeTab, setActiveTab] = useState("mahasiswa");
     const [totalSum, setTotalSum] = useState(0); // Initialize with 0 as an integer
     const [dataPemesanan, setDataPemesanan] = useState<Pemesanan[]>([]);
+    const [dataBerkas, setDataBerkas] = useState<Pemesanan[]>([]);
     const [dataUsers, setDataUsers] = useState<Account[]>([]);
     const [buktiIdentitas, setBuktiIdentitas] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -94,6 +96,8 @@ export default function Dashboard() {
 
     const [buktiToShow, setBuktiToShow] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isDecline, setIsDecline] = useState<boolean>(false);
+    const [keteranganTolak, setKeteranganTolak] = useState<string>("");
 
     const [realTimeMessage, setRealTimeMessage] = useState<string>("");
     const [accountRealTimeMessage, setAccountRealTimeMessage] =
@@ -137,6 +141,12 @@ export default function Dashboard() {
 
     const dataPemesananToShow = lib.dataToShow(
         dataPemesanan,
+        currentPage,
+        itemsPerPage
+    );
+
+    const dataBerksToShow = lib.dataToShow(
+        dataBerkas,
         currentPage,
         itemsPerPage
     );
@@ -227,8 +237,13 @@ export default function Dashboard() {
                     (item: Pemesanan) => item.status === "Menunggu Konfirmasi"
                 );
 
+                const berkas = dataBooking.filter(
+                    (item: Pemesanan) => item.status === "Review Berkas"
+                );
+
                 setAllData(dataBooking);
                 setDataPemesanan(filter);
+                setDataBerkas(berkas);
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;
@@ -241,8 +256,12 @@ export default function Dashboard() {
 
     const isTabActive = (tab: string) => activeTab === tab;
 
-    const handleStatus = (id: number, status: string) => {
-        booking.updateStatus(id, status, cookiesCert);
+    const handleStatus = (
+        id: number,
+        status: string,
+        keteranganTolak: string | null
+    ) => {
+        booking.updateStatus(id, status, keteranganTolak, cookiesCert);
     };
 
     const handleStatusAccount = (
@@ -261,7 +280,9 @@ export default function Dashboard() {
         }
     };
 
-    console.log(dataUsersToShow);
+    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setKeteranganTolak(e.target.value);
+    };
 
     const renderContent = () => {
         switch (activeTab) {
@@ -272,7 +293,11 @@ export default function Dashboard() {
                             {dataPemesananToShow.map(
                                 (item: Pemesanan, index: number) => (
                                     <div
-                                        className="bg-white rounded-lg shadow-xl h-[320px] p-5 mr-5 mb-5 flex flex-col justify-between"
+                                        className={`bg-white rounded-lg shadow-xl p-5 mr-5 mb-5 flex flex-col justify-between ${
+                                            isDecline
+                                                ? "h-[400px]"
+                                                : "h-[320px]"
+                                        }`}
                                         key={index}
                                     >
                                         <div className="">
@@ -286,6 +311,18 @@ export default function Dashboard() {
                                                     : item.Account.Dosen[0]
                                                     ? item.Account.Dosen[0].nama
                                                     : item.Account.Umum[0].nama}
+                                            </p>
+                                            <p className="text-[12] font-bold">
+                                                Status Penyewa
+                                            </p>
+                                            <p className="text-[14] font-regular mb-5 xl:mb-2">
+                                                {item.Account.Mahasiswa[0]
+                                                    ? "Mahasiswa"
+                                                    : item.Account.UKM[0]
+                                                    ? "UKM"
+                                                    : item.Account.Organisasi[0]
+                                                    ? "Organisasi"
+                                                    : "Umum"}
                                             </p>
                                             <div className="flex justify-between items-center">
                                                 <div className="">
@@ -310,35 +347,13 @@ export default function Dashboard() {
                                                 </div>
                                             </div>
                                             <div className="flex flex-row justify-between">
-                                                <div className="flex-col">
-                                                    <p className="text-[14px] font-bold text-center">
-                                                        {item.bukti_pembayaran !==
-                                                        null
-                                                            ? "Bukti Pembayaran"
-                                                            : "SIK"}
+                                                <div className="flex-col text-[14px] text-left mr-12">
+                                                    <p className="font-bold">
+                                                        Lama pemesanan
                                                     </p>
-                                                    <div
-                                                        className="cursor-pointer"
-                                                        onClick={() =>
-                                                            toggleModal(
-                                                                imageCheck(
-                                                                    item.bukti_pembayaran,
-                                                                    item.SIK
-                                                                )
-                                                            )
-                                                        }
-                                                    >
-                                                        <Image
-                                                            src={`https://api.ricogann.com/assets/${imageCheck(
-                                                                item.bukti_pembayaran,
-                                                                item.SIK
-                                                            )}`}
-                                                            alt="bukti-pembayaran"
-                                                            width={100}
-                                                            height={100}
-                                                            className="m-2 rounded-lg"
-                                                        />
-                                                    </div>
+                                                    <p className="font-regular">
+                                                        {item.durasi} Hari
+                                                    </p>
                                                 </div>
                                                 <div className="flex-col text-[14px] text-center mr-12">
                                                     <p className="font-bold">
@@ -361,9 +376,13 @@ export default function Dashboard() {
                                                 onClick={() =>
                                                     handleStatus(
                                                         item.id_pemesanan,
-                                                        "Dikonfirmasi"
+                                                        "Menunggu Berkas",
+                                                        null
                                                     )
                                                 }
+                                                className={`${
+                                                    isDecline ? "hidden" : ""
+                                                }`}
                                             >
                                                 <p className="text-[14] font-Bold mr-14 text-[#69519E]">
                                                     Accept Booking
@@ -371,16 +390,211 @@ export default function Dashboard() {
                                             </button>
                                             <button
                                                 onClick={() =>
-                                                    handleStatus(
-                                                        item.id_pemesanan,
-                                                        "Dibatalkan"
-                                                    )
+                                                    setIsDecline(true)
                                                 }
                                             >
-                                                <p className="text-[14] font-Bold mr-10 text-[#69519E]">
+                                                <p
+                                                    className={`text-[14] font-Bold mr-10 text-[#69519E] ${
+                                                        isDecline
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
                                                     Decline
                                                 </p>
                                             </button>
+                                        </div>
+                                        <div
+                                            className={`${
+                                                isDecline ? "block" : "hidden"
+                                            }`}
+                                        >
+                                            <h1>Keterangan Tolak</h1>
+                                            <input
+                                                type="text"
+                                                name={`keterangan_tolak`}
+                                                className="bg-white border-2 rounded-md w-full px-2 py-[2px] border-black"
+                                                onChange={handleInput}
+                                            />
+                                            <div className="flex gap-2 mt-3 justify-end">
+                                                <button
+                                                    className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[13px]`}
+                                                    onClick={() =>
+                                                        setIsDecline(false)
+                                                    }
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px]`}
+                                                    onClick={() =>
+                                                        handleStatus(
+                                                            item.id_pemesanan,
+                                                            "Dibatalkan",
+                                                            keteranganTolak
+                                                        )
+                                                    }
+                                                >
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                        <div className="flex items-center justify-center p-3">
+                            <div className="join">
+                                {pagesBookingToDisplay.map((page) => (
+                                    <button
+                                        key={page}
+                                        className={`join-item btn ${
+                                            currentPage === page
+                                                ? "btn-active"
+                                                : ""
+                                        }`}
+                                        onClick={() => setCurrentPage(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            case "berkas":
+                return (
+                    <div className="flex flex-col text-black">
+                        <div className="grid grid-cols-3">
+                            {dataBerksToShow.map(
+                                (item: Pemesanan, index: number) => (
+                                    <div
+                                        className={`bg-white rounded-lg shadow-xl p-5 mr-5 mb-5 flex flex-col justify-between ${
+                                            isDecline
+                                                ? "h-[400px]"
+                                                : "h-[320px]"
+                                        }`}
+                                        key={index}
+                                    >
+                                        <div className="">
+                                            <p className="text-[12] font-bold">
+                                                Nama Penyewa
+                                            </p>
+                                            <p className="text-[14] font-regular mb-5 xl:mb-2">
+                                                {item.Account.Mahasiswa[0]
+                                                    ? item.Account.Mahasiswa[0]
+                                                          .nama
+                                                    : item.Account.Dosen[0]
+                                                    ? item.Account.Dosen[0].nama
+                                                    : item.Account.Umum[0].nama}
+                                            </p>
+                                            <p className="text-[12] font-bold">
+                                                Status Penyewa
+                                            </p>
+                                            <p className="text-[14] font-regular mb-5 xl:mb-2">
+                                                {item.Account.Mahasiswa[0]
+                                                    ? "Mahasiswa"
+                                                    : item.Account.UKM[0]
+                                                    ? "UKM"
+                                                    : item.Account.Organisasi[0]
+                                                    ? "Organisasi"
+                                                    : "Umum"}
+                                            </p>
+                                            <div className="flex justify-between items-center">
+                                                <div className="">
+                                                    <p className="text-[12] font-bold">
+                                                        Fasilitas
+                                                    </p>
+                                                    <p className="text-[14] font-regular mb-5 ">
+                                                        {item.Fasilitas.nama}
+                                                    </p>
+                                                </div>
+                                                <div className="flex flex-col justify-end items-end">
+                                                    <p className="text-[12] font-bold">
+                                                        Tanggal Pemesanan
+                                                    </p>
+                                                    <p className="text-[14] font-regular mb-5 ">
+                                                        {
+                                                            item.tanggal_pemesanan.split(
+                                                                "T"
+                                                            )[0]
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
+                                            >
+                                                Lihat Berkas
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-row border-t mt-2">
+                                            <button
+                                                onClick={() =>
+                                                    handleStatus(
+                                                        item.id_pemesanan,
+                                                        "Dikonfirmasi",
+                                                        null
+                                                    )
+                                                }
+                                                className={`${
+                                                    isDecline ? "hidden" : ""
+                                                }`}
+                                            >
+                                                <p className="text-[14] font-Bold mr-14 text-[#69519E]">
+                                                    Accept Booking
+                                                </p>
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    setIsDecline(true)
+                                                }
+                                            >
+                                                <p
+                                                    className={`text-[14] font-Bold mr-10 text-[#69519E] ${
+                                                        isDecline
+                                                            ? "hidden"
+                                                            : "block"
+                                                    }`}
+                                                >
+                                                    Decline
+                                                </p>
+                                            </button>
+                                        </div>
+                                        <div
+                                            className={`${
+                                                isDecline ? "block" : "hidden"
+                                            }`}
+                                        >
+                                            <h1>Keterangan Tolak</h1>
+                                            <input
+                                                type="text"
+                                                name={`keterangan_tolak`}
+                                                className="bg-white border-2 rounded-md w-full px-2 py-[2px] border-black"
+                                                onChange={handleInput}
+                                            />
+                                            <div className="flex gap-2 mt-3 justify-end">
+                                                <button
+                                                    className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[13px]`}
+                                                    onClick={() =>
+                                                        setIsDecline(false)
+                                                    }
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px]`}
+                                                    onClick={() =>
+                                                        handleStatus(
+                                                            item.id_pemesanan,
+                                                            "Dibatalkan",
+                                                            keteranganTolak
+                                                        )
+                                                    }
+                                                >
+                                                    Save
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 )
@@ -581,9 +795,13 @@ export default function Dashboard() {
                                                             0
                                                             ? item.Mahasiswa[0]
                                                                   .id
-                                                            : item.Dosen
+                                                            : item.UKM.length >
+                                                              0
+                                                            ? item.UKM[0].id
+                                                            : item.Organisasi
                                                                   .length > 0
-                                                            ? item.Dosen[0].id
+                                                            ? item.Organisasi[0]
+                                                                  .id
                                                             : item.Umum[0].id,
                                                         false
                                                     )
@@ -721,6 +939,17 @@ export default function Dashboard() {
                                         }`}
                                     >
                                         Bookings Fasilitas
+                                    </a>
+                                    <a
+                                        href="#"
+                                        onClick={() => toggleTab("berkas")}
+                                        className={`text-[18] ${
+                                            isTabActive("berkas")
+                                                ? "font-bold mb-3 mr-14 border-b-2 border-[#FFA101]"
+                                                : "font-regular mb-3 mr-14"
+                                        }`}
+                                    >
+                                        Berkas Bookings
                                     </a>
                                     <a
                                         href="#"

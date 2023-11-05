@@ -15,7 +15,12 @@ class _booking extends _core {
         }
     }
 
-    async updateStatus(id: number, status: string, cookie: string) {
+    async updateStatus(
+        id: number,
+        status: string,
+        keteranganTolak: string | null,
+        cookie: string
+    ) {
         try {
             const res = await fetch(
                 `${this.baseUrl}/api/booking/verifikasi/${id}`,
@@ -27,6 +32,7 @@ class _booking extends _core {
                     },
                     body: JSON.stringify({
                         status: status,
+                        keterangan_tolak: keteranganTolak,
                     }),
                 }
             );
