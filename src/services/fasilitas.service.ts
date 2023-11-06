@@ -44,7 +44,7 @@ class _fasilitas extends _core {
             const resData = await res.json();
 
             if (resData.status === true) {
-                window.location.reload();
+                // window.location.reload();
             } else {
                 alert(resData.message);
             }
@@ -56,16 +56,13 @@ class _fasilitas extends _core {
 
     async addFasilitas(data: FormData, cookie: string) {
         try {
-            const res = await fetch(
-                "https://api.ricogann.com/api/fasilitas/add",
-                {
-                    method: "POST",
-                    body: data,
-                    headers: {
-                        Authorization: `Bearer ${cookie}`,
-                    },
-                }
-            );
+            const res = await fetch("http://localhost:5000/api/fasilitas/add", {
+                method: "POST",
+                body: data,
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
 
             const resData = await res.json();
             return resData;

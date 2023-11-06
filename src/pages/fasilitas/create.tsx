@@ -89,7 +89,7 @@ export default function Create() {
 
             if (res.status === true) {
                 alert(res.message);
-                router.push("/fasilitas");
+                // router.push("/fasilitas");
             } else {
                 alert(res.message);
             }

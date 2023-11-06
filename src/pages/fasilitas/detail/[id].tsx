@@ -277,7 +277,7 @@ export default function Fasilitas() {
                                             key={index}
                                         >
                                             <Image
-                                                src={`https://api.ricogann.com/assets/${foto}`}
+                                                src={`http://localhost:5000/assets/${foto}`}
                                                 width={400}
                                                 height={400}
                                                 className="rounded-lg"
