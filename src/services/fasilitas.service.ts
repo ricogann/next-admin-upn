@@ -31,7 +31,7 @@ class _fasilitas extends _core {
     async updateFasilitas(id: number, data: FormData, cookie: string) {
         try {
             const res = await fetch(
-                `${this.baseUrl}/api/fasilitas/update/${id}`,
+                `${this.baseUrl}/api/fasilitas/${id}`,
                 {
                     method: "PUT",
                     body: data,
