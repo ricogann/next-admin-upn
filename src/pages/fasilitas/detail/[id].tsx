@@ -30,6 +30,7 @@ interface Fasilitas {
     jam_buka: string;
     jam_tutup: string;
     buka_hari: string;
+    termservice: string;
 }
 
 interface Harga {
@@ -52,6 +53,7 @@ export default function Fasilitas() {
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas>();
     const [dataKamar, setDataKamar] = useState<Kamar[]>();
     const [fotoFasilitas, setFotoFasilitas] = useState<string[]>([]);
+    const [termService, setTermService] = useState<string[]>([]);
     const [id, setId] = useState("");
     const [editStatus, setEditStatus] = useState(false);
     const [editKamarStatus, setEditKamarStatus] = useState(false);
@@ -69,6 +71,7 @@ export default function Fasilitas() {
     const [alamatFasilitas, setAlamatFasilitas] = useState("");
     const [deskripsiFasilitas, setDeskripsiFasilitas] = useState("");
     const [foto_fasilitas, setFoto_Fasilitas] = useState<File[]>([]);
+    const [term_Service, setTerm_Service] = useState<File[]>([]);
     const [jamBuka, setJamBuka] = useState("");
     const [jamTutup, setJamTutup] = useState("");
     const [durasi, setDurasi] = useState(0);
@@ -111,6 +114,20 @@ export default function Fasilitas() {
         setFoto_Fasilitas([...foto_fasilitas, ...files]);
     };
 
+const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
+     const files = Array.from(event.target.files || []);
+
+    if (files) {
+        // If files are selected, append them to the existing array
+        setTerm_Service([...term_Service, ...files]);
+    }
+};
+
+
+
+
+
+
     const handleSubmit = async () => {
         const data = new FormData();
         data.append("nama", namaFasilitas);
@@ -119,11 +136,16 @@ export default function Fasilitas() {
         data.append("jam_buka", jamBuka);
         data.append("jam_tutup", jamTutup);
         foto_fasilitas.forEach((foto) => {
-            data.append("foto_fasilitas", foto);
+            data.append("foto", foto);
         });
+        term_Service.forEach((termService) => {
+            data.append("termservice", termService);
+        });
+        data.append("durasi", String(1));
         data.append("buka_hari", bukaHari);
         data.append("no_va", noVa);
         data.append("name_foto_old", JSON.stringify(fotoFasilitas));
+        data.append("name_termservice_old", JSON.stringify(termService));
 
         const res = await fasilitas.updateFasilitas(Number(id), data, cookies);
     };
@@ -174,7 +196,7 @@ export default function Fasilitas() {
                 setDataKamar(dataKamar);
                 setDataFasilitas(dataFasilitas);
                 setFotoFasilitas(JSON.parse(dataFasilitas.foto));
-
+                setTermService(dataFasilitas.termservice);
                 if (dataCookies.CERT !== undefined) {
                     setIsLogin(true);
                 } else {
@@ -493,7 +515,7 @@ export default function Fasilitas() {
                                         </div>
                                     </div>
                                     <InputFiles
-                                        name="foto_fasilitas"
+                                        name="foto"
                                         type="file"
                                         placeholder="Input Files..."
                                         className={`${
@@ -501,6 +523,18 @@ export default function Fasilitas() {
                                         } mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
                                         accept=".png, .jpg, .jpeg"
                                         onChange={handleFotoChange}
+                                    />
+
+                                    <input
+                                        name="termservice"
+                                        type="file"
+                                        placeholder="Input Files..."
+                                        className={`${
+                                            editStatus ? "block" : "hidden"
+                                        } mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                        accept=".pdf"
+                                        onChange={handleTermServiceChange}
+                                        multiple={false}
                                     />
 
                                     <div className="flex flex-row">

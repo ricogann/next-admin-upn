@@ -4,6 +4,7 @@ const nextConfig = {
         domains: ["localhost", "api.ricogann.com"],
     },
     reactStrictMode: true,
+    // output : 'export'
 };
 
 module.exports = nextConfig;
