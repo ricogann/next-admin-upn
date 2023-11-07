@@ -48,10 +48,22 @@ interface Kamar {
     Harga: Harga;
 }
 
+interface HistoryKamar {
+    id_asrama: number;
+    no_kamar: number;
+    id: number;
+    npm_bed1_a: string;
+    npm_bed2_b: string;
+    npm_bed3_c: string;
+    status_kamar: boolean;
+    year: number;
+}
+
 export default function Fasilitas() {
     const router = useRouter();
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas>();
     const [dataKamar, setDataKamar] = useState<Kamar[]>();
+    const [dataHistoryKamar, setDataHistoryKamar] = useState<HistoryKamar[]>();
     const [fotoFasilitas, setFotoFasilitas] = useState<string[]>([]);
     const [termService, setTermService] = useState<string[]>([]);
     const [id, setId] = useState("");
@@ -152,7 +164,7 @@ const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
 
     async function getdataKamar(cookie: string) {
         try {
-            const res = await fetch(`https://api.ricogann.com/api/kamar`, {
+            const res = await fetch(`http://api.ricogann.com/api/kamar`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -166,6 +178,24 @@ const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
             console.log(error);
         }
     }
+
+    async function getdataHistoryKamar(cookie: string) {
+        try {
+            const res = await fetch(`http://localhost:5000/api/kamar/history`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
+            const data = await res.json();
+
+            return data.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     useEffect(() => {
         if (router.isReady) {
@@ -184,6 +214,7 @@ const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
                     Number(id)
                 );
                 const dataKamar = await getdataKamar(dataCookies.CERT);
+                const dataHistoryKamar = await getdataHistoryKamar(dataCookies.CERT);
 
                 setNamaFasilitas(dataFasilitas.nama);
                 setAlamatFasilitas(dataFasilitas.alamat);
@@ -194,6 +225,7 @@ const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
                 setNoVa(dataFasilitas.no_va);
 
                 setDataKamar(dataKamar);
+                setDataHistoryKamar(dataHistoryKamar);
                 setDataFasilitas(dataFasilitas);
                 setFotoFasilitas(JSON.parse(dataFasilitas.foto));
                 setTermService(dataFasilitas.termservice);
@@ -759,7 +791,66 @@ const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-center p-3"></div>
+                                    <div className="text-[24px] font-bold">
+                                        Tabel History Kamar Asrama{" "}
+                                    </div>
+                                    <div className="flex bg-[#898989] gap-9 rounded-t-lg">
+                                        <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
+                                            NO
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
+                                            Nomer Kamar
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                            Penyewa 1
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                            Penyewa 2
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                            Penyewa 3
+                                        </div>
+                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                            Periode
+                                        </div>
+                                    </div>
+                                                                        <div className="bg-white divide-y divide-gray-200">
+                                        <div className="">
+                                            {dataHistoryKamar?.map((data, index) => (
+                                                <div
+                                                    className="flex gap-9 text-center my-2"
+                                                    key={index}
+                                                >
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
+                                                        {data.no_kamar}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                        {data.npm_bed1_a || "kosong"}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                        {data.npm_bed2_b || "kosong"}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                        {data.npm_bed3_c || "kosong"}
+                                                    </div>
+                                                    <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
+                                                        {data.year}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                 </div>
+
+                                
+
+                                
+
+                                
                             )}
                         </div>
                     </div>

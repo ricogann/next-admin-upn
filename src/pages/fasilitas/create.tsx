@@ -73,9 +73,7 @@ export default function Create() {
             bukaHari === "" ||
             deskripsiFasilitas === "" ||
             jamBuka === "" ||
-            jamTutup === "" ||
-            fotoFasilitas.length === 0 ||
-            termService.length === 0
+            jamTutup === "" 
         ) {
             alert("Mohon isi semua field!");
             return;
@@ -86,12 +84,16 @@ export default function Create() {
             data.append("deskripsi", deskripsiFasilitas);
             data.append("jam_buka", jamBuka);
             data.append("jam_tutup", jamTutup);
-            fotoFasilitas.forEach((foto) => {
+            if(fotoFasilitas.length>0){
+                fotoFasilitas.forEach((foto) => {
                 data.append("foto", foto);
             });
-            termService.forEach((termService) => {
+            }
+            if(termService.length>0){
+                termService.forEach((termService) => {
                 data.append("termservice", termService);
             });
+            }
             data.append("buka_hari", bukaHari);
             data.append("durasi", String(1));
             data.append("no_va", noVa);
@@ -100,7 +102,7 @@ export default function Create() {
 
             if (res.status === true) {
                 alert(res.message);
-                // router.push("/fasilitas");
+                router.push("/fasilitas");
             } else {
                 alert(res.message);
             }
