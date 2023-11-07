@@ -19,6 +19,7 @@ export default function Create() {
     const [alamatFasilitas, setAlamatFasilitas] = useState("");
     const [deskripsiFasilitas, setDeskripsiFasilitas] = useState("");
     const [fotoFasilitas, setFotoFasilitas] = useState<File[]>([]);
+    const [termService, setTermService] = useState<File[]>([]);
     const [jamBuka, setJamBuka] = useState("");
     const [jamTutup, setJamTutup] = useState("");
     const [durasi, setDurasi] = useState(0);
@@ -59,6 +60,12 @@ export default function Create() {
         setFotoFasilitas([...fotoFasilitas, ...files]);
     };
 
+    const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(event.target.files || []);
+
+        setTermService([...termService, ...files]);
+    };
+
     const sendData = async () => {
         if (
             namaFasilitas === "" ||
@@ -67,7 +74,8 @@ export default function Create() {
             deskripsiFasilitas === "" ||
             jamBuka === "" ||
             jamTutup === "" ||
-            fotoFasilitas.length === 0
+            fotoFasilitas.length === 0 ||
+            termService.length === 0
         ) {
             alert("Mohon isi semua field!");
             return;
@@ -80,6 +88,9 @@ export default function Create() {
             data.append("jam_tutup", jamTutup);
             fotoFasilitas.forEach((foto) => {
                 data.append("foto", foto);
+            });
+            termService.forEach((termService) => {
+                data.append("termservice", termService);
             });
             data.append("buka_hari", bukaHari);
             data.append("durasi", String(1));
@@ -230,6 +241,18 @@ export default function Create() {
                                                 className="mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
                                                 accept=".png, .jpg, .jpeg"
                                                 onChange={handleFotoChange}
+                                            />
+                                        </div>
+
+                                        <h1 className="px-4">Term Service Fasilitas</h1>
+                                        <div className="flex flex-col px-4 py-4">
+                                            <InputFiles
+                                                name="termservice"
+                                                type="file"
+                                                placeholder="Input Files..."
+                                                className="mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
+                                                accept=".pdf"
+                                                onChange={handleTermServiceChange}
                                             />
                                         </div>
 

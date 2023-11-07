@@ -532,11 +532,23 @@ export default function Dashboard() {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <button
-                                                className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
-                                            >
-                                                Lihat Berkas
-                                            </button>
+                                                {item.SIK ? (
+                                                <a
+                                                    className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
+                                                    href={`http://localhost:5000/assets/${item.SIK}`}
+                                                    target="_blank"
+                                                >
+                                                    Lihat Berkas
+                                                </a>
+                                                ) : (
+                                                <a
+                                                    className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
+                                                    href={`http://localhost:5000/assets/${item.bukti_pembayaran}`}
+                                                    target="_blank"
+                                                >
+                                                    Lihat Bukti Pembayaran
+                                                </a>
+                                                )}
                                         </div>
                                         <div className="flex flex-row border-t mt-2">
                                             <button
