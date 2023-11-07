@@ -532,7 +532,7 @@ export default function Dashboard() {
                                                     </p>
                                                 </div>
                                             </div>
-                                                {item.SIK ? (
+                                            {item.SIK ? (
                                                 <a
                                                     className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
                                                     href={`http://localhost:5000/assets/${item.SIK}`}
@@ -540,7 +540,7 @@ export default function Dashboard() {
                                                 >
                                                     Lihat Berkas
                                                 </a>
-                                                ) : (
+                                            ) : (
                                                 <a
                                                     className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
                                                     href={`http://localhost:5000/assets/${item.bukti_pembayaran}`}
@@ -548,7 +548,7 @@ export default function Dashboard() {
                                                 >
                                                     Lihat Bukti Pembayaran
                                                 </a>
-                                                )}
+                                            )}
                                         </div>
                                         <div className="flex flex-row border-t mt-2">
                                             <button
@@ -652,7 +652,7 @@ export default function Dashboard() {
                                         key={index}
                                     >
                                         {/* Mahasiswa content */}
-                                        <div className="flex justify-between mx-3">
+                                        <div className="flex flex-col justify-between">
                                             <div className="text-[14] font-regular mb-1">
                                                 {item.Mahasiswa.length > 0
                                                     ? item.Mahasiswa.map(

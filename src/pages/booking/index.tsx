@@ -41,10 +41,20 @@ interface Umum {
     nama: string;
 }
 
+interface UKM {
+    nama_ukm: string;
+}
+
+interface Organisasi {
+    nama_organisasi: string;
+}
+
 interface Account {
     Mahasiswa: Mahasiswa[];
     Dosen: Dosen[];
     Umum: Umum[];
+    UKM: UKM[];
+    Organisasi: Organisasi[];
     id_account: number;
     nama: string;
 }
@@ -266,12 +276,6 @@ export default function Booking() {
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[130px]">
                                                 Tanggal Pemesanan
                                             </h1>
-                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[100px]">
-                                                Jam CheckIn
-                                            </h1>
-                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[100px]">
-                                                Jam CheckOut
-                                            </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[137px]">
                                                 Status
                                             </h1>
@@ -312,17 +316,26 @@ export default function Booking() {
                                                                           .nama
                                                                     : data
                                                                           .Account
-                                                                          .Dosen
+                                                                          .UKM
                                                                           .length >
                                                                       0
                                                                     ? data
                                                                           .Account
-                                                                          .Dosen[0]
+                                                                          .UKM[0]
+                                                                          .nama_ukm
+                                                                    : data
+                                                                          .Account
+                                                                          .Umum
+                                                                          .length >
+                                                                      0
+                                                                    ? data
+                                                                          .Account
+                                                                          .Umum[0]
                                                                           .nama
                                                                     : data
                                                                           .Account
-                                                                          .Umum[0]
-                                                                          .nama}
+                                                                          .Organisasi[0]
+                                                                          .nama_organisasi}
                                                             </div>
                                                             <div className="px-6 py-4 break-all text-center w-[130px]">
                                                                 {
@@ -331,16 +344,6 @@ export default function Booking() {
                                                                         .split(
                                                                             "T"
                                                                         )[0]
-                                                                }
-                                                            </div>
-                                                            <div className="px-6 py-4 break-all w-[100px]">
-                                                                {
-                                                                    data.jam_checkin
-                                                                }
-                                                            </div>
-                                                            <div className="px-6 py-4 break-all w-[100px]">
-                                                                {
-                                                                    data.jam_checkout
                                                                 }
                                                             </div>
                                                             <div className="px-6 py-4 break-all w-[137px]">

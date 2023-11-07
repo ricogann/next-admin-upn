@@ -56,7 +56,7 @@ export default function SideBar() {
             <div
                 className={` ${
                     open ? "w-56" : "w-20 "
-                } bg-dark-white h-screen p-5  pt-8 relative duration-300`}
+                } bg-dark-white h-full p-5  pt-8 relative duration-300`}
             >
                 <div
                     className={`absolute cursor-pointer -right-3 top-16 ${

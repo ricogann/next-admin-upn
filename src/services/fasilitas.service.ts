@@ -30,21 +30,18 @@ class _fasilitas extends _core {
 
     async updateFasilitas(id: number, data: FormData, cookie: string) {
         try {
-            const res = await fetch(
-                `${this.baseUrl}/api/fasilitas/${id}`,
-                {
-                    method: "PUT",
-                    body: data,
-                    headers: {
-                        Authorization: `Bearer ${cookie}`,
-                    },
-                }
-            );
+            const res = await fetch(`${this.baseUrl}/api/fasilitas/${id}`, {
+                method: "PUT",
+                body: data,
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
 
             const resData = await res.json();
-
+            console.log(resData);
             if (resData.status === true) {
-                // window.location.reload();
+                window.location.reload();
             } else {
                 alert(resData.message);
             }

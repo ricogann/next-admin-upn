@@ -126,19 +126,14 @@ export default function Fasilitas() {
         setFoto_Fasilitas([...foto_fasilitas, ...files]);
     };
 
-const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
-     const files = Array.from(event.target.files || []);
+    const handleTermServiceChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(event.target.files || []);
 
-    if (files) {
-        // If files are selected, append them to the existing array
-        setTerm_Service([...term_Service, ...files]);
-    }
-};
-
-
-
-
-
+        if (files) {
+            // If files are selected, append them to the existing array
+            setTerm_Service([...term_Service, ...files]);
+        }
+    };
 
     const handleSubmit = async () => {
         const data = new FormData();
