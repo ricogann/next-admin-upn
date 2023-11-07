@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react";
-
+import Image from "next/image";
+import upn from "../../../public/upn.jpg";
 import { useRouter } from "next/router";
 
 import { AuthInput } from "../../components/auth-input";
@@ -41,6 +42,7 @@ export default function Login() {
 
     const handleLogin = async () => {
         try {
+            setLoading(true);
             const data = { username_admin: username, password_admin: password };
             const res = await fetch(
                 "http://localhost:5000/api/auth/login/admin",
@@ -57,8 +59,10 @@ export default function Login() {
             if (resData.data.token) {
                 const token = resData.data.token;
                 await libCookies.setCookie("CERT", token, 1);
-                router.push("/");
+                setLoading(false);
+                router.push("/dashboard");
             } else {
+                setLoading(false);
                 return {
                     status: false,
                     message: "Username atau password salah",
@@ -72,14 +76,21 @@ export default function Login() {
     return (
         <div className="">
             {loading ? (
-                <div className="h-screen flex items-center justify-center bg-[#F7F8FA] overflow-hidden text-black gap-24">
+                <div
+                    className={`relative h-screen flex items-center justify-center overflow-hidden text-black gap-24}`}
+                >
+                    <Image
+                        src={upn}
+                        alt="logo"
+                        className="h-full w-full absolute -z-50"
+                    />
                     <div className="h-full flex justify-between items-center py-12">
-                        <h1 className="font-medium text-[50px] w-[600px] ">
+                        <h1 className="font-bold text-[50px] w-[600px] mr-5 text-white">
                             Selamat Datang di Website Admin Reservasi Fasilitas
                             UPN Veteran Jawa Timur !
                         </h1>
                     </div>
-                    <div className="border-[2px] p-8 rounded-xl border-black">
+                    <div className="border-2 p-8 rounded-xl border-black bg-white">
                         <div className="flex flex-col items-start justify-center mb-7">
                             <h1 className=" font-medium  mb-2 text-[35px] ">
                                 Login
@@ -121,7 +132,7 @@ export default function Login() {
                     </div>
                 </div>
             ) : (
-                <div className="h-screen w-screen bg-white flex items-center justify-center">
+                <div className="absolute h-screen w-screen flex items-center justify-center">
                     <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
                 </div>
             )}

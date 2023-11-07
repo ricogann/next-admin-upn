@@ -12,7 +12,7 @@ const AuthInput: React.FC<AuthInputProps> = (props) => {
             <input
                 name={props.name}
                 type={props.type}
-                className={`border-[2px] border-black p-2 drop-shadow-xl rounded-[13px] w-[300px] md:w-[500px] md:p-3 lg:p-2`}
+                className={`border-[2px] border-black p-2 drop-shadow-xl rounded-[13px] w-[300px] md:w-[500px] md:p-3 lg:p-2 bg-white text-black`}
                 onChange={props.onChange}
             />
         </div>
