@@ -176,13 +176,16 @@ export default function Fasilitas() {
 
     async function getdataHistoryKamar(cookie: string) {
         try {
-            const res = await fetch(`http://localhost:5000/api/kamar/history`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${cookie}`,
-                },
-            });
+            const res = await fetch(
+                `https://api.ricogann.com/api/kamar/history`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${cookie}`,
+                    },
+                }
+            );
             const data = await res.json();
 
             return data.data;
@@ -190,7 +193,6 @@ export default function Fasilitas() {
             console.log(error);
         }
     }
-
 
     useEffect(() => {
         if (router.isReady) {
@@ -209,7 +211,9 @@ export default function Fasilitas() {
                     Number(id)
                 );
                 const dataKamar = await getdataKamar(dataCookies.CERT);
-                const dataHistoryKamar = await getdataHistoryKamar(dataCookies.CERT);
+                const dataHistoryKamar = await getdataHistoryKamar(
+                    dataCookies.CERT
+                );
 
                 setNamaFasilitas(dataFasilitas.nama);
                 setAlamatFasilitas(dataFasilitas.alamat);
@@ -228,7 +232,7 @@ export default function Fasilitas() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -326,7 +330,7 @@ export default function Fasilitas() {
                                             key={index}
                                         >
                                             <Image
-                                                src={`http://localhost:5000/assets/${foto}`}
+                                                src={`https://api.ricogann.com/assets/${foto}`}
                                                 width={400}
                                                 height={400}
                                                 className="rounded-lg"
@@ -809,43 +813,41 @@ export default function Fasilitas() {
                                             Periode
                                         </div>
                                     </div>
-                                                                        <div className="bg-white divide-y divide-gray-200">
+                                    <div className="bg-white divide-y divide-gray-200">
                                         <div className="">
-                                            {dataHistoryKamar?.map((data, index) => (
-                                                <div
-                                                    className="flex gap-9 text-center my-2"
-                                                    key={index}
-                                                >
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
-                                                        {index + 1}
+                                            {dataHistoryKamar?.map(
+                                                (data, index) => (
+                                                    <div
+                                                        className="flex gap-9 text-center my-2"
+                                                        key={index}
+                                                    >
+                                                        <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
+                                                            {index + 1}
+                                                        </div>
+                                                        <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
+                                                            {data.no_kamar}
+                                                        </div>
+                                                        <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                            {data.npm_bed1_a ||
+                                                                "kosong"}
+                                                        </div>
+                                                        <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                            {data.npm_bed2_b ||
+                                                                "kosong"}
+                                                        </div>
+                                                        <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                            {data.npm_bed3_c ||
+                                                                "kosong"}
+                                                        </div>
+                                                        <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
+                                                            {data.year}
+                                                        </div>
                                                     </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
-                                                        {data.no_kamar}
-                                                    </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
-                                                        {data.npm_bed1_a || "kosong"}
-                                                    </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
-                                                        {data.npm_bed2_b || "kosong"}
-                                                    </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
-                                                        {data.npm_bed3_c || "kosong"}
-                                                    </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
-                                                        {data.year}
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                )
+                                            )}
                                         </div>
                                     </div>
-
                                 </div>
-
-                                
-
-                                
-
-                                
                             )}
                         </div>
                     </div>

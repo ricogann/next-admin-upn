@@ -66,11 +66,17 @@ export default function Booking() {
     const [searchText, setSearchText] = useState<string>("");
     const [filteredBooking, setfilteredBooking] = useState<Booking[]>([]);
     const [isLogin, setIsLogin] = useState(false);
+    const [cookiesCert, setCookiesCert] = useState("");
+    const [isTolak, setIsTolak] = useState<boolean>(false);
 
     const [buktiToShow, setBuktiToShow] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const [realTimeMessage, setRealTimeMessage] = useState<string>("");
+    const [keteranganTolak, setKeteranganTolak] = useState<string>("");
+    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setKeteranganTolak(e.target.value);
+    };
 
     const booking = new _booking();
     const lib = new _lib();
@@ -166,11 +172,12 @@ export default function Booking() {
                 setDataBooking(dataBooking);
 
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
+                setCookiesCert(dataCookies.CERT);
                 if (dataCookies.CERT !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data Booking ", error);
@@ -182,7 +189,7 @@ export default function Booking() {
     }, [realTimeMessage]);
 
     const statusCheck = (status: string) => {
-        if (status === "Menunggu Pembayaran" || status === "Dibatalkan") {
+        if (status === "Menunggu Berkas" || status === "Dibatalkan") {
             return "hidden";
         }
     };
@@ -190,6 +197,22 @@ export default function Booking() {
     const toggleModal = (bukti: string) => {
         setBuktiToShow(bukti);
         setIsModalOpen(!isModalOpen);
+    };
+
+    const dateSelesai = (tanggal: string, durasi: number) => {
+        const date = new Date(tanggal);
+        const dateSelesai = new Date(
+            date.setDate(date.getDate() + (durasi - 1))
+        );
+        return dateSelesai.toISOString().split("T")[0];
+    };
+
+    const handleStatus = (
+        id: number,
+        status: string,
+        keteranganTolak: string | null
+    ) => {
+        booking.updateStatus(id, status, keteranganTolak, cookiesCert);
     };
 
     return (
@@ -208,7 +231,7 @@ export default function Booking() {
                                     </button>
                                 </div>
                                 <Image
-                                    src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                    src={`ht/assets/${buktiToShow}`}
                                     width={500}
                                     height={500}
                                     alt="bukti-upload"
@@ -276,13 +299,16 @@ export default function Booking() {
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[130px]">
                                                 Tanggal Pemesanan
                                             </h1>
+                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[130px]">
+                                                Tanggal Selesai
+                                            </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[137px]">
                                                 Status
                                             </h1>
                                             <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[140px]">
                                                 Total Harga
                                             </h1>
-                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[212px]">
+                                            <h1 className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase tracking-wider w-[250px]">
                                                 Action
                                             </h1>
                                         </div>
@@ -346,6 +372,16 @@ export default function Booking() {
                                                                         )[0]
                                                                 }
                                                             </div>
+                                                            <div className="px-6 py-4 break-all text-center w-[130px]">
+                                                                {dateSelesai(
+                                                                    data.tanggal_pemesanan
+                                                                        .toString()
+                                                                        .split(
+                                                                            "T"
+                                                                        )[0],
+                                                                    data.durasi
+                                                                )}
+                                                            </div>
                                                             <div className="px-6 py-4 break-all w-[137px]">
                                                                 {data.status}
                                                             </div>
@@ -359,11 +395,13 @@ export default function Booking() {
                                                                     )}
                                                             </div>
 
-                                                            <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[200px]">
+                                                            <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[238px]">
                                                                 <button
                                                                     className={`${
                                                                         data.status ===
-                                                                        "Menunggu Pembayaran"
+                                                                            "Menunggu Konfirmasi" ||
+                                                                        data.status ===
+                                                                            "Menunggu Berkas"
                                                                             ? "hidden"
                                                                             : "block"
                                                                     } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]`}
@@ -382,7 +420,9 @@ export default function Booking() {
                                                                 <div
                                                                     className={`${
                                                                         data.status ===
-                                                                        "Menunggu Konfirmasi"
+                                                                            "Menunggu Konfirmasi" ||
+                                                                        data.status ===
+                                                                            "Review Berkas"
                                                                             ? "flex flex-col gap-2"
                                                                             : "hidden"
                                                                     }`}
@@ -391,19 +431,80 @@ export default function Booking() {
                                                                         className={`${statusCheck(
                                                                             data.status
                                                                         )} bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                                        onClick={() =>
+                                                                            setIsTolak(
+                                                                                !isTolak
+                                                                            )
+                                                                        }
                                                                     >
-                                                                        Delete
+                                                                        Decline
                                                                     </button>
                                                                     <button
                                                                         className={`${
                                                                             data.status ===
-                                                                            "Menunggu Konfirmasi"
+                                                                                "Review Berkas" ||
+                                                                            data.status ===
+                                                                                "Menunggu Konfirmasi"
                                                                                 ? "block"
                                                                                 : "hidden"
                                                                         } bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full text-[13px]`}
+                                                                        onClick={() =>
+                                                                            handleStatus(
+                                                                                data.id_pemesanan,
+                                                                                data.status ===
+                                                                                    "Menunggu Konfirmasi"
+                                                                                    ? "Menunggu Berkas"
+                                                                                    : "Dikonfirmasi",
+                                                                                null
+                                                                            )
+                                                                        }
                                                                     >
                                                                         Approve
                                                                     </button>
+                                                                    <input
+                                                                        type="text"
+                                                                        name={`keterangan_tolak`}
+                                                                        className={`${
+                                                                            isTolak ===
+                                                                            true
+                                                                                ? "block"
+                                                                                : "hidden"
+                                                                        } bg-white border-2 rounded-md w-full px-2 py-[2px] border-black`}
+                                                                        onChange={
+                                                                            handleInput
+                                                                        }
+                                                                    />
+                                                                    <div
+                                                                        className={`${
+                                                                            isTolak ===
+                                                                            true
+                                                                                ? "block"
+                                                                                : "hidden"
+                                                                        } flex justify-center gap-3`}
+                                                                    >
+                                                                        <button
+                                                                            className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[13px]`}
+                                                                            onClick={() =>
+                                                                                setIsTolak(
+                                                                                    !isTolak
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Cancel
+                                                                        </button>
+                                                                        <button
+                                                                            className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px]`}
+                                                                            onClick={() =>
+                                                                                handleStatus(
+                                                                                    data.id_pemesanan,
+                                                                                    "Dibatalkan",
+                                                                                    keteranganTolak
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Save
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>

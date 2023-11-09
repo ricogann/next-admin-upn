@@ -3,7 +3,7 @@ import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import _misc from "@/services/misc.service";
-import _lib from "@/lib";
+import _lib from "@/lib/index";
 
 interface CookiesDTO {
     CERT: string;
@@ -40,7 +40,7 @@ export default function Miscellaneous() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -72,64 +72,64 @@ export default function Miscellaneous() {
                                 <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
                                     <div className="flex flex-col gap-5 ">
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Nama Instansi
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.nama_instansi}
                                             </h1>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 No HP BPU
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.no_hp}
                                             </h1>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 NIP
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.nip_pic}
                                             </h1>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Nama Pimpinan BPU
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.nama_pic}
                                             </h1>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Instagram
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.instagram}
                                             </h1>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Website
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.laman_web}
                                             </h1>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Email
                                             </h1>
-                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
+                                            <h1 className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider">
                                                 {dataMisc?.email}
                                             </h1>
                                         </div>
                                         <div className="flex flex-row gap-3 rounded-lg">
                                             <div className="flex flex-col p-5 gap-3 bg-[#B9B9B9] rounded-lg">
-                                                <h1 className="text-center text-md font-medium text-black uppercase">
+                                                <h1 className="text-center text-md font-medium text-black">
                                                     Logo BPU
                                                 </h1>
                                                 <Image
@@ -141,7 +141,7 @@ export default function Miscellaneous() {
                                                 />
                                             </div>
                                             <div className="flex flex-col p-5 gap-3 bg-[#B9B9B9] rounded-lg">
-                                                <h1 className="text-center text-md font-medium text-black uppercase">
+                                                <h1 className="text-center text-md font-medium text-black">
                                                     Tanda Tangan Pimpinan
                                                 </h1>
                                                 <Image
@@ -158,7 +158,7 @@ export default function Miscellaneous() {
                                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
                                             onClick={() =>
                                                 router.push(
-                                                    `/miscellaneous/edit`
+                                                    `/admin/miscellaneous/edit`
                                                 )
                                             }
                                         >

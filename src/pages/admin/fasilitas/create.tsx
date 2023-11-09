@@ -73,7 +73,7 @@ export default function Create() {
             bukaHari === "" ||
             deskripsiFasilitas === "" ||
             jamBuka === "" ||
-            jamTutup === "" 
+            jamTutup === ""
         ) {
             alert("Mohon isi semua field!");
             return;
@@ -84,15 +84,15 @@ export default function Create() {
             data.append("deskripsi", deskripsiFasilitas);
             data.append("jam_buka", jamBuka);
             data.append("jam_tutup", jamTutup);
-            if(fotoFasilitas.length>0){
+            if (fotoFasilitas.length > 0) {
                 fotoFasilitas.forEach((foto) => {
-                data.append("foto", foto);
-            });
+                    data.append("foto", foto);
+                });
             }
-            if(termService.length>0){
+            if (termService.length > 0) {
                 termService.forEach((termService) => {
-                data.append("termservice", termService);
-            });
+                    data.append("termservice", termService);
+                });
             }
             data.append("buka_hari", bukaHari);
             data.append("durasi", String(1));
@@ -102,7 +102,7 @@ export default function Create() {
 
             if (res.status === true) {
                 alert(res.message);
-                router.push("/fasilitas");
+                router.push("/admin/fasilitas");
             } else {
                 alert(res.message);
             }
@@ -119,7 +119,7 @@ export default function Create() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -246,7 +246,9 @@ export default function Create() {
                                             />
                                         </div>
 
-                                        <h1 className="px-4">Term Service Fasilitas</h1>
+                                        <h1 className="px-4">
+                                            Term Service Fasilitas
+                                        </h1>
                                         <div className="flex flex-col px-4 py-4">
                                             <InputFiles
                                                 name="termservice"
@@ -254,7 +256,9 @@ export default function Create() {
                                                 placeholder="Input Files..."
                                                 className="mb-5 w-full px-5 py-4 placeholder-gray-400 text-gray-700 relative  bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200"
                                                 accept=".pdf"
-                                                onChange={handleTermServiceChange}
+                                                onChange={
+                                                    handleTermServiceChange
+                                                }
                                             />
                                         </div>
 

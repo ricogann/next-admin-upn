@@ -1,7 +1,7 @@
 import { useState, useEffect, MouseEventHandler } from "react";
 import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
-import _lib from "@/lib";
+import _lib from "@/lib/index";
 import _fasilitas from "@/services/fasilitas.service";
 import _harga from "@/services/harga.service";
 
@@ -128,7 +128,7 @@ export default function Fasilitas() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -236,7 +236,9 @@ export default function Fasilitas() {
                                     <button
                                         className="bg-blue-500 h-[40px] md:h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8"
                                         onClick={() =>
-                                            handlePage("/fasilitas/create")
+                                            handlePage(
+                                                "/admin/fasilitas/create"
+                                            )
                                         }
                                     >
                                         Add Data
@@ -256,7 +258,7 @@ export default function Fasilitas() {
                                     <button
                                         className="bg-blue-500 h-[40px] md:h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8"
                                         onClick={() =>
-                                            handlePage("/harga/create")
+                                            handlePage("/admin/harga/create")
                                         }
                                     >
                                         Add Data
@@ -311,7 +313,7 @@ export default function Fasilitas() {
                                                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
                                                                     onClick={() =>
                                                                         router.push(
-                                                                            `/fasilitas/detail/${data.id_fasilitas}`
+                                                                            `/admin/fasilitas/detail/${data.id_fasilitas}`
                                                                         )
                                                                     }
                                                                 >
@@ -418,7 +420,7 @@ export default function Fasilitas() {
                                                                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2"
                                                                             onClick={() =>
                                                                                 router.push(
-                                                                                    `/harga/edit/${data.id}`
+                                                                                    `/admin/harga/edit/${data.id}`
                                                                                 )
                                                                             }
                                                                         >

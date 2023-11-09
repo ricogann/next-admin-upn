@@ -3,7 +3,7 @@ import SideBar from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import _misc from "@/services/misc.service";
-import _lib from "@/lib";
+import _lib from "@/lib/index";
 
 interface CookiesDTO {
     CERT: string;
@@ -64,7 +64,7 @@ export default function Miscellaneous() {
 
         if (res.status === true) {
             alert("Data Berhasil Diubah");
-            router.push("/miscellaneous");
+            router.push("/admin/miscellaneous");
         } else {
             alert("Data Gagal Diubah");
         }
@@ -120,7 +120,7 @@ export default function Miscellaneous() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -154,84 +154,84 @@ export default function Miscellaneous() {
                                 <div className="min-w-full rounded-lg overflow-hidden">
                                     <div className="flex flex-col gap-5 ">
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Nama Instansi
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="Nama_Instansi"
                                                 value={nama_instansi}
                                                 onChange={handleInput}
                                             ></input>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 No HP BPU
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="No_Hp"
                                                 value={no_hp}
                                                 onChange={handleInput}
                                             ></input>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 NIP
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="Nip_Pic"
                                                 value={nip_pic}
                                                 onChange={handleInput}
                                             ></input>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Nama Pimpinan BPU
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="Nama_Pic"
                                                 value={nama_pic}
                                                 onChange={handleInput}
                                             ></input>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Instagram
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="Instagram"
                                                 value={instagram}
                                                 onChange={handleInput}
                                             ></input>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Website
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="Laman_Web"
                                                 value={laman_web}
                                                 onChange={handleInput}
                                             ></input>
                                         </div>
                                         <div className="flex flex-fit gap-3 bg-[#B9B9B9] rounded-lg">
-                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black uppercase tracking-wider ">
+                                            <h1 className="flex-auto px-6 py-3  text-left text-xs leading-4 font-medium text-black tracking-wider ">
                                                 Email
                                             </h1>
                                             <input
                                                 type="string"
-                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
+                                                className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg "
                                                 name="Email"
                                                 value={email}
                                                 onChange={handleInput}
@@ -239,7 +239,7 @@ export default function Miscellaneous() {
                                         </div>
                                         <div className="flex flex-row gap-3 rounded-lg">
                                             <div className="flex items-center p-2 gap-3 bg-[#B9B9B9] rounded-lg">
-                                                <h1 className="text-center text-xs w-[100px] font-medium text-black uppercase tracking-wider ">
+                                                <h1 className="text-center text-xs w-[100px] font-medium text-black tracking-wider ">
                                                     Logo BPU
                                                 </h1>
                                                 <input
@@ -250,7 +250,7 @@ export default function Miscellaneous() {
                                                 />
                                             </div>
                                             <div className="flex items-center gap-3 bg-[#B9B9B9] rounded-lg w-full">
-                                                <h1 className="text-center text-xs font-medium text-black uppercase tracking-wider ">
+                                                <h1 className="text-center text-xs font-medium text-black tracking-wider ">
                                                     Tanda Tangan Pimpinan
                                                 </h1>
                                                 <input
@@ -263,7 +263,7 @@ export default function Miscellaneous() {
                                         </div>
                                         <input
                                             type="string"
-                                            className="px-6 py-3 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg hidden"
+                                            className="px-6 py-3 text-left text-xs leading-4 font-medium text-black tracking-wider w-[400px] bg-[#FFFFFF] rounded-lg hidden"
                                             placeholder={
                                                 dataMisc?.id_misc + "......"
                                             }

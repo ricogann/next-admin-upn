@@ -23,15 +23,15 @@ export default function SideBar() {
             title: "Dashboard",
             src: BiSolidDashboard,
             gap: true,
-            link: "/dashboard",
+            link: "/admin/dashboard",
         },
-        { title: "Booking", src: BiCalendar, link: "/booking" },
-        { title: "Data Fasilitas", src: FaLandmark, link: "/fasilitas" },
-        { title: "Data Users", src: BsFillPeopleFill, link: "/users" },
+        { title: "Booking", src: BiCalendar, link: "/admin/booking" },
+        { title: "Data Fasilitas", src: FaLandmark, link: "/admin/fasilitas" },
+        { title: "Data Users", src: BsFillPeopleFill, link: "/admin/users" },
         {
             title: "Miscellaneous",
             src: MdMiscellaneousServices,
-            link: "/miscellaneous",
+            link: "/admin/miscellaneous",
         },
         {
             title: "Notification",
@@ -45,7 +45,7 @@ export default function SideBar() {
     const handlePage = (link: string) => {
         if (link === "/logout") {
             lib.deleteCookie("CERT");
-            router.push("/auth/login");
+            router.push("/admin/auth/login");
         } else {
             router.push(link);
         }

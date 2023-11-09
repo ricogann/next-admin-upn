@@ -1,9 +1,9 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
-import upn from "../../../public/upn.jpg";
+import upn from "../../../../public/upn.jpg";
 import { useRouter } from "next/router";
 
-import { AuthInput } from "../../components/auth-input";
+import { AuthInput } from "../../../components/auth-input";
 import _lib from "@/lib/index";
 
 export default function Login() {
@@ -21,7 +21,7 @@ export default function Login() {
             setCookies(token.CERT);
 
             if (token.CERT) {
-                router.push("/dashboard");
+                router.push("/admin/dashboard");
             } else {
                 setLoading(true);
             }
@@ -45,7 +45,7 @@ export default function Login() {
             setLoading(true);
             const data = { username_admin: username, password_admin: password };
             const res = await fetch(
-                "http://localhost:5000/api/auth/login/admin",
+                "https://api.ricogann.com/api/auth/login/admin",
                 {
                     method: "POST",
                     headers: {
@@ -60,7 +60,7 @@ export default function Login() {
                 const token = resData.data.token;
                 await libCookies.setCookie("CERT", token, 1);
                 setLoading(false);
-                router.push("/dashboard");
+                router.push("/admin/dashboard");
             } else {
                 setLoading(false);
                 return {

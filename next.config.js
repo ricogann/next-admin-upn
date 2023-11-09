@@ -2,9 +2,11 @@
 const nextConfig = {
     images: {
         domains: ["localhost", "api.ricogann.com"],
+        unoptimized: true,
     },
     reactStrictMode: true,
-    // output : 'export'
+    output: "export",
+    trailingSlash: true,
 };
 
 module.exports = nextConfig;

@@ -81,7 +81,7 @@ interface Pemesanan {
 }
 
 export default function Dashboard() {
-    const [activeTab, setActiveTab] = useState("mahasiswa");
+    const [activeTab, setActiveTab] = useState("bookings");
     const [totalSum, setTotalSum] = useState(0); // Initialize with 0 as an integer
     const [dataPemesanan, setDataPemesanan] = useState<Pemesanan[]>([]);
     const [dataBerkas, setDataBerkas] = useState<Pemesanan[]>([]);
@@ -111,7 +111,7 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
-        const socket = io("http://localhost:5000");
+        const socket = io("https://api.ricogann.com");
 
         socket.on("connect", () => {
             console.log("connected");
@@ -180,7 +180,7 @@ export default function Dashboard() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
                 const dataUsers = await users.getUsers(dataCookies.CERT);
 
@@ -313,6 +313,7 @@ export default function Dashboard() {
                                                     ? item.Account.UKM[0]
                                                           .nama_ukm
                                                     : item.Account.Organisasi
+                                                          .length > 0
                                                     ? item.Account.Organisasi[0]
                                                           .nama_organisasi
                                                     : item.Account.Umum[0].nama}
@@ -494,6 +495,7 @@ export default function Dashboard() {
                                                     ? item.Account.UKM[0]
                                                           .nama_ukm
                                                     : item.Account.Organisasi
+                                                          .length > 0
                                                     ? item.Account.Organisasi[0]
                                                           .nama_organisasi
                                                     : item.Account.Umum[0].nama}
@@ -535,7 +537,7 @@ export default function Dashboard() {
                                             {item.SIK ? (
                                                 <a
                                                     className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
-                                                    href={`http://localhost:5000/assets/${item.SIK}`}
+                                                    href={`https://api.ricogann.com/assets/${item.SIK}`}
                                                     target="_blank"
                                                 >
                                                     Lihat Berkas
@@ -543,7 +545,7 @@ export default function Dashboard() {
                                             ) : (
                                                 <a
                                                     className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md text-[13px] cursor-pointer`}
-                                                    href={`http://localhost:5000/assets/${item.bukti_pembayaran}`}
+                                                    href={`https://api.ricogann.com/assets/${item.bukti_pembayaran}`}
                                                     target="_blank"
                                                 >
                                                     Lihat Bukti Pembayaran
@@ -772,7 +774,7 @@ export default function Dashboard() {
                                                     }
                                                 >
                                                     <Image
-                                                        src={`http://localhost:5000/assets/${buktiIdentitas[index]}`}
+                                                        src={`https://api.ricogann.com/assets/${buktiIdentitas[index]}`}
                                                         alt="bukti-pembayaran"
                                                         width={120}
                                                         height={120}
@@ -889,7 +891,7 @@ export default function Dashboard() {
                                     </button>
                                 </div>
                                 <Image
-                                    src={`http://localhost:5000/assets/${buktiToShow}`}
+                                    src={`https://api.ricogann.com/assets/${buktiToShow}`}
                                     width={500}
                                     height={500}
                                     alt="bukti-upload"

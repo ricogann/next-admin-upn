@@ -3,7 +3,7 @@ import SideBar from "@/components/sidebar";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import _users from "@/services/users.service";
-import _lib from "@/lib";
+import _lib from "@/lib/index";
 
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
@@ -107,7 +107,7 @@ export default function Users() {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
-                    router.push("/auth/login");
+                    router.push("/admin/auth/login");
                 }
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
@@ -369,7 +369,7 @@ export default function Users() {
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {umum.id_account}
                                         </div>
-                                        <div className="px-6 py-4  w-[120px] text-center">
+                                        <div className="px-6 py-4 break-all  w-[120px] text-center">
                                             {umum.NIK}
                                         </div>
                                         <div className="px-6 py-4 w-[130px] text-center ">
