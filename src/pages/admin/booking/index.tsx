@@ -114,20 +114,24 @@ export default function Booking() {
                         .toLowerCase()
                         .includes(searchText.toLowerCase());
                 } else {
-                    if (value && "nama" in value) {
-                        return value.nama
+                    if (value && "status" in value) {
+                        return value.status
                             .toLowerCase()
                             .includes(searchText.toLowerCase());
-                    } else if (value && "Mahasiswa" in value) {
-                        return value.Mahasiswa[0].nama
+                    } else if (value && "total_harga" in value) {
+                        return value.total_harga
                             .toLowerCase()
                             .includes(searchText.toLowerCase());
-                    } else if (value && "Dosen" in value) {
-                        return value.Dosen[0].nama
+                    } else if (value && "tanggal_pemesanan" in value) {
+                        return value.tanggal_pemesanan
                             .toLowerCase()
                             .includes(searchText.toLowerCase());
-                    } else if (value && "Umum" in value) {
-                        return value.Umum[0].nama
+                    } else if (value && "Fasilitas" in value) {
+                        return value.Fasilitas
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if (value && "id_pemesanan" in value) {
+                        return value.id_pemesanan
                             .toLowerCase()
                             .includes(searchText.toLowerCase());
                     }
@@ -231,7 +235,7 @@ export default function Booking() {
                                     </button>
                                 </div>
                                 <Image
-                                    src={`ht/assets/${buktiToShow}`}
+                                    src={`https://api.ricogann.com/assets/${buktiToShow}`}
                                     width={500}
                                     height={500}
                                     alt="bukti-upload"
@@ -396,27 +400,30 @@ export default function Booking() {
                                                             </div>
 
                                                             <div className="px-6 py-4 whitespace-no-wrap flex items-center justify-center w-[238px]">
-                                                                <button
-                                                                    className={`${
-                                                                        data.status ===
-                                                                            "Menunggu Konfirmasi" ||
-                                                                        data.status ===
-                                                                            "Menunggu Berkas"
-                                                                            ? "hidden"
-                                                                            : "block"
-                                                                    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]`}
-                                                                    onClick={() =>
-                                                                        toggleModal(
-                                                                            data.bukti_pembayaran !==
-                                                                                null
-                                                                                ? data.bukti_pembayaran
-                                                                                : data.SIK
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Bukti
-                                                                    Pembayaran
-                                                                </button>
+                                                                {data.bukti_pembayaran !== null ? (
+  <button
+    className={`${
+      data.status === "Menunggu Konfirmasi"
+        ? "hidden"
+        : "block"
+    } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]`}
+    onClick={() =>
+      toggleModal(data.bukti_pembayaran)
+    }
+  >
+    Bukti Pembayaran
+  </button>
+) : (
+  <a
+    href={`https://api.ricogann.com/assets/${data.SIK}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mr-2 text-[10px]"
+  >
+    Open PDF
+  </a>
+)}
+
                                                                 <div
                                                                     className={`${
                                                                         data.status ===

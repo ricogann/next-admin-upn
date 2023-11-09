@@ -890,12 +890,21 @@ export default function Dashboard() {
                                         Close
                                     </button>
                                 </div>
+                            {buktiToShow.toLowerCase().endsWith('.pdf') ? (
+                            <a href={`https://api.ricogann.com/assets/${buktiToShow}`} target="_blank" >
+                                <button>View PDF</button>
+                            </a>
+                            ) : (
+                            <a href={`https://api.ricogann.com/assets/${buktiToShow}`}>
                                 <Image
-                                    src={`https://api.ricogann.com/assets/${buktiToShow}`}
-                                    width={500}
-                                    height={500}
-                                    alt="bukti-upload"
+                                src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                width={500}
+                                height={500}
+                                alt="bukti-upload"
                                 />
+                            </a>
+                            )}
+
                             </div>
                         </div>
                     )}
