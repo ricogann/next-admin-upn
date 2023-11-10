@@ -159,7 +159,7 @@ export default function Fasilitas() {
 
     async function getdataKamar(cookie: string) {
         try {
-            const res = await fetch(`http://api.ricogann.com/api/kamar`, {
+            const res = await fetch(`https://api.ricogann.com/api/kamar`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
