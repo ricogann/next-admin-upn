@@ -71,6 +71,38 @@ class _users extends _core {
         }
     }
 
+    async getUkm(cookie: string) {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/users/ukm`, {
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async getOrganisasi(cookie: string) {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/users/organisasi`, {
+                headers: {
+                    Authorization: `Bearer ${cookie}`,
+                },
+            });
+            const data = await res.json();
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     async getMahasiswa(cookie: string) {
         try {
             const res = await fetch(`${this.baseUrl}/api/users/mahasiswa`, {

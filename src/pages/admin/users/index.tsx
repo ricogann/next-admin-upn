@@ -23,6 +23,30 @@ interface Umum {
     bukti_identitas: string;
 }
 
+interface UKM {
+    id: number;
+    id_account: number;
+    nama_ukm: string;
+    email: string;
+    password: string;
+    no_telp: string;
+    status: boolean;
+    bukti_identitas: string;
+    nama_pj: string;
+}
+
+interface Organisasi {
+    id: number;
+    id_account: number;
+    nama_organisasi: string;
+    email: string;
+    password: string;
+    no_telp: string;
+    status: boolean;
+    bukti_identitas: string;
+    nama_pj: string;
+}
+
 interface Mahasiswa {
     id: number;
     id_account: number;
@@ -69,6 +93,8 @@ export default function Users() {
 
     const [activeTab, setActiveTab] = useState("umum");
     const [umum, setUmum] = useState<Umum[]>([]);
+    const [ukm, setUkm] = useState<UKM[]>([]);
+    const [organisasi, setOrganisasi] = useState<Organisasi[]>([]);
     const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
     const [dosen, setDosen] = useState<Dosen[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -98,10 +124,14 @@ export default function Users() {
                     dataCookies.CERT
                 );
                 const dataDosen = await users.getDosen(dataCookies.CERT);
+                const dataUKM = await users.getUkm(dataCookies.CERT);
+                const dataOrganisasi = await users.getOrganisasi(dataCookies.CERT);
 
                 setUmum(dataUmum.data);
                 setMahasiswa(dataMahasiswa.data);
                 setDosen(dataDosen.data);
+                setUkm(dataUKM.data);
+                setOrganisasi(dataOrganisasi.data);
 
                 if (dataCookies.CERT !== undefined) {
                     setIsLogin(true);
@@ -149,13 +179,29 @@ export default function Users() {
             )
         );
 
+        const filteredDataUkm = ukm.filter((item) =>
+            Object.values(item).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+
+        const filteredDataOrganisasi = organisasi.filter((item) =>
+            Object.values(item).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+
         if (activeTab === "umum") {
             setFilteredUmum(filteredData);
         } else if (activeTab === "dosen") {
             setFilteredDosen(filteredDataDosen);
-        } else {
+        } else if(activeTab === "mahasiswa"){
             setFilteredMahasiswa(filteredDataMahasiswa);
-        }
+        } 
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dosen, umum, mahasiswa, searchText]);
@@ -163,6 +209,16 @@ export default function Users() {
     const itemsPerPage = 5;
 
     const dataUmumToShow = umum.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const dataUkmToShow = ukm.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const dataOrganisasiToShow = organisasi.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -184,6 +240,8 @@ export default function Users() {
     const totalPagesUmum = Math.ceil(umum.length / itemsPerPage);
     const totalPagesDosen = Math.ceil(dosen.length / itemsPerPage);
     const totalPagesMahasiswa = Math.ceil(mahasiswa.length / itemsPerPage);
+    const totalPagesUkm = Math.ceil(ukm.length / itemsPerPage);
+    const totalPagesOrganisasi = Math.ceil(organisasi.length / itemsPerPage);
 
     const pagesUmumToDisplay = lib.calculatePagesToDisplay(
         currentPage,
@@ -196,6 +254,14 @@ export default function Users() {
     const pagesMahasiswaToDisplay = lib.calculatePagesToDisplay(
         currentPage,
         totalPagesMahasiswa
+    );
+    const pagesUkmToDisplay = lib.calculatePagesToDisplay(
+        currentPage,
+        totalPagesUkm
+    );
+    const pagesOrganisasiToDisplay = lib.calculatePagesToDisplay(
+        currentPage,
+        totalPagesOrganisasi
     );
 
     const handleStatusAccount = async (
@@ -298,15 +364,26 @@ export default function Users() {
                             Umum
                         </h2>
                     </a>
-                    <a href="#" onClick={() => toggleTab("dosen")}>
+                    <a href="#" onClick={() => toggleTab("ukm")}>
                         <h2
                             className={`text-[18] font-regular mb-3 mr-14 ${
-                                activeTab === "dosen"
+                                activeTab === "ukm"
                                     ? "border-b-2 border-[#FFA101] font-bold"
                                     : ""
                             }`}
                         >
-                            Dosen
+                            Ukm
+                        </h2>
+                    </a>
+                    <a href="#" onClick={() => toggleTab("organisasi")}>
+                        <h2
+                            className={`text-[18] font-regular mb-3 mr-14 ${
+                                activeTab === "organisasi"
+                                    ? "border-b-2 border-[#FFA101] font-bold"
+                                    : ""
+                            }`}
+                        >
+                            Organisasi
                         </h2>
                     </a>
                     <a href="#" onClick={() => toggleTab("mahasiswa")}>
@@ -854,6 +931,368 @@ export default function Users() {
                             <div className="flex items-center justify-center p-3">
                                 <div className="join">
                                     {pagesMahasiswaToDisplay.map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`join-item btn  ${
+                                                currentPage === page
+                                                    ? "btn-active"
+                                                    : ""
+                                            }`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {activeTab === "ukm" && (
+                        <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                            <div className="relative rounded-full overflow-hidden mb-5">
+                                <input
+                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                    type="text"
+                                    value={searchText}
+                                    onChange={handleSearchChange}
+                                    placeholder="Cari Users Mahasiswa"
+                                />
+                            </div>
+                            <div className="flex">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-left text-xs leading-4 font-medium text-black uppercase w-[50px]">
+                                    ID
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                    Nama UKM
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                    Email
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[220px]">
+                                    Password
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                    Nama Penanggung Jawab
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                    No Telepon
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[140px]">
+                                    Bukti Identitas
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[100px]">
+                                    Status
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                    Action
+                                </div>
+                            </div>
+                            <div className="flex flex-col bg-white divide-y divide-gray-200">
+                                {dataUkmToShow.map((ukm, index) => (
+                                    <div className="flex" key={index}>
+                                        <div className="px-6 py-4 w-[50px]">
+                                            {ukm.id}
+                                        </div>
+                                        <div className="px-6 py-4 w-[120px] text-center text-[15px]">
+                                            {ukm.nama_ukm}
+                                        </div>
+                                        <div className="px-6 py-4 w-[150px] break-all text-[15px]">
+                                            {ukm.email}
+                                        </div>
+                                        <div className="px-6 py-4 w-[220px] break-all text-[15px] flex items-center justify-between">
+                                            <div className="">
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "" : "hidden"
+                                                    }`}
+                                                >
+                                                    {ukm.password}
+                                                </h1>
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "hidden" : ""
+                                                    }`}
+                                                >
+                                                    {decryptedPassword(
+                                                        ukm.password
+                                                    )}
+                                                </h1>
+                                            </div>
+                                            <div className="">
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(false)
+                                                    }
+                                                >
+                                                    <AiFillEye />
+                                                </div>
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "hidden" : ""
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(true)
+                                                    }
+                                                >
+                                                    <AiFillEyeInvisible />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="px-6 py-4 w-[150px] text-[15px]">
+                                            {ukm.nama_pj}
+                                        </div>
+                                        <div className="px-6 py-4 text-[15px] w-[150px] ">
+                                            <a
+                                                href={`https://wa.me/${ukm.no_telp}?text=Halo%20${ukm.nama_pj}Halo,%20saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                            >
+                                                {ukm.no_telp}
+                                            </a>
+                                        </div>
+                                        <div className="px-6 py-4 text-[15px] w-[140px]">
+                                            <div
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    toggleModal(
+                                                        ukm.bukti_identitas
+                                                    )
+                                                }
+                                            >
+                                                <Image
+                                                    src={`https://api.ricogann.com/assets/${ukm.bukti_identitas}`}
+                                                    width={100}
+                                                    height={100}
+                                                    alt="bukti registrasi"
+                                                />
+                                            </div>
+                                        </div>
+                                        {ukm.status ? (
+                                            <div className="px-6 py-4 text-[15px] text-green-800 font-semibold w-[100px]">
+                                                Aktif
+                                            </div>
+                                        ) : (
+                                            <div className="px-6 py-4 text-[15px] text-red-500 font-semibold w-[100px]">
+                                                Tidak Aktif
+                                            </div>
+                                        )}
+                                        <div className="px-6 py-4  flex items-center justify-center w-[100px]">
+                                            {ukm.status ? (
+                                                <button
+                                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleStatusAccount(
+                                                            ukm.id_account,
+                                                            ukm.id,
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    DeActive
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleStatusAccount(
+                                                            ukm.id_account,
+                                                            ukm.id,
+                                                            true
+                                                        )
+                                                    }
+                                                >
+                                                    Approve
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex items-center justify-center p-3">
+                                <div className="join">
+                                    {pagesUkmToDisplay.map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`join-item btn  ${
+                                                currentPage === page
+                                                    ? "btn-active"
+                                                    : ""
+                                            }`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {activeTab === "organisasi" && (
+                        <div className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                            <div className="relative rounded-full overflow-hidden mb-5">
+                                <input
+                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                    type="text"
+                                    value={searchText}
+                                    onChange={handleSearchChange}
+                                    placeholder="Cari Users Organisasi"
+                                />
+                            </div>
+                            <div className="flex">
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-left text-xs leading-4 font-medium text-black uppercase w-[50px]">
+                                    ID
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                    Nama Organisasi
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                    Email
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[220px]">
+                                    Password
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                    Nama Penanggung Jawab
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                    No Telepon
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[140px]">
+                                    Bukti Identitas
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[100px]">
+                                    Status
+                                </div>
+                                <div className="px-6 py-3 bg-[#B9B9B9] text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                    Action
+                                </div>
+                            </div>
+                            <div className="flex flex-col bg-white divide-y divide-gray-200">
+                                {dataOrganisasiToShow.map((organisasi, index) => (
+                                    <div className="flex" key={index}>
+                                        <div className="px-6 py-4 w-[50px]">
+                                            {organisasi.id}
+                                        </div>
+                                        <div className="px-6 py-4 w-[120px] text-center text-[15px]">
+                                            {organisasi.nama_organisasi}
+                                        </div>
+                                        <div className="px-6 py-4 w-[150px] break-all text-[15px]">
+                                            {organisasi.email}
+                                        </div>
+                                        <div className="px-6 py-4 w-[220px] break-all text-[15px] flex items-center justify-between">
+                                            <div className="">
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "" : "hidden"
+                                                    }`}
+                                                >
+                                                    {organisasi.password}
+                                                </h1>
+                                                <h1
+                                                    className={`${
+                                                        eyeOpen ? "hidden" : ""
+                                                    }`}
+                                                >
+                                                    {decryptedPassword(
+                                                        organisasi.password
+                                                    )}
+                                                </h1>
+                                            </div>
+                                            <div className="">
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "" : "hidden"
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(false)
+                                                    }
+                                                >
+                                                    <AiFillEye />
+                                                </div>
+                                                <div
+                                                    className={`text-xl ${
+                                                        eyeOpen ? "hidden" : ""
+                                                    } cursor-pointer`}
+                                                    onClick={() =>
+                                                        setEyeOpen(true)
+                                                    }
+                                                >
+                                                    <AiFillEyeInvisible />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="px-6 py-4 w-[150px] text-[15px]">
+                                            {organisasi.nama_pj}
+                                        </div>
+                                        <div className="px-6 py-4 text-[15px] w-[150px] ">
+                                            <a
+                                                href={`https://wa.me/${organisasi.no_telp}?text=Halo%20${organisasi.nama_pj}Halo,%20saya%20adalah%20admin%20dari%20BPU%20UPN%20VETERAN%20JAWA%20TIMUR.%20Kami%20senang%20bisa%20berhubungan%20dengan%20Anda%20melalui%20WhatsApp.%20Jangan%20ragu%20untuk%20menghubungi%20kami%20jika%20Anda%20membutuhkan%20bantuan,%20informasi,%20atau%20pertanyaan%20lainnya%20terkait%20dengan%20UPN%20VETERAN%20JAWA%20TIMUR.%20Terima%20kasih!"`}
+                                            >
+                                                {organisasi.no_telp}
+                                            </a>
+                                        </div>
+                                        <div className="px-6 py-4 text-[15px] w-[140px]">
+                                            <div
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    toggleModal(
+                                                        organisasi.bukti_identitas
+                                                    )
+                                                }
+                                            >
+                                                <Image
+                                                    src={`https://api.ricogann.com/assets/${organisasi.bukti_identitas}`}
+                                                    width={100}
+                                                    height={100}
+                                                    alt="bukti registrasi"
+                                                />
+                                            </div>
+                                        </div>
+                                        {organisasi.status ? (
+                                            <div className="px-6 py-4 text-[15px] text-green-800 font-semibold w-[100px]">
+                                                Aktif
+                                            </div>
+                                        ) : (
+                                            <div className="px-6 py-4 text-[15px] text-red-500 font-semibold w-[100px]">
+                                                Tidak Aktif
+                                            </div>
+                                        )}
+                                        <div className="px-6 py-4  flex items-center justify-center w-[100px]">
+                                            {organisasi.status ? (
+                                                <button
+                                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleStatusAccount(
+                                                            organisasi.id_account,
+                                                            organisasi.id,
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    DeActive
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 text-[15px] rounded-full"
+                                                    onClick={() =>
+                                                        handleStatusAccount(
+                                                            organisasi.id_account,
+                                                            organisasi.id,
+                                                            true
+                                                        )
+                                                    }
+                                                >
+                                                    Approve
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex items-center justify-center p-3">
+                                <div className="join">
+                                    {pagesOrganisasiToDisplay.map((page) => (
                                         <button
                                             key={page}
                                             className={`join-item btn  ${
