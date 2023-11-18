@@ -102,6 +102,8 @@ export default function Users() {
     const [filteredUmum, setFilteredUmum] = useState<Umum[]>([]);
     const [filteredDosen, setFilteredDosen] = useState<Dosen[]>([]);
     const [filteredMahasiswa, setFilteredMahasiswa] = useState<Mahasiswa[]>([]);
+    const [filteredUkm, setFilteredUkm] = useState<UKM[]>([]);
+    const [filteredOrganisasi, setFilteredOrganisasi] = useState<Organisasi[]>([]);
     const [isLogin, setIsLogin] = useState(false);
     const [cookiesCert, setCookiesCert] = useState<string>("");
     const libCookies = new _lib();
@@ -132,6 +134,10 @@ export default function Users() {
                 setDosen(dataDosen.data);
                 setUkm(dataUKM.data);
                 setOrganisasi(dataOrganisasi.data);
+                setFilteredMahasiswa(dataMahasiswa.data);
+                setFilteredOrganisasi(dataOrganisasi.data);
+                setFilteredUkm(dataUKM.data);
+                setFilteredUmum(dataUmum.data);
 
                 if (dataCookies.CERT !== undefined) {
                     setIsLogin(true);
@@ -201,10 +207,14 @@ export default function Users() {
             setFilteredDosen(filteredDataDosen);
         } else if(activeTab === "mahasiswa"){
             setFilteredMahasiswa(filteredDataMahasiswa);
-        } 
+        } else if (activeTab === "organisasi"){
+            setFilteredOrganisasi(filteredDataOrganisasi);
+        } else if (activeTab === "ukm"){
+            setFilteredUkm(filteredDataUkm);
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dosen, umum, mahasiswa, searchText]);
+    }, [dosen, umum, mahasiswa, organisasi, ukm , searchText]);
 
     const itemsPerPage = 5;
 
@@ -237,11 +247,11 @@ export default function Users() {
         setActiveTab(tab);
     };
 
-    const totalPagesUmum = Math.ceil(umum.length / itemsPerPage);
+    const totalPagesUmum = Math.ceil(filteredUmum.length / itemsPerPage);
     const totalPagesDosen = Math.ceil(dosen.length / itemsPerPage);
-    const totalPagesMahasiswa = Math.ceil(mahasiswa.length / itemsPerPage);
-    const totalPagesUkm = Math.ceil(ukm.length / itemsPerPage);
-    const totalPagesOrganisasi = Math.ceil(organisasi.length / itemsPerPage);
+    const totalPagesMahasiswa = Math.ceil(filteredMahasiswa.length / itemsPerPage);
+    const totalPagesUkm = Math.ceil(filteredUkm.length / itemsPerPage);
+    const totalPagesOrganisasi = Math.ceil(filteredOrganisasi.length / itemsPerPage);
 
     const pagesUmumToDisplay = lib.calculatePagesToDisplay(
         currentPage,
@@ -441,7 +451,7 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="bg-white divide-y divide-gray-200">
-                                {dataUmumToShow.map((umum, index) => (
+                                {filteredUmum.map((umum, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4  w-[80px] text-center">
                                             {umum.id_account}
@@ -806,7 +816,7 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
-                                {dataMahasiswaToShow.map((mahasiswa, index) => (
+                                {filteredMahasiswa.map((mahasiswa, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4 w-[50px]">
                                             {mahasiswa.id}
@@ -988,7 +998,7 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
-                                {dataUkmToShow.map((ukm, index) => (
+                                {filteredUkm.map((ukm, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4 w-[50px]">
                                             {ukm.id}
@@ -1169,7 +1179,7 @@ export default function Users() {
                                 </div>
                             </div>
                             <div className="flex flex-col bg-white divide-y divide-gray-200">
-                                {dataOrganisasiToShow.map((organisasi, index) => (
+                                {filteredOrganisasi.map((organisasi, index) => (
                                     <div className="flex" key={index}>
                                         <div className="px-6 py-4 w-[50px]">
                                             {organisasi.id}
