@@ -673,6 +673,7 @@ export default function Fasilitas() {
                                             </div>
                                         </div>
                                     </div>
+                                    <h1 className="mt-5">Upload Foto Fasilitas (IMG)</h1>
                                     <InputFiles
                                         name="foto"
                                         type="file"
@@ -683,7 +684,7 @@ export default function Fasilitas() {
                                         accept=".png, .jpg, .jpeg"
                                         onChange={handleFotoChange}
                                     />
-
+                                    <h1 className="mt-5">Upload TermService (PDF)</h1>
                                     <input
                                         name="termservice"
                                         type="file"
