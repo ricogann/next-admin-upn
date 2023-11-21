@@ -16,7 +16,7 @@ import _booking from "@/services/booking.service";
 import _lib from "@/lib/index";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface Fasilitas {
@@ -354,13 +354,16 @@ export default function Fasilitas() {
         async function fetchData(id: number) {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookies(dataCookies.CERT);
+               
+                if (dataCookies.ADMIN !== undefined) {
+                    setIsLogin(true);
+                     setCookies(dataCookies.ADMIN);
                 const dataFasilitas = await fasilitas.getFasilitasById(
                     Number(id)
                 );
-                const dataKamar = await getdataKamar(dataCookies.CERT);
+                const dataKamar = await getdataKamar(dataCookies.ADMIN);
                 const dataHistoryKamar = await getdataHistoryKamar(
-                    dataCookies.CERT
+                    dataCookies.ADMIN
                 );
 
                 setNamaFasilitas(dataFasilitas.nama);
@@ -378,8 +381,6 @@ export default function Fasilitas() {
                 setDataFasilitas(dataFasilitas);
                 setFotoFasilitas(JSON.parse(dataFasilitas.foto));
                 setTermService(dataFasilitas.termservice);
-                if (dataCookies.CERT !== undefined) {
-                    setIsLogin(true);
                 } else {
                     setIsLogin(false);
                     router.push("/admin/auth/login");

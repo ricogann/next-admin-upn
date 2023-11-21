@@ -58,7 +58,7 @@ export default function Login() {
             const resData = await res.json();
             if (resData.data.token) {
                 const token = resData.data.token;
-                await libCookies.setCookie("CERT", token, 1);
+                await libCookies.setCookie("ADMIN", token, 1);
                 setLoading(false);
                 router.push("/admin/dashboard");
             } else {

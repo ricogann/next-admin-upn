@@ -8,7 +8,7 @@ import _lib from "@/lib/index";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface Umum {
@@ -105,7 +105,7 @@ export default function Users() {
     const [filteredUkm, setFilteredUkm] = useState<UKM[]>([]);
     const [filteredOrganisasi, setFilteredOrganisasi] = useState<Organisasi[]>([]);
     const [isLogin, setIsLogin] = useState(false);
-    const [cookiesCert, setCookiesCert] = useState<string>("");
+    const [cookiesADMIN, setCookiesADMIN] = useState<string>("");
     const libCookies = new _lib();
 
     const [eyeOpen, setEyeOpen] = useState<boolean>(true);
@@ -119,15 +119,18 @@ export default function Users() {
         async function fetchData() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookiesCert(dataCookies.CERT);
 
-                const dataUmum = await users.getUmum(dataCookies.CERT);
+                if (dataCookies.ADMIN !== undefined) {
+                    setIsLogin(true);
+                                    setCookiesADMIN(dataCookies.ADMIN);
+
+                const dataUmum = await users.getUmum(dataCookies.ADMIN);
                 const dataMahasiswa = await users.getMahasiswa(
-                    dataCookies.CERT
+                    dataCookies.ADMIN
                 );
-                const dataDosen = await users.getDosen(dataCookies.CERT);
-                const dataUKM = await users.getUkm(dataCookies.CERT);
-                const dataOrganisasi = await users.getOrganisasi(dataCookies.CERT);
+                const dataDosen = await users.getDosen(dataCookies.ADMIN);
+                const dataUKM = await users.getUkm(dataCookies.ADMIN);
+                const dataOrganisasi = await users.getOrganisasi(dataCookies.ADMIN);
 
                 setUmum(dataUmum.data);
                 setMahasiswa(dataMahasiswa.data);
@@ -138,9 +141,6 @@ export default function Users() {
                 setFilteredOrganisasi(dataOrganisasi.data);
                 setFilteredUkm(dataUKM.data);
                 setFilteredUmum(dataUmum.data);
-
-                if (dataCookies.CERT !== undefined) {
-                    setIsLogin(true);
                 } else {
                     setIsLogin(false);
                     router.push("/admin/auth/login");
@@ -279,12 +279,12 @@ export default function Users() {
         id_account: number,
         status: boolean
     ) => {
-        await users.updateStatusAccount(id, id_account, status, cookiesCert);
+        await users.updateStatusAccount(id, id_account, status, cookiesADMIN);
     };
 
     const handleDelete = async (id: number) => {
         try {
-            const data = await users.deleteUsers(id, cookiesCert);
+            const data = await users.deleteUsers(id, cookiesADMIN);
 
             if (data.status === true) {
                 window.location.reload();
@@ -296,7 +296,7 @@ export default function Users() {
 
     const handleDeleteDosen = async (id: number) => {
         try {
-            const data = await users.deleteDosen(id, cookiesCert);
+            const data = await users.deleteDosen(id, cookiesADMIN);
 
             if (data.status === true) {
                 window.location.reload();
@@ -308,7 +308,7 @@ export default function Users() {
 
     const handleDeleteMahasiswa = async (id: number) => {
         try {
-            const data = await users.deleteMahasiswa(id, cookiesCert);
+            const data = await users.deleteMahasiswa(id, cookiesADMIN);
 
             if (data.status === true) {
                 window.location.reload();

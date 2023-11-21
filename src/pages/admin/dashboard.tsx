@@ -178,11 +178,7 @@ export default function Dashboard() {
                 setCookiesCert(dataCookies.ADMIN);
                 if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
-                } else {
-                    setIsLogin(false);
-                    router.push("/admin/auth/login");
-                }
-                const dataUsers = await users.getUsers(dataCookies.ADMIN);
+                    const dataUsers = await users.getUsers(dataCookies.ADMIN);
 
                 const dataUsersFilter = dataUsers.filter(
                     (item: Account) => item.status_account === false
@@ -218,6 +214,11 @@ export default function Dashboard() {
                 setBuktiIdentitas(accountBukti);
                 setDataUsers(dataUsersFilter);
                 setTotalSum(dataUsers.length);
+                } else {
+                    setIsLogin(false);
+                    router.push("/admin/auth/login");
+                }
+                
             } catch (error) {
                 console.error("error fetching data fasilitas ", error);
                 throw error;

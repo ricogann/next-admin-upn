@@ -17,7 +17,7 @@ interface Fasilitas {
 }
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface harga {
@@ -60,7 +60,7 @@ export default function Edit() {
         async function fetchData() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookies(dataCookies.CERT);
+                setCookies(dataCookies.ADMIN);
                 const response: harga = await hargaService.getDatahargaById(
                     Number(id)
                 );
@@ -69,7 +69,7 @@ export default function Edit() {
                 setNama(response.nama);
                 setHarga(response.harga);
 
-                if (dataCookies.CERT !== undefined) {
+                if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);

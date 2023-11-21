@@ -6,7 +6,7 @@ import _fasilitas from "@/services/fasilitas.service";
 import _harga from "@/services/harga.service";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface Fasilitas {
@@ -118,13 +118,13 @@ export default function Fasilitas() {
         async function fetchData() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookies(dataCookies.CERT);
+                setCookies(dataCookies.ADMIN);
                 const dataFasilitas = await fasilitas.getFasilitas();
                 const dataHarga = await harga.getDataharga();
 
                 setDataFasilitas(dataFasilitas);
                 setDataharga(dataHarga.data);
-                if (dataCookies.CERT !== undefined) {
+                if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);

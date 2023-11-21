@@ -9,7 +9,7 @@ import _lib from "@/lib/index";
 import _fasilitas from "@/services/fasilitas.service";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 export default function Create() {
@@ -113,9 +113,9 @@ export default function Create() {
         async function fetchData() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookies(dataCookies.CERT);
+                setCookies(dataCookies.ADMIN);
 
-                if (dataCookies.CERT !== undefined) {
+                if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);

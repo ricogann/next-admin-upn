@@ -44,7 +44,7 @@ export default function SideBar() {
 
     const handlePage = (link: string) => {
         if (link === "/logout") {
-            lib.deleteCookie("CERT");
+            lib.deleteCookie("ADMIN");
             router.push("/admin/auth/login");
         } else {
             router.push(link);

@@ -6,7 +6,7 @@ import _misc from "@/services/misc.service";
 import _lib from "@/lib/index";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface misc {
@@ -36,7 +36,7 @@ export default function Miscellaneous() {
                 const dataMisc = await misc.getDataMisc();
                 setDataMisc(dataMisc.data);
 
-                if (dataCookies.CERT !== undefined) {
+                if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);

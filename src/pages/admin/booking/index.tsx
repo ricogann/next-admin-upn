@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import _lib from "@/lib/index";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface Booking {
@@ -66,7 +66,7 @@ export default function Booking() {
     const [searchText, setSearchText] = useState<string>("");
     const [filteredBooking, setfilteredBooking] = useState<Booking[]>([]);
     const [isLogin, setIsLogin] = useState(false);
-    const [cookiesCert, setCookiesCert] = useState("");
+    const [cookiesADMIN, setCookiesADMIN] = useState("");
     const [isTolak, setIsTolak] = useState<boolean>(false);
 
     const [buktiToShow, setBuktiToShow] = useState<string>("");
@@ -176,8 +176,8 @@ export default function Booking() {
                 setDataBooking(dataBooking);
 
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookiesCert(dataCookies.CERT);
-                if (dataCookies.CERT !== undefined) {
+                setCookiesADMIN(dataCookies.ADMIN);
+                if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
@@ -216,7 +216,7 @@ export default function Booking() {
         status: string,
         keteranganTolak: string | null
     ) => {
-        booking.updateStatus(id, status, keteranganTolak, cookiesCert);
+        booking.updateStatus(id, status, keteranganTolak, cookiesADMIN);
     };
 
     return (
