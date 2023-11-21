@@ -1,7 +1,7 @@
 import * as crypto from "crypto-js";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 class _lib {

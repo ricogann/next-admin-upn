@@ -9,7 +9,7 @@ import { io } from "socket.io-client";
 import { useRouter } from "next/router";
 
 interface CookiesDTO {
-    CERT: string;
+    ADMIN: string;
 }
 
 interface Mahasiswa {
@@ -175,14 +175,14 @@ export default function Dashboard() {
         async function fetchData() {
             try {
                 const dataCookies: CookiesDTO = await libCookies.getCookies();
-                setCookiesCert(dataCookies.CERT);
-                if (dataCookies.CERT !== undefined) {
+                setCookiesCert(dataCookies.ADMIN);
+                if (dataCookies.ADMIN !== undefined) {
                     setIsLogin(true);
                 } else {
                     setIsLogin(false);
                     router.push("/admin/auth/login");
                 }
-                const dataUsers = await users.getUsers(dataCookies.CERT);
+                const dataUsers = await users.getUsers(dataCookies.ADMIN);
 
                 const dataUsersFilter = dataUsers.filter(
                     (item: Account) => item.status_account === false
@@ -890,21 +890,25 @@ export default function Dashboard() {
                                         Close
                                     </button>
                                 </div>
-                            {buktiToShow.toLowerCase().endsWith('.pdf') ? (
-                            <a href={`https://api.ricogann.com/assets/${buktiToShow}`} target="_blank" >
-                                <button>View PDF</button>
-                            </a>
-                            ) : (
-                            <a href={`https://api.ricogann.com/assets/${buktiToShow}`}>
-                                <Image
-                                src={`https://api.ricogann.com/assets/${buktiToShow}`}
-                                width={500}
-                                height={500}
-                                alt="bukti-upload"
-                                />
-                            </a>
-                            )}
-
+                                {buktiToShow.toLowerCase().endsWith(".pdf") ? (
+                                    <a
+                                        href={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                        target="_blank"
+                                    >
+                                        <button>View PDF</button>
+                                    </a>
+                                ) : (
+                                    <a
+                                        href={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                    >
+                                        <Image
+                                            src={`https://api.ricogann.com/assets/${buktiToShow}`}
+                                            width={500}
+                                            height={500}
+                                            alt="bukti-upload"
+                                        />
+                                    </a>
+                                )}
                             </div>
                         </div>
                     )}
