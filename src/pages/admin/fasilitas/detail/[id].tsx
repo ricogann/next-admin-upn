@@ -66,7 +66,9 @@ export default function Fasilitas() {
     const [displaySection, setDisplaySection] = useState("kamarAsrama");
     const [dataFasilitas, setDataFasilitas] = useState<Fasilitas>();
     const [dataKamar, setDataKamar] = useState<Kamar[]>([]);
-    const [dataHistoryKamar, setDataHistoryKamar] = useState<HistoryKamar[]>([]);
+    const [dataHistoryKamar, setDataHistoryKamar] = useState<HistoryKamar[]>(
+        []
+    );
     const [fotoFasilitas, setFotoFasilitas] = useState<string[]>([]);
     const [termService, setTermService] = useState<string[]>([]);
     const [id, setId] = useState("");
@@ -82,8 +84,10 @@ export default function Fasilitas() {
     const fasilitas = new _fasilitas();
     const booking = new _booking();
     const [searchText, setSearchText] = useState<string>("");
-    const [filteredHistoryKamar, setFilteredHistoryKamar] = useState<HistoryKamar[]>([]); 
-    const [filteredKamar, setFilteredKamar] = useState<Kamar[]>([]); 
+    const [filteredHistoryKamar, setFilteredHistoryKamar] = useState<
+        HistoryKamar[]
+    >([]);
+    const [filteredKamar, setFilteredKamar] = useState<Kamar[]>([]);
 
     const [namaFasilitas, setNamaFasilitas] = useState("");
     const [alamatFasilitas, setAlamatFasilitas] = useState("");
@@ -107,7 +111,6 @@ export default function Fasilitas() {
     ) => {
         setSearchText(event.target.value);
     };
-    
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.name === "nama_fasilitas") {
@@ -171,9 +174,7 @@ export default function Fasilitas() {
 
     //Kamar
     const itemsKamarPerPage = 10;
-    const totalKamar = Math.ceil(
-        filteredKamar.length / itemsKamarPerPage
-    );
+    const totalKamar = Math.ceil(filteredKamar.length / itemsKamarPerPage);
     const pagesKamarToDisplay = lib.calculatePagesToDisplay(
         currentPage,
         totalKamar
@@ -183,83 +184,104 @@ export default function Fasilitas() {
         (currentPage - 1) * itemsKamarPerPage,
         currentPage * itemsKamarPerPage
     );
-    
+
     //SearchBar Kamar
     useEffect(() => {
-    // Filter the dataKamar array based on whether any field contains the searchText
-    const filteredData = dataKamar.filter((item) =>
-        Object.values(item).some((value) => {
-            if (
-                typeof value === "string" ||
-                typeof value === "number" ||
-                value instanceof Date
-            ) {
-                // Convert non-string values to string for comparison
-                const stringValue =
-                    typeof value === "string" ? value : String(value);
+        // Filter the dataKamar array based on whether any field contains the searchText
+        const filteredData = dataKamar.filter((item) =>
+            Object.values(item).some((value) => {
+                if (
+                    typeof value === "string" ||
+                    typeof value === "number" ||
+                    value instanceof Date
+                ) {
+                    // Convert non-string values to string for comparison
+                    const stringValue =
+                        typeof value === "string" ? value : String(value);
 
-                // Perform case-insensitive search
-                return stringValue.toLowerCase().includes(searchText.toLowerCase());
-            } else if (value && typeof value === "object") {
-                // Check if the value is an object before using 'in' operator
-                if ("no_kamar" in value) {
-                    return value.no_kamar.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("npm_bed1_a" in value) {
-                    return value.npm_bed1_a.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("npm_bed2_b" in value) {
-                    return value.npm_bed2_b.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("npm_bed3_c" in value) {
-                    return value.npm_bed3_c.toLowerCase().includes(searchText.toLowerCase());
-                } else {
-                    return false; // Skip other types
+                    // Perform case-insensitive search
+                    return stringValue
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase());
+                } else if (value && typeof value === "object") {
+                    // Check if the value is an object before using 'in' operator
+                    if ("no_kamar" in value) {
+                        return value.no_kamar
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("npm_bed1_a" in value) {
+                        return value.npm_bed1_a
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("npm_bed2_b" in value) {
+                        return value.npm_bed2_b
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("npm_bed3_c" in value) {
+                        return value.npm_bed3_c
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else {
+                        return false; // Skip other types
+                    }
                 }
-            }
-            return false; // Skip other types
-        })
-    );
+                return false; // Skip other types
+            })
+        );
 
-    setFilteredKamar(filteredData);
-}, [dataKamar, searchText]);
-
+        setFilteredKamar(filteredData);
+    }, [dataKamar, searchText]);
 
     //SearchBarHistoryKamar
-            useEffect(() => {
-    // Filter the dataKamar array based on whether any field contains the searchText
-    const filteredData = dataHistoryKamar.filter((item) =>
-        Object.values(item).some((value) => {
-            if (
-                typeof value === "string" ||
-                typeof value === "number" ||
-                value instanceof Date
-            ) {
-                // Convert non-string values to string for comparison
-                const stringValue =
-                    typeof value === "string" ? value : String(value);
+    useEffect(() => {
+        // Filter the dataKamar array based on whether any field contains the searchText
+        const filteredData = dataHistoryKamar.filter((item) =>
+            Object.values(item).some((value) => {
+                if (
+                    typeof value === "string" ||
+                    typeof value === "number" ||
+                    value instanceof Date
+                ) {
+                    // Convert non-string values to string for comparison
+                    const stringValue =
+                        typeof value === "string" ? value : String(value);
 
-                // Perform case-insensitive search
-                return stringValue.toLowerCase().includes(searchText.toLowerCase());
-            } else if (value && typeof value === "object") {
-                // Check if the value is an object before using 'in' operator
-                if ("no_kamar" in value) {
-                    return value.no_kamar.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("npm_bed1_a" in value) {
-                    return value.npm_bed1_a.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("npm_bed2_b" in value) {
-                    return value.npm_bed2_b.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("npm_bed3_c" in value) {
-                    return value.npm_bed3_c.toLowerCase().includes(searchText.toLowerCase());
-                } else if ("year" in value) {
-                    return value.year.toLowerCase().includes(searchText.toLowerCase());
-                }else {
-                    return false; // Skip other types
+                    // Perform case-insensitive search
+                    return stringValue
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase());
+                } else if (value && typeof value === "object") {
+                    // Check if the value is an object before using 'in' operator
+                    if ("no_kamar" in value) {
+                        return value.no_kamar
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("npm_bed1_a" in value) {
+                        return value.npm_bed1_a
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("npm_bed2_b" in value) {
+                        return value.npm_bed2_b
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("npm_bed3_c" in value) {
+                        return value.npm_bed3_c
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else if ("year" in value) {
+                        return value.year
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase());
+                    } else {
+                        return false; // Skip other types
+                    }
                 }
-            }
-            return false; // Skip other types
-        })
-    );
+                return false; // Skip other types
+            })
+        );
 
-    setFilteredHistoryKamar(filteredData);
-}, [dataHistoryKamar, searchText]);
+        setFilteredHistoryKamar(filteredData);
+    }, [dataHistoryKamar, searchText]);
 
     const handleSubmit = async () => {
         const data = new FormData();
@@ -278,7 +300,7 @@ export default function Fasilitas() {
         data.append("buka_hari", bukaHari);
         data.append("no_va", noVa);
         data.append("name_foto_old", JSON.stringify(fotoFasilitas));
-        data.append("name_termservice_old", JSON.stringify(termService));
+        data.append("name_termservice_old", termService as unknown as string);
 
         const res = await fasilitas.updateFasilitas(Number(id), data, cookies);
     };
@@ -673,7 +695,9 @@ export default function Fasilitas() {
                                             </div>
                                         </div>
                                     </div>
-                                    <h1 className="mt-5">Upload Foto Fasilitas (IMG)</h1>
+                                    <h1 className="mt-5">
+                                        Upload Foto Fasilitas (IMG)
+                                    </h1>
                                     <InputFiles
                                         name="foto"
                                         type="file"
@@ -684,7 +708,9 @@ export default function Fasilitas() {
                                         accept=".png, .jpg, .jpeg"
                                         onChange={handleFotoChange}
                                     />
-                                    <h1 className="mt-5">Upload TermService (PDF)</h1>
+                                    <h1 className="mt-5">
+                                        Upload TermService (PDF)
+                                    </h1>
                                     <input
                                         name="termservice"
                                         type="file"
@@ -728,344 +754,381 @@ export default function Fasilitas() {
                             {/* if Asrama maka ini muncul */}
                             {dataFasilitas?.nama === "Asrama" && (
                                 <div className="flex flex-col bg-[#FFFFFF] gap-5 p-5 rounded-lg mt-3 ">
-                                <div className="flex justify-center mb-5">
-                                    <button
-                                        className={`${
-                                            displaySection === "kamarAsrama" ? "bg-blue-500" : "bg-gray-300"
-                                        } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px] mr-2`}
-                                        onClick={() => setDisplaySection("kamarAsrama")}
-                                    >
-                                        Kamar Asrama
-                                    </button>
-                                    <button
-                                        className={`${
-                                            displaySection === "historyKamarAsrama" ? "bg-blue-500" : "bg-gray-300"
-                                        } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                        onClick={() => setDisplaySection("historyKamarAsrama")}
-                                    >
-                                        History Kamar Asrama
-                                    </button>
-                                </div>
-                                {displaySection === "kamarAsrama" && (
-                                    <div>
-                                        <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
-                                            <input
-                                                className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                                                type="text"
-                                                placeholder="Cari Data Kamar"
-                                                value={searchText}
-                                                onChange={handleInputKamarChange}
-                                            />
-                                        </div>
-                                    <div className="text-[24px] font-bold">
-                                        Tabel Kamar Asrama{" "}
+                                    <div className="flex justify-center mb-5">
+                                        <button
+                                            className={`${
+                                                displaySection === "kamarAsrama"
+                                                    ? "bg-blue-500"
+                                                    : "bg-gray-300"
+                                            } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px] mr-2`}
+                                            onClick={() =>
+                                                setDisplaySection("kamarAsrama")
+                                            }
+                                        >
+                                            Kamar Asrama
+                                        </button>
+                                        <button
+                                            className={`${
+                                                displaySection ===
+                                                "historyKamarAsrama"
+                                                    ? "bg-blue-500"
+                                                    : "bg-gray-300"
+                                            } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                            onClick={() =>
+                                                setDisplaySection(
+                                                    "historyKamarAsrama"
+                                                )
+                                            }
+                                        >
+                                            History Kamar Asrama
+                                        </button>
                                     </div>
-                                    <div className="flex bg-[#898989] gap-9 rounded-t-lg">
-                                        <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
-                                            NO
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
-                                            Lantai Asrama
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
-                                            Nomer Kamar
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                            Penyewa 1
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                            Penyewa 2
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                            Penyewa 3
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[110px]">
-                                            Status
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
-                                            Action
-                                        </div>
-                                    </div>
-                                    <div className="bg-white divide-y divide-gray-200">
-                                        <div className="">
-                                            {dataKamarToDisplay.map((data, index) => (
-                                                <div
-                                                    className="flex gap-9 text-center my-2"
-                                                    key={index}
-                                                >
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
-                                                        {index + 1}
-                                                    </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
-                                                        {data.Harga.nama}
-                                                    </div>
-                                                    <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
-                                                        {data.no_kamar}
-                                                    </div>
-                                                    <div
-                                                        className={`${
-                                                            editKamarStatus &&
-                                                            index ===
-                                                                indexEditKamar
-                                                                ? "hidden"
-                                                                : "block"
-                                                        } px-6 py-3 break-all w-[150px]`}
-                                                    >
-                                                        {data.npm_bed1_a}
-                                                    </div>
-                                                    <input
-                                                        name="npm_bed1_a"
-                                                        value={npmBed1}
-                                                        type="text"
-                                                        className={`${
-                                                            editKamarStatus &&
-                                                            index ===
-                                                                indexEditKamar
-                                                                ? "block"
-                                                                : "hidden"
-                                                        } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                                        placeholder="Npm Bed 1"
-                                                        onChange={
-                                                            handleInputChange
-                                                        }
-                                                    />
-                                                    <div
-                                                        className={`${
-                                                            editKamarStatus &&
-                                                            index ===
-                                                                indexEditKamar
-                                                                ? "hidden"
-                                                                : "block"
-                                                        } px-6 py-3 break-all w-[150px]`}
-                                                    >
-                                                        {data.npm_bed2_b}
-                                                    </div>
-                                                    <input
-                                                        name="npm_bed2_b"
-                                                        value={npmBed2}
-                                                        type="text"
-                                                        className={`${
-                                                            editKamarStatus &&
-                                                            index ===
-                                                                indexEditKamar
-                                                                ? "block"
-                                                                : "hidden"
-                                                        } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                                        placeholder="Npm Bed 2"
-                                                        onChange={
-                                                            handleInputChange
-                                                        }
-                                                    />
-                                                    <div
-                                                        className={`${
-                                                            editKamarStatus &&
-                                                            index ===
-                                                                indexEditKamar
-                                                                ? "hidden"
-                                                                : "block"
-                                                        } px-6 py-3 break-all w-[150px]`}
-                                                    >
-                                                        {data.npm_bed3_c}
-                                                    </div>
-                                                    <input
-                                                        name="npm_bed3_c"
-                                                        value={npmBed3}
-                                                        type="text"
-                                                        className={`${
-                                                            editKamarStatus &&
-                                                            index ===
-                                                                indexEditKamar
-                                                                ? "block"
-                                                                : "hidden"
-                                                        } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
-                                                        placeholder="Npm Bed 3"
-                                                        onChange={
-                                                            handleInputChange
-                                                        }
-                                                    />
-                                                    <div className="px-6 py-3 break-all w-[110px]">
-                                                        {data.status_kamar ===
-                                                        false
-                                                            ? "Penuh "
-                                                            : "Kosong"}
-                                                    </div>
-                                                    <div className="flex flex-col gap-2">
-                                                        <button
-                                                            className={`${
-                                                                editKamarStatus &&
-                                                                index ===
-                                                                    indexEditKamar
-                                                                    ? "hidden"
-                                                                    : "block"
-                                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                                            onClick={() =>
-                                                                editKamarHandle(
-                                                                    data.npm_bed1_a,
-                                                                    data.npm_bed2_b,
-                                                                    data.npm_bed3_c,
-                                                                    index
-                                                                )
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            className={`${
-                                                                editKamarStatus &&
-                                                                index ===
-                                                                    indexEditKamar
-                                                                    ? "block"
-                                                                    : "hidden"
-                                                            } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                                            onClick={() => {
-                                                                setEditKamarStatus(
+                                    {displaySection === "kamarAsrama" && (
+                                        <div>
+                                            <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
+                                                <input
+                                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                                    type="text"
+                                                    placeholder="Cari Data Kamar"
+                                                    value={searchText}
+                                                    onChange={
+                                                        handleInputKamarChange
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="text-[24px] font-bold">
+                                                Tabel Kamar Asrama{" "}
+                                            </div>
+                                            <div className="flex bg-[#898989] gap-9 rounded-t-lg">
+                                                <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
+                                                    NO
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                                    Lantai Asrama
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
+                                                    Nomer Kamar
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                                    Penyewa 1
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                                    Penyewa 2
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                                    Penyewa 3
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[110px]">
+                                                    Status
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                                    Action
+                                                </div>
+                                            </div>
+                                            <div className="bg-white divide-y divide-gray-200">
+                                                <div className="">
+                                                    {dataKamarToDisplay.map(
+                                                        (data, index) => (
+                                                            <div
+                                                                className="flex gap-9 text-center my-2"
+                                                                key={index}
+                                                            >
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
+                                                                    {index + 1}
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
+                                                                    {
+                                                                        data
+                                                                            .Harga
+                                                                            .nama
+                                                                    }
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
+                                                                    {
+                                                                        data.no_kamar
+                                                                    }
+                                                                </div>
+                                                                <div
+                                                                    className={`${
+                                                                        editKamarStatus &&
+                                                                        index ===
+                                                                            indexEditKamar
+                                                                            ? "hidden"
+                                                                            : "block"
+                                                                    } px-6 py-3 break-all w-[150px]`}
+                                                                >
+                                                                    {
+                                                                        data.npm_bed1_a
+                                                                    }
+                                                                </div>
+                                                                <input
+                                                                    name="npm_bed1_a"
+                                                                    value={
+                                                                        npmBed1
+                                                                    }
+                                                                    type="text"
+                                                                    className={`${
+                                                                        editKamarStatus &&
+                                                                        index ===
+                                                                            indexEditKamar
+                                                                            ? "block"
+                                                                            : "hidden"
+                                                                    } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                                    placeholder="Npm Bed 1"
+                                                                    onChange={
+                                                                        handleInputChange
+                                                                    }
+                                                                />
+                                                                <div
+                                                                    className={`${
+                                                                        editKamarStatus &&
+                                                                        index ===
+                                                                            indexEditKamar
+                                                                            ? "hidden"
+                                                                            : "block"
+                                                                    } px-6 py-3 break-all w-[150px]`}
+                                                                >
+                                                                    {
+                                                                        data.npm_bed2_b
+                                                                    }
+                                                                </div>
+                                                                <input
+                                                                    name="npm_bed2_b"
+                                                                    value={
+                                                                        npmBed2
+                                                                    }
+                                                                    type="text"
+                                                                    className={`${
+                                                                        editKamarStatus &&
+                                                                        index ===
+                                                                            indexEditKamar
+                                                                            ? "block"
+                                                                            : "hidden"
+                                                                    } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                                    placeholder="Npm Bed 2"
+                                                                    onChange={
+                                                                        handleInputChange
+                                                                    }
+                                                                />
+                                                                <div
+                                                                    className={`${
+                                                                        editKamarStatus &&
+                                                                        index ===
+                                                                            indexEditKamar
+                                                                            ? "hidden"
+                                                                            : "block"
+                                                                    } px-6 py-3 break-all w-[150px]`}
+                                                                >
+                                                                    {
+                                                                        data.npm_bed3_c
+                                                                    }
+                                                                </div>
+                                                                <input
+                                                                    name="npm_bed3_c"
+                                                                    value={
+                                                                        npmBed3
+                                                                    }
+                                                                    type="text"
+                                                                    className={`${
+                                                                        editKamarStatus &&
+                                                                        index ===
+                                                                            indexEditKamar
+                                                                            ? "block"
+                                                                            : "hidden"
+                                                                    } w-[150px] h-[40px] px-5 py-2 my-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring focus:ring-indigo-200`}
+                                                                    placeholder="Npm Bed 3"
+                                                                    onChange={
+                                                                        handleInputChange
+                                                                    }
+                                                                />
+                                                                <div className="px-6 py-3 break-all w-[110px]">
+                                                                    {data.status_kamar ===
                                                                     false
-                                                                );
-                                                            }}
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                        <button
-                                                            className={`${
-                                                                editKamarStatus &&
-                                                                index ===
-                                                                    indexEditKamar
-                                                                    ? "block"
-                                                                    : "hidden"
-                                                            } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
-                                                            onClick={() =>
-                                                                saveEditKamar(
-                                                                    data.id_asrama
-                                                                )
-                                                            }
-                                                        >
-                                                            Save
-                                                        </button>
+                                                                        ? "Penuh "
+                                                                        : "Kosong"}
+                                                                </div>
+                                                                <div className="flex flex-col gap-2">
+                                                                    <button
+                                                                        className={`${
+                                                                            editKamarStatus &&
+                                                                            index ===
+                                                                                indexEditKamar
+                                                                                ? "hidden"
+                                                                                : "block"
+                                                                        } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                                        onClick={() =>
+                                                                            editKamarHandle(
+                                                                                data.npm_bed1_a,
+                                                                                data.npm_bed2_b,
+                                                                                data.npm_bed3_c,
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Edit
+                                                                    </button>
+                                                                    <button
+                                                                        className={`${
+                                                                            editKamarStatus &&
+                                                                            index ===
+                                                                                indexEditKamar
+                                                                                ? "block"
+                                                                                : "hidden"
+                                                                        } bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                                        onClick={() => {
+                                                                            setEditKamarStatus(
+                                                                                false
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                    <button
+                                                                        className={`${
+                                                                            editKamarStatus &&
+                                                                            index ===
+                                                                                indexEditKamar
+                                                                                ? "block"
+                                                                                : "hidden"
+                                                                        } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-[15px]`}
+                                                                        onClick={() =>
+                                                                            saveEditKamar(
+                                                                                data.id_asrama
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Save
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center justify-center p-3">
+                                                    <div className="join">
+                                                        {pagesKamarToDisplay.map(
+                                                            (page) => (
+                                                                <button
+                                                                    key={page}
+                                                                    className={`join-item btn ${
+                                                                        currentPage ===
+                                                                        page
+                                                                            ? "btn-active"
+                                                                            : ""
+                                                                    }`}
+                                                                    onClick={() =>
+                                                                        setCurrentPage(
+                                                                            page
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {page}
+                                                                </button>
+                                                            )
+                                                        )}
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
-                                        <div className="flex items-center justify-center p-3">
-                                            <div className="join">
-                                                {pagesKamarToDisplay.map(
-                                                    (page) => (
-                                                        <button
-                                                            key={page}
-                                                            className={`join-item btn ${
-                                                                currentPage ===
-                                                                page
-                                                                    ? "btn-active"
-                                                                    : ""
-                                                            }`}
-                                                            onClick={() =>
-                                                                setCurrentPage(
-                                                                    page
-                                                                )
-                                                            }
-                                                        >
-                                                            {page}
-                                                        </button>
-                                                    )
-                                                )}
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    </div>
                                     )}
-                                    {displaySection === "historyKamarAsrama" && (
-                                    <div>
-                                        <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
-                                            <input
-                                                className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
-                                                type="text"
-                                                placeholder="Cari Data History Kamar"
-                                                value={searchText}
-                                                onChange={handleInputHistoryKamarChange}
-                                            />
-                                        </div>
-                                    <div className="text-[24px] font-bold">
-                                        Tabel History Kamar Asrama{" "}
-                                    </div>
-                                    <div className="flex bg-[#898989] gap-9 rounded-t-lg">
-                                        <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
-                                            NO
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
-                                            Nomer Kamar
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                            Penyewa 1
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                            Penyewa 2
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
-                                            Penyewa 3
-                                        </div>
-                                        <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
-                                            Periode
-                                        </div>
-                                    </div>
-                                    <div className="bg-white divide-y divide-gray-200">
-                                        <div className="">
-                                            {dataHistoryKamarToShow.map(
-                                                (data, index) => (
-                                                    <div
-                                                        className="flex gap-9 text-center my-2"
-                                                        key={index}
-                                                    >
-                                                        <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
-                                                            {index + 1}
-                                                        </div>
-                                                        <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
-                                                            {data.no_kamar}
-                                                        </div>
-                                                        <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
-                                                            {data.npm_bed1_a ||
-                                                                "kosong"}
-                                                        </div>
-                                                        <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
-                                                            {data.npm_bed2_b ||
-                                                                "kosong"}
-                                                        </div>
-                                                        <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
-                                                            {data.npm_bed3_c ||
-                                                                "kosong"}
-                                                        </div>
-                                                        <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
-                                                            {data.year}
-                                                        </div>
-                                                    </div>
-                                                )
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center justify-center p-3">
-                                            <div className="join">
-                                                {pagesHistoryKamarToDisplay.map(
-                                                    (page) => (
-                                                        <button
-                                                            key={page}
-                                                            className={`join-item btn ${
-                                                                currentPage ===
-                                                                page
-                                                                    ? "btn-active"
-                                                                    : ""
-                                                            }`}
-                                                            onClick={() =>
-                                                                setCurrentPage(
+                                    {displaySection ===
+                                        "historyKamarAsrama" && (
+                                        <div>
+                                            <div className="bg-[#000000]flex flex-row relative rounded-full overflow-hidden mb-5">
+                                                <input
+                                                    className="w-full md:w-auto h-[40px] md:h-[50px] pl-12 pr-4 py-2 md:py-3 bg-white border border-gray-300 rounded-full text-[16px] md:text-[20px] font-bold outline-none"
+                                                    type="text"
+                                                    placeholder="Cari Data History Kamar"
+                                                    value={searchText}
+                                                    onChange={
+                                                        handleInputHistoryKamarChange
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="text-[24px] font-bold">
+                                                Tabel History Kamar Asrama{" "}
+                                            </div>
+                                            <div className="flex bg-[#898989] gap-9 rounded-t-lg">
+                                                <div className="px-6 py-3  text-xs leading-4 font-medium text-black uppercase w-[50px]">
+                                                    NO
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[80px]">
+                                                    Nomer Kamar
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                                    Penyewa 1
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                                    Penyewa 2
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[150px]">
+                                                    Penyewa 3
+                                                </div>
+                                                <div className="px-6 py-3 text-center text-xs leading-4 font-medium text-black uppercase w-[120px]">
+                                                    Periode
+                                                </div>
+                                            </div>
+                                            <div className="bg-white divide-y divide-gray-200">
+                                                <div className="">
+                                                    {dataHistoryKamarToShow.map(
+                                                        (data, index) => (
+                                                            <div
+                                                                className="flex gap-9 text-center my-2"
+                                                                key={index}
+                                                            >
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[50px]">
+                                                                    {index + 1}
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[80px]">
+                                                                    {
+                                                                        data.no_kamar
+                                                                    }
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                                    {data.npm_bed1_a ||
+                                                                        "kosong"}
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                                    {data.npm_bed2_b ||
+                                                                        "kosong"}
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[150px]">
+                                                                    {data.npm_bed3_c ||
+                                                                        "kosong"}
+                                                                </div>
+                                                                <div className="px-6 py-3 whitespace-no-wrap w-[120px]">
+                                                                    {data.year}
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-center p-3">
+                                                <div className="join">
+                                                    {pagesHistoryKamarToDisplay.map(
+                                                        (page) => (
+                                                            <button
+                                                                key={page}
+                                                                className={`join-item btn ${
+                                                                    currentPage ===
                                                                     page
-                                                                )
-                                                            }
-                                                        >
-                                                            {page}
-                                                        </button>
-                                                    )
-                                                )}
+                                                                        ? "btn-active"
+                                                                        : ""
+                                                                }`}
+                                                                onClick={() =>
+                                                                    setCurrentPage(
+                                                                        page
+                                                                    )
+                                                                }
+                                                            >
+                                                                {page}
+                                                            </button>
+                                                        )
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     )}
                                 </div>
                             )}
