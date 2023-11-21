@@ -567,7 +567,6 @@ export default function Fasilitas() {
                                         onChange={handleTermServiceChange}
                                         multiple={false}
                                     />
-
                                     <div className="flex flex-row">
                                         <button
                                             className={`${
